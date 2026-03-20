@@ -4,6 +4,9 @@
 @import "./base/base.css";
 
 @theme {
+  /* Breakpoints */
+  --breakpoint-3xl: 1920px;
+
   /* Font Family */
   --font-pretendard: "Pretendard", sans-serif;
   --font-inter: "Inter", sans-serif;
