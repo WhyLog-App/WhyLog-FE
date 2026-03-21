@@ -1,29 +1,38 @@
-import type { SVGProps } from "react";
-export type IconSource = string | React.ComponentType<SVGProps<SVGSVGElement>>;
+import type { ComponentType, CSSProperties, SVGProps } from "react";
+export type IconSource = string | ComponentType<SVGProps<SVGSVGElement>>;
 
 interface IconProps extends Omit<SVGProps<SVGSVGElement>, "width" | "height"> {
   icon: IconSource;
   size?: number;
-  color?: string;
 }
 
 export const Icon = ({
   icon: IconComponent,
   size = 24,
-  color,
   className,
   ...props
 }: IconProps) => {
-  const combinedClassName = [color, className].filter(Boolean).join(" ");
-
   if (typeof IconComponent === "string") {
+    const maskStyle: CSSProperties = {
+      width: size,
+      height: size,
+      display: "inline-block",
+      backgroundColor: "currentColor",
+      WebkitMaskImage: `url("${IconComponent}")`,
+      maskImage: `url("${IconComponent}")`,
+      WebkitMaskRepeat: "no-repeat",
+      maskRepeat: "no-repeat",
+      WebkitMaskPosition: "center",
+      maskPosition: "center",
+      WebkitMaskSize: "contain",
+      maskSize: "contain",
+      flexShrink: 0,
+    };
+
     return (
-      <img
-        src={IconComponent}
-        width={size}
-        height={size}
-        className={combinedClassName}
-        alt=""
+      <span
+        className={className}
+        style={maskStyle}
         aria-hidden="true"
       />
     );
@@ -33,7 +42,7 @@ export const Icon = ({
     <IconComponent
       width={size}
       height={size}
-      className={combinedClassName}
+      className={className}
       aria-hidden="true"
       {...props}
     />
