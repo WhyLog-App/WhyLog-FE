@@ -1,7 +1,8 @@
 import type { SVGProps } from "react";
+export type IconSource = string | React.ComponentType<SVGProps<SVGSVGElement>>;
 
 interface IconProps extends Omit<SVGProps<SVGSVGElement>, "width" | "height"> {
-  icon: React.ComponentType<SVGProps<SVGSVGElement>>;
+  icon: IconSource;
   size?: number;
   color?: string;
 }
@@ -14,6 +15,19 @@ export const Icon = ({
   ...props
 }: IconProps) => {
   const combinedClassName = [color, className].filter(Boolean).join(" ");
+
+  if (typeof IconComponent === "string") {
+    return (
+      <img
+        src={IconComponent}
+        width={size}
+        height={size}
+        className={combinedClassName}
+        alt=""
+        aria-hidden="true"
+      />
+    );
+  }
 
   return (
     <IconComponent
