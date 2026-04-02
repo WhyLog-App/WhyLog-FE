@@ -1,9 +1,9 @@
-import IconGit from "@/assets/icons/ic_git.svg?react";
-import IconHeadphones from "@/assets/icons/ic_headphones.svg?react";
-import IconHome from "@/assets/icons/ic_home.svg?react";
-import IconLogout from "@/assets/icons/ic_logout.svg?react";
-import IconNotebook from "@/assets/icons/ic_notebook.svg?react";
-import IconSettings from "@/assets/icons/ic_settings.svg?react";
+import IconNotebook from "@/assets/icons/file/ic_notebook.svg?react";
+import IconLogout from "@/assets/icons/interface/ic_log_out.svg?react";
+import IconSettings from "@/assets/icons/interface/ic_settings.svg?react";
+import IconGit from "@/assets/icons/media/ic_git.svg?react";
+import IconHeadphones from "@/assets/icons/media/ic_headphones.svg?react";
+import IconHome from "@/assets/icons/media/ic_home.svg?react";
 import type { MenuItem } from "../types";
 
 export const mainMenuItems: MenuItem[] = [

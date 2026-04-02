@@ -1,5 +1,5 @@
-import IconChevronDown from "@/assets/icons/ic_chevron_down.svg?react";
-import IconMenuBurger from "@/assets/icons/ic_menu_burger.svg?react";
+import IconChevronDown from "@/assets/icons/arrow/ic_chevron_down.svg?react";
+import IconMenuBurger from "@/assets/icons/menu/ic_menu_burger.svg?react";
 import { Icon } from "@/components/common/Icon";
 
 interface SidebarHeaderProps {
