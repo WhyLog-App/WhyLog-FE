@@ -29,13 +29,7 @@ export const Icon = ({
       flexShrink: 0,
     };
 
-    return (
-      <span
-        className={className}
-        style={maskStyle}
-        aria-hidden="true"
-      />
-    );
+    return <span className={className} style={maskStyle} aria-hidden="true" />;
   }
 
   return (
