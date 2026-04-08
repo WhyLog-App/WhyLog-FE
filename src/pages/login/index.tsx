@@ -1,17 +1,42 @@
+import { useMutation } from "@tanstack/react-query";
+import { isAxiosError } from "axios";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { login } from "@/apis/auth";
 import imgBackground from "@/assets/images/background.webp";
 import LogoSymbol from "@/components/logo/LogoSymbol";
 import LogoText from "@/components/logo/LogoText";
 import { ROUTES } from "@/constants/endpoint";
+import type { ApiResponse, LoginResult } from "@/types/auth";
 
 function LoginPage() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const loginMutation = useMutation({
+    mutationFn: login,
+    onSuccess: (result: LoginResult) => {
+      localStorage.setItem("accessToken", result.accessToken);
+      navigate(ROUTES.APP_ROOT);
+    },
+    onError: (error: unknown) => {
+      if (isAxiosError<ApiResponse<unknown>>(error)) {
+        setErrorMessage(
+          error.response?.data?.message ??
+            "로그인에 실패했습니다. 다시 시도해주세요.",
+        );
+        return;
+      }
+      setErrorMessage("로그인에 실패했습니다. 다시 시도해주세요.");
+    },
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: 로그인 API 연동
+    setErrorMessage(null);
+    loginMutation.mutate({ email, password });
   };
 
   return (
@@ -88,15 +113,21 @@ function LoginPage() {
 
         {/* Footer */}
         <div className="flex w-full flex-col items-center gap-3">
+          {errorMessage && (
+            <p className="typo-body6 text-red-500" role="alert">
+              {errorMessage}
+            </p>
+          )}
           <button
             type="submit"
-            className="typo-button-md w-full cursor-pointer rounded-full py-3 text-white transition-opacity hover:opacity-90"
+            disabled={loginMutation.isPending}
+            className="typo-button-md w-full cursor-pointer rounded-full py-3 text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
             style={{
               background:
                 "linear-gradient(164.49deg, rgb(91, 141, 239) 15.47%, rgb(0, 99, 247) 84.42%)",
             }}
           >
-            로그인
+            {loginMutation.isPending ? "로그인 중..." : "로그인"}
           </button>
 
           <div className="flex items-center gap-2">
