@@ -14,6 +14,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       try {
         // HttpOnly 쿠키의 refresh token으로 새 access token 발급
         const accessToken = await refreshAccessToken();
+        if (!accessToken) {
+          throw new Error("Invalid access token received");
+        }
         tokenStore.setToken(accessToken);
       } catch (_error) {
         // Refresh 실패 시 토큰 정리
