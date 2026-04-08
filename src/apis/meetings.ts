@@ -4,6 +4,7 @@ import type {
   CreateMeetingRequest,
   CreateMeetingResult,
   EndMeetingResult,
+  MeetingDetail,
   MeetingListItem,
   MeetingStatus,
   RtcTokenResult,
@@ -34,6 +35,19 @@ export const listMeetings = async (
   >(ENDPOINT.MEETINGS.LIST(teamId), {
     params: status ? { status } : undefined,
   });
+  if (!data.isSuccess) {
+    throw new Error(data.message);
+  }
+  return data.result;
+};
+
+export const getMeetingDetail = async (
+  meetingId: number,
+): Promise<MeetingDetail> => {
+  const { data } = await http.get<
+    unknown,
+    { data: ApiResponse<MeetingDetail> }
+  >(ENDPOINT.MEETINGS.DETAIL(meetingId));
   if (!data.isSuccess) {
     throw new Error(data.message);
   }
