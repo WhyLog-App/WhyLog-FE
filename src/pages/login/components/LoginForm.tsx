@@ -25,7 +25,7 @@ export const LoginForm = ({
   return (
     <form
       onSubmit={onSubmit}
-      className="relative flex w-[440px] flex-col items-center gap-10 overflow-hidden rounded-[30px] border border-white px-7 pb-10 pt-20"
+      className="relative flex w-full max-w-110 flex-col items-center gap-10 overflow-hidden rounded-[30px] border border-white px-7 pb-10 pt-20"
       style={{ background: "rgba(255, 255, 255, 0.3)" }}
     >
       {/* Logo */}
