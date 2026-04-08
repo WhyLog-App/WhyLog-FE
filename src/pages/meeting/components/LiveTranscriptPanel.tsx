@@ -28,11 +28,12 @@ const LiveTranscriptPanel = ({
     [interimByMember],
   );
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Need to scroll when transcripts or interimEntries change
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
     el.scrollTop = el.scrollHeight;
-  }, [transcripts.length, interimEntries.length]);
+  }, [transcripts, interimEntries]);
 
   const isEmpty = transcripts.length === 0 && interimEntries.length === 0;
 
