@@ -35,7 +35,7 @@ const InProgressPage = () => {
     ? formatStartDateTime(meetingDetail.startDateTime)
     : null;
   const memberCount = meetingDetail?.memberCount ?? 0;
-  const startedAt = useRef(new Date()).current;
+  const startedAt = useRef(Date.now()).current;
   const elapsed = useElapsedTime(startedAt);
 
   const {
