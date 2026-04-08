@@ -1,6 +1,7 @@
 import type { ReactElement } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { ROUTES } from "@/constants/endpoint";
+import { tokenStore } from "@/utils/tokenStore";
 
 interface ProtectedRouteProps {
   children: ReactElement;
@@ -8,9 +9,9 @@ interface ProtectedRouteProps {
 
 function ProtectedRoute({ children }: ProtectedRouteProps) {
   const location = useLocation();
-  const token = localStorage.getItem("accessToken");
+  const hasToken = tokenStore.hasToken();
 
-  if (!token) {
+  if (!hasToken) {
     return <Navigate to={ROUTES.LOGIN} replace state={{ from: location }} />;
   }
 

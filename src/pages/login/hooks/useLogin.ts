@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { login } from "@/apis/auth";
 import { ROUTES } from "@/constants/endpoint";
 import type { ApiResponse, LoginResult } from "@/types/auth";
+import { tokenStore } from "@/utils/tokenStore";
 
 export const useLogin = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ export const useLogin = () => {
   const loginMutation = useMutation({
     mutationFn: login,
     onSuccess: (result: LoginResult) => {
-      localStorage.setItem("accessToken", result.accessToken);
+      tokenStore.setToken(result.accessToken);
       const from = location.state?.from?.pathname || ROUTES.APP_ROOT;
       navigate(from, { replace: true });
     },

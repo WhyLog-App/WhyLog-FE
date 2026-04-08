@@ -9,6 +9,7 @@ import axios, {
 } from "axios";
 import ENDPOINT, { ROUTES } from "@/constants/endpoint";
 import type { ApiResponse, RefreshTokenResult } from "@/types/auth";
+import { tokenStore } from "./tokenStore";
 
 const StatusCode = {
   Unauthorized: 401,
@@ -29,12 +30,12 @@ type RetriableRequestConfig = InternalAxiosRequestConfig & {
 };
 
 // We can use the following function to inject the JWT token through an interceptor
-// We get the `accessToken` from the localStorage that we set when we authenticate
+// We get the `accessToken` from the in-memory tokenStore for security
 const injectToken = (
   config: InternalAxiosRequestConfig,
 ): InternalAxiosRequestConfig => {
   try {
-    const token = localStorage.getItem("accessToken");
+    const token = tokenStore.getToken();
 
     if (token != null && config?.headers) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -127,7 +128,7 @@ class Http {
   }
 
   private handleAuthFailure(error: unknown) {
-    localStorage.removeItem("accessToken");
+    tokenStore.clearToken();
     if (
       typeof window !== "undefined" &&
       window.location.pathname !== ROUTES.LOGIN
@@ -180,7 +181,7 @@ class Http {
           },
         );
         const newAccessToken = data.result.accessToken;
-        localStorage.setItem("accessToken", newAccessToken);
+        tokenStore.setToken(newAccessToken);
         this.flushQueue(null, newAccessToken);
 
         if (originalRequest.headers) {

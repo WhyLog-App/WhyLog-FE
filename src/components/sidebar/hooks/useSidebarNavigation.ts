@@ -2,6 +2,7 @@ import { isAxiosError } from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { logout } from "@/apis/auth";
 import { ROUTES } from "@/constants/endpoint";
+import { tokenStore } from "@/utils/tokenStore";
 import type { MenuItem } from "../types";
 
 export const useSidebarNavigation = () => {
@@ -12,13 +13,13 @@ export const useSidebarNavigation = () => {
     if (item.id === "logout") {
       try {
         await logout();
-        localStorage.removeItem("accessToken");
+        tokenStore.clearToken();
         navigate(ROUTES.LOGIN);
       } catch (error) {
         console.error("로그아웃 요청이 실패해 로컬 세션만 정리했습니다.", {
           status: isAxiosError(error) ? error.response?.status : undefined,
         });
-        localStorage.removeItem("accessToken");
+        tokenStore.clearToken();
         navigate(ROUTES.LOGIN);
       }
       return;
