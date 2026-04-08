@@ -1,16 +1,18 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createMeeting } from "@/apis/meetings";
 import type { ApiResponse } from "@/types/auth";
 import type { CreateMeetingResult } from "@/types/meeting";
+import { MEETING_LIST_QUERY_KEY } from "./useMeetingList";
 
 // TODO: teamId를 로그인 응답/팀 컨텍스트에서 가져오도록 교체
 const TEMP_TEAM_ID = 3;
 
 export const useCreateMeeting = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const mutation = useMutation({
@@ -20,6 +22,7 @@ export const useCreateMeeting = () => {
         startDateTime: new Date().toISOString(),
       }),
     onSuccess: (result: CreateMeetingResult) => {
+      queryClient.invalidateQueries({ queryKey: MEETING_LIST_QUERY_KEY });
       navigate(`/meeting/${result.meeting_id}`, {
         state: { name: result.name },
       });

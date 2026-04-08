@@ -4,6 +4,8 @@ import type {
   CreateMeetingRequest,
   CreateMeetingResult,
   EndMeetingResult,
+  MeetingListItem,
+  MeetingStatus,
   RtcTokenResult,
 } from "@/types/meeting";
 import { http } from "@/utils/http";
@@ -16,6 +18,22 @@ export const createMeeting = async (
     CreateMeetingRequest,
     { data: ApiResponse<CreateMeetingResult> }
   >(ENDPOINT.MEETINGS.CREATE(teamId), payload);
+  if (!data.isSuccess) {
+    throw new Error(data.message);
+  }
+  return data.result;
+};
+
+export const listMeetings = async (
+  teamId: number,
+  status?: MeetingStatus,
+): Promise<MeetingListItem[]> => {
+  const { data } = await http.get<
+    unknown,
+    { data: ApiResponse<MeetingListItem[]> }
+  >(ENDPOINT.MEETINGS.LIST(teamId), {
+    params: status ? { status } : undefined,
+  });
   if (!data.isSuccess) {
     throw new Error(data.message);
   }

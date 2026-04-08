@@ -9,7 +9,15 @@ import LiveTranscriptPanel from "./components/LiveTranscriptPanel";
 import MeetingControls from "./components/MeetingControls";
 import ParticipantGrid from "./components/ParticipantGrid";
 import { useElapsedTime } from "./hooks/useElapsedTime";
+import { useMeetingDetail } from "./hooks/useMeetingDetail";
 import { useMeetingRoom } from "./hooks/useMeetingRoom";
+
+const formatStartDateTime = (iso: string) => {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const pad = (n: number) => n.toString().padStart(2, "0");
+  return `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
 
 const InProgressPage = () => {
   const { meetingId: meetingIdParam } = useParams<{ meetingId: string }>();
@@ -17,8 +25,15 @@ const InProgressPage = () => {
   const navigate = useNavigate();
 
   const meetingId = meetingIdParam ? Number(meetingIdParam) : null;
+  const { data: meetingDetail } = useMeetingDetail(meetingId);
   const meetingName =
-    (location.state as { name?: string } | null)?.name ?? "회의";
+    meetingDetail?.name ??
+    (location.state as { name?: string } | null)?.name ??
+    "회의";
+  const meetingStart = meetingDetail?.startDateTime
+    ? formatStartDateTime(meetingDetail.startDateTime)
+    : null;
+  const memberCount = meetingDetail?.memberCount ?? 0;
   const startedAt = useRef(new Date()).current;
   const elapsed = useElapsedTime(startedAt);
 
@@ -55,7 +70,15 @@ const InProgressPage = () => {
     <div className="flex h-full flex-col py-10">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="typo-h5 text-(--color-text-primary)">{meetingName}</h1>
+        <div className="flex flex-col gap-1">
+          <h1 className="typo-h5 text-(--color-text-primary)">{meetingName}</h1>
+          {meetingStart && (
+            <span className="typo-caption text-(--color-text-tertiary)">
+              {meetingStart}
+              {memberCount > 0 ? ` · 참여자 ${memberCount}명` : ""}
+            </span>
+          )}
+        </div>
         <div className="flex items-center gap-3">
           <span className="flex items-center gap-1 rounded-full bg-green-50 px-3 py-1">
             <Icon icon={IconClock} size={16} className="text-green-700" />

@@ -15,6 +15,25 @@ export interface EndMeetingResult {
   end_date_time: string;
 }
 
+export type MeetingStatus = "ONGOING" | "COMPLETED";
+
+export interface MeetingListItem {
+  meetingId: number;
+  name: string;
+  status: MeetingStatus;
+  elapse: string | null;
+}
+
+export interface MeetingDetail {
+  meetingId: number;
+  name: string;
+  startDateTime: string;
+  endDateTime: string | null;
+  duration: number;
+  memberCount: number;
+  members: number[];
+}
+
 export interface RtcTokenResult {
   meeting_id: number;
   room_name: string;

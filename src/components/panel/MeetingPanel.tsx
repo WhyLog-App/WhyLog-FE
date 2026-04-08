@@ -6,24 +6,25 @@ import { Icon } from "@/components/common/Icon";
 import { useMeetings } from "@/contexts/MeetingsContext";
 import { useCreateMeeting } from "@/pages/meeting/hooks/useCreateMeeting";
 import { useElapsedTime } from "@/pages/meeting/hooks/useElapsedTime";
+import { useMeetingList } from "@/pages/meeting/hooks/useMeetingList";
 import MeetingPanelItem from "./MeetingPanelItem";
 import StartMeetingModal from "./StartMeetingModal";
-
-const MOCK_MEETINGS = [
-  { id: 1, title: "서버 개발 팀 2차 회의", date: "2025.01.20", badgeCount: 3 },
-  { id: 2, title: "기획-디자인 회의", date: "2025.01.17", badgeCount: 5 },
-  { id: 3, title: "서버 개발 팀 1차 회의", date: "2025.01.15", badgeCount: 5 },
-  { id: 4, title: "팀 전체 1차 회의", date: "2025.01.15", badgeCount: 5 },
-];
 
 const MeetingPanel = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const { meetings } = useMeetings();
   const { createMeeting, isPending } = useCreateMeeting();
+  const {
+    ongoing: ongoingMeetings,
+    completed: completedMeetings,
+    isLoading,
+    isError,
+  } = useMeetingList();
 
   const liveMeeting = meetings.find((m) => m.status === "in-progress");
   const elapsed = useElapsedTime(liveMeeting?.startedAt);
+  const apiOngoing = !liveMeeting ? ongoingMeetings[0] : undefined;
 
   return (
     <>
@@ -57,6 +58,16 @@ const MeetingPanel = () => {
           />
         </div>
       )}
+      {!liveMeeting && apiOngoing && (
+        <div className="flex w-full shrink-0 flex-col items-center px-4">
+          <MeetingPanelItem
+            title={apiOngoing.name}
+            isLive
+            elapsedTime={apiOngoing.elapse ?? "00:00:00"}
+            onClick={() => navigate(`/meeting/${apiOngoing.meetingId}`)}
+          />
+        </div>
+      )}
 
       {/* Search + meeting list */}
       <div className="flex w-full flex-1 flex-col gap-2 overflow-y-auto px-4">
@@ -73,12 +84,26 @@ const MeetingPanel = () => {
         </div>
 
         {/* Meeting list */}
-        {MOCK_MEETINGS.map((meeting) => (
+        {isLoading && (
+          <span className="typo-body6 text-(--color-text-tertiary) px-2">
+            불러오는 중...
+          </span>
+        )}
+        {isError && (
+          <span className="typo-body6 text-(--color-text-tertiary) px-2">
+            회의 목록을 불러오지 못했습니다.
+          </span>
+        )}
+        {!isLoading && !isError && completedMeetings.length === 0 && (
+          <span className="typo-body6 text-(--color-text-tertiary) px-2">
+            완료된 회의가 없습니다.
+          </span>
+        )}
+        {completedMeetings.map((meeting) => (
           <MeetingPanelItem
-            key={meeting.id}
-            title={meeting.title}
-            date={meeting.date}
-            badgeCount={meeting.badgeCount}
+            key={meeting.meetingId}
+            title={meeting.name}
+            onClick={() => navigate(`/meeting/${meeting.meetingId}`)}
           />
         ))}
       </div>
