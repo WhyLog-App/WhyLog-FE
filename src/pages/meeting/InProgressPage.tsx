@@ -11,6 +11,7 @@ import ParticipantGrid from "./components/ParticipantGrid";
 import { useElapsedTime } from "./hooks/useElapsedTime";
 import { useMeetingDetail } from "./hooks/useMeetingDetail";
 import { useMeetingRoom } from "./hooks/useMeetingRoom";
+import { useSpeechRecognition } from "./hooks/useSpeechRecognition";
 
 const formatStartDateTime = (iso: string) => {
   const d = new Date(iso);
@@ -37,11 +38,24 @@ const InProgressPage = () => {
   const startedAt = useRef(new Date()).current;
   const elapsed = useElapsedTime(startedAt);
 
-  const { participants, isWsConnected, isRoomConnected, errorMessage } =
-    useMeetingRoom({
-      meetingId,
-      displayName: "나",
-    });
+  const {
+    participants,
+    isWsConnected,
+    isRoomConnected,
+    errorMessage,
+    transcripts,
+    interimByMember,
+    sendMessage,
+  } = useMeetingRoom({
+    meetingId,
+    displayName: "나",
+  });
+
+  const { isSupported: isSpeechSupported } = useSpeechRecognition({
+    enabled: isWsConnected,
+    onInterim: (text) => sendMessage("audio_text", text),
+    onFinal: (text) => sendMessage("speech", text),
+  });
 
   const endMutation = useMutation({
     mutationFn: (id: number) => endMeeting(id),
@@ -115,7 +129,11 @@ const InProgressPage = () => {
         <div className="flex flex-1 flex-col items-center justify-center">
           <ParticipantGrid participants={displayParticipants} />
         </div>
-        <LiveTranscriptPanel />
+        <LiveTranscriptPanel
+          transcripts={transcripts}
+          interimByMember={interimByMember}
+          isSupported={isSpeechSupported}
+        />
       </div>
 
       {/* Bottom controls */}

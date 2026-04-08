@@ -1,41 +1,41 @@
+import { useEffect, useMemo, useRef } from "react";
 import IconBell from "@/assets/icons/communication/ic_bell.svg?react";
 import { Icon } from "@/components/common/Icon";
+import type { InterimEntry, TranscriptEntry } from "../hooks/useMeetingRoom";
 
-interface TranscriptItem {
-  speaker: string;
-  time: string;
-  text: string;
+interface LiveTranscriptPanelProps {
+  transcripts: TranscriptEntry[];
+  interimByMember: Record<string, InterimEntry>;
+  isSupported?: boolean;
 }
 
-const MOCK_TRANSCRIPT: TranscriptItem[] = [
-  {
-    speaker: "김개발",
-    time: "12:29",
-    text: "마이페이지 API는 RESTful 방식으로 구현하는 게 어떨까요?",
-  },
-  {
-    speaker: "이디자인",
-    time: "12:45",
-    text: "UI/UX 디자인 피드백을 수집할 수 있는 간단한 설문조사를 만들죠.",
-  },
-  {
-    speaker: "박테스트",
-    time: "13:10",
-    text: "각 기능의 테스트 케이스를 명확히 문서화해야 합니다.",
-  },
-  {
-    speaker: "최기획",
-    time: "13:35",
-    text: "새로운 기능의 사용자 경험을 개선하기 위해 A/B 테스트를 진행하자.",
-  },
-  {
-    speaker: "홍개발",
-    time: "14:00",
-    text: "API 호출의 성능을 모니터링할 수 있는 대시보드를 개발하자.",
-  },
-];
+const formatTime = (iso: string) => {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const pad = (n: number) => n.toString().padStart(2, "0");
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
 
-const LiveTranscriptPanel = () => {
+const LiveTranscriptPanel = ({
+  transcripts,
+  interimByMember,
+  isSupported = true,
+}: LiveTranscriptPanelProps) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const interimEntries = useMemo(
+    () => Object.entries(interimByMember),
+    [interimByMember],
+  );
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
+  }, [transcripts.length, interimEntries.length]);
+
+  const isEmpty = transcripts.length === 0 && interimEntries.length === 0;
+
   return (
     <aside className="flex h-full w-90 shrink-0 flex-col gap-4 overflow-hidden rounded-2xl border border-(--color-border-default) bg-(--color-bg-surface) px-5 py-5">
       <div className="flex items-center gap-2">
@@ -48,22 +48,56 @@ const LiveTranscriptPanel = () => {
           실시간 음성인식
         </h3>
       </div>
-      <div className="flex flex-1 flex-col gap-4 overflow-y-auto">
-        {MOCK_TRANSCRIPT.map((item) => (
-          <div
-            key={`${item.speaker}-${item.time}`}
-            className="flex flex-col gap-1"
-          >
+
+      {!isSupported && (
+        <div className="rounded-md bg-yellow-50 px-3 py-2">
+          <p className="typo-caption1 text-yellow-800">
+            이 브라우저는 실시간 자막을 지원하지 않습니다. (Chrome/Edge 권장)
+          </p>
+        </div>
+      )}
+
+      <div
+        ref={scrollRef}
+        className="flex flex-1 flex-col gap-4 overflow-y-auto"
+      >
+        {isEmpty && (
+          <p className="typo-body6 text-(--color-text-tertiary)">
+            아직 인식된 발화가 없습니다.
+          </p>
+        )}
+
+        {transcripts.map((item) => (
+          <div key={item.id} className="flex flex-col gap-1">
             <div className="flex items-center justify-between">
               <span className="typo-subtitle5 text-(--color-primary-500)">
-                {item.speaker}
+                {item.fromName}
               </span>
               <span className="typo-caption1 text-(--color-text-tertiary)">
-                {item.time}
+                {formatTime(item.timestamp)}
               </span>
             </div>
             <p className="typo-body6 text-(--color-text-secondary)">
               {item.text}
+            </p>
+          </div>
+        ))}
+
+        {interimEntries.map(([key, entry]) => (
+          <div
+            key={`interim-${key}`}
+            className="flex flex-col gap-1 opacity-60"
+          >
+            <div className="flex items-center justify-between">
+              <span className="typo-subtitle5 text-(--color-primary-500)">
+                {entry.fromName}
+              </span>
+              <span className="typo-caption1 text-(--color-text-tertiary)">
+                {formatTime(entry.timestamp)}
+              </span>
+            </div>
+            <p className="typo-body6 text-(--color-text-secondary) italic">
+              {entry.text}
             </p>
           </div>
         ))}

@@ -1,5 +1,5 @@
 import { type RemoteParticipant, Room, RoomEvent } from "livekit-client";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getRtcToken } from "@/apis/meetings";
 import { WS_BASE_URL } from "@/constants/endpoint";
 import { tokenStore } from "@/utils/tokenStore";
@@ -10,10 +10,28 @@ export interface RoomParticipant {
   isSelf?: boolean;
 }
 
+export interface TranscriptEntry {
+  id: string;
+  memberId: number | null;
+  fromName: string;
+  text: string;
+  timestamp: string;
+  isFinal: boolean;
+}
+
+export interface InterimEntry {
+  memberId: number | null;
+  fromName: string;
+  text: string;
+  timestamp: string;
+}
+
 interface UseMeetingRoomOptions {
   meetingId: number | null;
   displayName: string;
 }
+
+type OutgoingMessageType = "chat" | "audio_text" | "speech";
 
 export const useMeetingRoom = ({
   meetingId,
@@ -23,9 +41,20 @@ export const useMeetingRoom = ({
   const [isWsConnected, setIsWsConnected] = useState(false);
   const [isRoomConnected, setIsRoomConnected] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [transcripts, setTranscripts] = useState<TranscriptEntry[]>([]);
+  const [interimByMember, setInterimByMember] = useState<
+    Record<string, InterimEntry>
+  >({});
 
   const wsRef = useRef<WebSocket | null>(null);
   const roomRef = useRef<Room | null>(null);
+
+  const sendMessage = useCallback((type: OutgoingMessageType, text: string) => {
+    const ws = wsRef.current;
+    if (!ws || ws.readyState !== WebSocket.OPEN) return false;
+    ws.send(JSON.stringify({ type, text }));
+    return true;
+  }, []);
 
   useEffect(() => {
     if (meetingId == null) return;
@@ -54,25 +83,101 @@ export const useMeetingRoom = ({
 
     ws.onmessage = (ev) => {
       try {
-        const msg = JSON.parse(ev.data);
-        if (msg.type === "connected" || msg.type === "roster") {
-          if (Array.isArray(msg.participants)) {
-            setParticipants(
-              msg.participants.map(
-                (
-                  p: { id?: string | number; name?: string; self?: boolean },
-                  idx: number,
-                ) => ({
-                  id: String(p.id ?? idx),
+        const msg = JSON.parse(ev.data) as {
+          type: string;
+          participants?: Array<{
+            id?: string | number;
+            memberId?: string | number;
+            name?: string;
+            self?: boolean;
+          }>;
+          fromMemberId?: number;
+          fromName?: string;
+          memberId?: number;
+          name?: string;
+          text?: string;
+          timestamp?: string;
+        };
+        switch (msg.type) {
+          case "connected":
+          case "roster": {
+            if (Array.isArray(msg.participants)) {
+              setParticipants(
+                msg.participants.map((p, idx) => ({
+                  id: String(p.memberId ?? p.id ?? idx),
                   name: p.name ?? `참가자${idx + 1}`,
                   isSelf: p.self,
-                }),
-              ),
-            );
+                })),
+              );
+            }
+            break;
           }
+          case "participant_joined": {
+            if (msg.memberId != null) {
+              setParticipants((prev) => {
+                const id = String(msg.memberId);
+                if (prev.some((p) => p.id === id)) return prev;
+                return [
+                  ...prev,
+                  { id, name: msg.name ?? `참가자${prev.length + 1}` },
+                ];
+              });
+            }
+            break;
+          }
+          case "participant_left": {
+            if (msg.memberId != null) {
+              const leftId = String(msg.memberId);
+              setParticipants((prev) => prev.filter((p) => p.id !== leftId));
+              setInterimByMember((prev) => {
+                const next = { ...prev };
+                delete next[leftId];
+                return next;
+              });
+            }
+            break;
+          }
+          case "audio_text": {
+            const key = String(msg.fromMemberId ?? "unknown");
+            setInterimByMember((prev) => ({
+              ...prev,
+              [key]: {
+                memberId: msg.fromMemberId ?? null,
+                fromName: msg.fromName ?? "참가자",
+                text: msg.text ?? "",
+                timestamp: msg.timestamp ?? new Date().toISOString(),
+              },
+            }));
+            break;
+          }
+          case "speech": {
+            const key = String(msg.fromMemberId ?? "unknown");
+            setInterimByMember((prev) => {
+              if (!(key in prev)) return prev;
+              const next = { ...prev };
+              delete next[key];
+              return next;
+            });
+            setTranscripts((prev) => [
+              ...prev,
+              {
+                id: `${key}-${msg.timestamp ?? Date.now()}-${prev.length}`,
+                memberId: msg.fromMemberId ?? null,
+                fromName: msg.fromName ?? "참가자",
+                text: msg.text ?? "",
+                timestamp: msg.timestamp ?? new Date().toISOString(),
+                isFinal: true,
+              },
+            ]);
+            break;
+          }
+          case "meeting_ended": {
+            setErrorMessage("회의가 종료되었습니다.");
+            break;
+          }
+          default:
+            break;
         }
-        // chat / audio_text / speech / participant_joined / left / meeting_ended
-        // 는 이번 최소 동작 범위 밖
       } catch {
         // ignore non-JSON frames
       }
@@ -134,6 +239,8 @@ export const useMeetingRoom = ({
       roomRef.current = null;
       setIsWsConnected(false);
       setIsRoomConnected(false);
+      setTranscripts([]);
+      setInterimByMember({});
     };
   }, [meetingId, displayName]);
 
@@ -142,5 +249,8 @@ export const useMeetingRoom = ({
     isWsConnected,
     isRoomConnected,
     errorMessage,
+    transcripts,
+    interimByMember,
+    sendMessage,
   };
 };
