@@ -4,6 +4,7 @@ import IconAddPlusSquare from "@/assets/icons/edit/ic_add_plus_square.svg?react"
 import IconSearch from "@/assets/icons/interface/ic_search.svg?react";
 import { Icon } from "@/components/common/Icon";
 import { useMeetings } from "@/contexts/MeetingsContext";
+import { useCreateMeeting } from "@/pages/meeting/hooks/useCreateMeeting";
 import { useElapsedTime } from "@/pages/meeting/hooks/useElapsedTime";
 import MeetingPanelItem from "./MeetingPanelItem";
 import StartMeetingModal from "./StartMeetingModal";
@@ -18,7 +19,8 @@ const MOCK_MEETINGS = [
 const MeetingPanel = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
-  const { meetings, startMeeting } = useMeetings();
+  const { meetings } = useMeetings();
+  const { createMeeting, isPending } = useCreateMeeting();
 
   const liveMeeting = meetings.find((m) => m.status === "in-progress");
   const elapsed = useElapsedTime(liveMeeting?.startedAt);
@@ -84,11 +86,8 @@ const MeetingPanel = () => {
       {isModalOpen && (
         <StartMeetingModal
           onClose={() => setIsModalOpen(false)}
-          onStart={(meetingName) => {
-            const id = startMeeting(meetingName);
-            setIsModalOpen(false);
-            navigate(`/meeting/${id}`);
-          }}
+          onStart={(meetingName) => createMeeting(meetingName)}
+          isPending={isPending}
         />
       )}
     </>

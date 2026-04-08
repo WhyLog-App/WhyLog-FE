@@ -109,6 +109,14 @@ class Http {
     return this.http.put<T, R>(url, data, config);
   }
 
+  patch<T = any, R = AxiosResponse<T>>(
+    url: string,
+    data?: T,
+    config?: AxiosRequestConfig,
+  ): Promise<R> {
+    return this.http.patch<T, R>(url, data, config);
+  }
+
   delete<T = any, R = AxiosResponse<T>>(
     url: string,
     config?: AxiosRequestConfig,
@@ -177,10 +185,14 @@ class Http {
             baseURL: this.http.defaults.baseURL,
             timeout: this.http.defaults.timeout,
             withCredentials: true,
-            headers,
+            headers: {
+              Accept: "application/json",
+              "Access-Control-Allow-Credentials": true,
+              "X-Requested-With": "XMLHttpRequest",
+            },
           },
         );
-        const newAccessToken = data.result.accessToken;
+        const newAccessToken = data.result.access_token;
         tokenStore.setToken(newAccessToken);
         this.flushQueue(null, newAccessToken);
 

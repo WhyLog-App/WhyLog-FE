@@ -1,69 +1,71 @@
-import { useEffect } from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { useRef } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { endMeeting } from "@/apis/meetings";
 import IconClock from "@/assets/icons/media/ic_clock.svg?react";
 import IconCircleUser from "@/assets/icons/user/ic_circle_user.svg?react";
 import { Icon } from "@/components/common/Icon";
-import { useMeetings } from "@/contexts/MeetingsContext";
 import LiveTranscriptPanel from "./components/LiveTranscriptPanel";
 import MeetingControls from "./components/MeetingControls";
 import ParticipantGrid from "./components/ParticipantGrid";
 import { useElapsedTime } from "./hooks/useElapsedTime";
+import { useMeetingRoom } from "./hooks/useMeetingRoom";
 
 const InProgressPage = () => {
-  const { meetingId } = useParams<{ meetingId: string }>();
-  const [searchParams] = useSearchParams();
+  const { meetingId: meetingIdParam } = useParams<{ meetingId: string }>();
+  const location = useLocation();
   const navigate = useNavigate();
-  const { getMeeting, endMeeting } = useMeetings();
 
-  const meeting = meetingId ? getMeeting(meetingId) : undefined;
-  const elapsed = useElapsedTime(meeting?.startedAt);
+  const meetingId = meetingIdParam ? Number(meetingIdParam) : null;
+  const meetingName =
+    (location.state as { name?: string } | null)?.name ?? "회의";
+  const startedAt = useRef(new Date()).current;
+  const elapsed = useElapsedTime(startedAt);
 
-  useEffect(() => {
-    if (meetingId && !meeting) {
-      navigate("/meeting", { replace: true });
-    }
-  }, [meeting, meetingId, navigate]);
+  const { participants, isWsConnected, isRoomConnected, errorMessage } =
+    useMeetingRoom({
+      meetingId,
+      displayName: "나",
+    });
 
-  if (!meeting) return null;
+  const endMutation = useMutation({
+    mutationFn: (id: number) => endMeeting(id),
+    onSuccess: () => navigate("/"),
+    onError: () => navigate("/"),
+  });
 
-  // Dev helper: ?mockParticipants=4 to preview different grid sizes
-  const mockCount = Number(searchParams.get("mockParticipants"));
-  const participants =
-    Number.isFinite(mockCount) && mockCount > 0
-      ? meeting.participants.length === mockCount
-        ? meeting.participants
-        : Array.from({ length: mockCount }, (_, i) => ({
-            id: `mp-${i}`,
-            name:
-              [
-                "김개발",
-                "이디자인",
-                "박기획",
-                "최테스트",
-                "정서버",
-                "강클라이",
-              ][i] ?? `참가자${i + 1}`,
-            isSelf: i === 0,
-          }))
-      : meeting.participants;
+  if (meetingId == null) {
+    return null;
+  }
+
+  const displayParticipants =
+    participants.length > 0
+      ? participants
+      : [{ id: "self", name: "나", isSelf: true }];
 
   const handleEnd = () => {
-    endMeeting(meeting.id);
-    navigate("/meeting");
+    if (meetingId != null) {
+      endMutation.mutate(meetingId);
+    } else {
+      navigate("/");
+    }
   };
 
   return (
     <div className="flex h-full flex-col py-10">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="typo-h5 text-(--color-text-primary)">{meeting.name}</h1>
+        <h1 className="typo-h5 text-(--color-text-primary)">{meetingName}</h1>
         <div className="flex items-center gap-3">
           <span className="flex items-center gap-1 rounded-full bg-green-50 px-3 py-1">
             <Icon icon={IconClock} size={16} className="text-green-700" />
             <span className="typo-body6 text-green-700">{elapsed}</span>
           </span>
+          <span className="typo-caption text-(--color-text-tertiary)">
+            WS {isWsConnected ? "✓" : "…"} · RTC {isRoomConnected ? "✓" : "…"}
+          </span>
           <div className="flex -space-x-2">
-            {participants.slice(0, 3).map((p) => (
+            {displayParticipants.slice(0, 3).map((p) => (
               <span
                 key={p.id}
                 className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-(--color-bg-surface) bg-light-500"
@@ -79,10 +81,16 @@ const InProgressPage = () => {
         </div>
       </div>
 
+      {errorMessage && (
+        <div className="mt-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+          {errorMessage}
+        </div>
+      )}
+
       {/* Body */}
       <div className="mt-10 flex flex-1 gap-6 overflow-hidden">
         <div className="flex flex-1 flex-col items-center justify-center">
-          <ParticipantGrid participants={participants} />
+          <ParticipantGrid participants={displayParticipants} />
         </div>
         <LiveTranscriptPanel />
       </div>

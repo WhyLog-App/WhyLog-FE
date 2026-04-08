@@ -17,7 +17,7 @@ export const useLogin = () => {
   const loginMutation = useMutation({
     mutationFn: login,
     onSuccess: (result: LoginResult) => {
-      tokenStore.setToken(result.accessToken);
+      tokenStore.setToken(result.access_token);
       const from = location.state?.from?.pathname || ROUTES.APP_ROOT;
       navigate(from, { replace: true });
     },
