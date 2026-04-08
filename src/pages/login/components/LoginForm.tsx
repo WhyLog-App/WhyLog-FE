@@ -29,10 +29,7 @@ export const LoginForm = ({
       style={{ background: "rgba(255, 255, 255, 0.3)" }}
     >
       {/* Logo */}
-      <section
-        className="flex flex-col items-center gap-3"
-        aria-label="WhyLog"
-      >
+      <section className="flex flex-col items-center gap-3" aria-label="WhyLog">
         <LogoSymbol className="h-15 w-17.5" aria-hidden="true" />
         <LogoText className="h-13 w-38" aria-hidden="true" />
 
@@ -61,10 +58,7 @@ export const LoginForm = ({
 
         {/* Password Input */}
         <div className="flex flex-col gap-1">
-          <label
-            htmlFor="password"
-            className="typo-label text-text-secondary"
-          >
+          <label htmlFor="password" className="typo-label text-text-secondary">
             비밀번호
           </label>
           <input
