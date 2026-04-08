@@ -15,7 +15,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         // HttpOnly 쿠키의 refresh token으로 새 access token 발급
         const accessToken = await refreshAccessToken();
         tokenStore.setToken(accessToken);
-      } catch (error) {
+      } catch (_error) {
         // Refresh 실패 시 토큰 정리
         tokenStore.clearToken();
         console.debug("세션 복구 실패, 로그인이 필요합니다");
