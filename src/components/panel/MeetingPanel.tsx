@@ -1,7 +1,9 @@
+import { useState } from "react";
 import IconAddPlusSquare from "@/assets/icons/edit/ic_add_plus_square.svg?react";
 import IconSearch from "@/assets/icons/interface/ic_search.svg?react";
 import { Icon } from "@/components/common/Icon";
 import MeetingPanelItem from "./MeetingPanelItem";
+import StartMeetingModal from "./StartMeetingModal";
 
 const MOCK_MEETINGS = [
   { id: 1, title: "서버 개발 팀 2차 회의", date: "2025.01.20", badgeCount: 3 },
@@ -11,12 +13,18 @@ const MOCK_MEETINGS = [
 ];
 
 const MeetingPanel = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <>
       {/* Header */}
       <div className="flex w-full items-center justify-between px-5">
         <h2 className="typo-h6 text-(--color-text-primary)">회의 목록</h2>
-        <button type="button" className="cursor-pointer">
+        <button
+          type="button"
+          className="cursor-pointer"
+          onClick={() => setIsModalOpen(true)}
+        >
           <Icon
             icon={IconAddPlusSquare}
             size={24}
@@ -61,6 +69,16 @@ const MeetingPanel = () => {
           />
         ))}
       </div>
+
+      {isModalOpen && (
+        <StartMeetingModal
+          onClose={() => setIsModalOpen(false)}
+          onStart={(meetingName) => {
+            console.log("회의 시작:", meetingName);
+            setIsModalOpen(false);
+          }}
+        />
+      )}
     </>
   );
 };
