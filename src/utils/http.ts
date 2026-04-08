@@ -7,6 +7,9 @@ import axios, {
   type AxiosResponse,
   type InternalAxiosRequestConfig,
 } from "axios";
+import ENDPOINT, { ROUTES } from "@/constants/endpoint";
+import type { ApiResponse, RefreshTokenResult } from "@/types/auth";
+import { tokenStore } from "./tokenStore";
 
 const StatusCode = {
   Unauthorized: 401,
@@ -22,13 +25,17 @@ const headers: Readonly<Record<string, string | boolean>> = {
   "X-Requested-With": "XMLHttpRequest",
 };
 
+type RetriableRequestConfig = InternalAxiosRequestConfig & {
+  _retry?: boolean;
+};
+
 // We can use the following function to inject the JWT token through an interceptor
-// We get the `accessToken` from the localStorage that we set when we authenticate
+// We get the `accessToken` from the in-memory tokenStore for security
 const injectToken = (
   config: InternalAxiosRequestConfig,
 ): InternalAxiosRequestConfig => {
   try {
-    const token = localStorage.getItem("accessToken");
+    const token = tokenStore.getToken();
 
     if (token != null && config?.headers) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -42,6 +49,11 @@ const injectToken = (
 
 class Http {
   private instance: AxiosInstance | null = null;
+  private isRefreshing = false;
+  private pendingQueue: Array<{
+    resolve: (token: string) => void;
+    reject: (error: unknown) => void;
+  }> = [];
 
   private get http(): AxiosInstance {
     return this.instance != null ? this.instance : this.initHttp();
@@ -61,10 +73,7 @@ class Http {
 
     http.interceptors.response.use(
       (response) => response,
-      (error) => {
-        const { response } = error;
-        return this.handleError(response);
-      },
+      (error: AxiosError) => this.handleError(error),
     );
 
     this.instance = http;
@@ -107,10 +116,85 @@ class Http {
     return this.http.delete<T, R>(url, config);
   }
 
+  private flushQueue(error: unknown, token: string | null) {
+    this.pendingQueue.forEach(({ resolve, reject }) => {
+      if (token) {
+        resolve(token);
+      } else {
+        reject(error);
+      }
+    });
+    this.pendingQueue = [];
+  }
+
+  private handleAuthFailure(error: unknown) {
+    tokenStore.clearToken();
+    if (
+      typeof window !== "undefined" &&
+      window.location.pathname !== ROUTES.LOGIN
+    ) {
+      window.location.replace(ROUTES.LOGIN);
+    }
+    return Promise.reject(error);
+  }
+
   // Handle global app errors
   // We can handle generic app errors depending on the status code
-  private handleError(error: AxiosError) {
-    const { status } = error.response || {};
+  private async handleError(error: AxiosError) {
+    const response = error.response;
+    const status = response?.status;
+    const originalRequest = error.config as RetriableRequestConfig | undefined;
+
+    if (
+      status === StatusCode.Unauthorized &&
+      originalRequest &&
+      !originalRequest._retry &&
+      !originalRequest.url?.includes("/api/auth/refresh-token") &&
+      !originalRequest.url?.includes("/api/auth/login")
+    ) {
+      originalRequest._retry = true;
+
+      if (this.isRefreshing) {
+        try {
+          const newToken = await new Promise<string>((resolve, reject) => {
+            this.pendingQueue.push({ resolve, reject });
+          });
+          if (originalRequest.headers) {
+            originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          }
+          return this.http.request(originalRequest);
+        } catch (queueError) {
+          return Promise.reject(queueError);
+        }
+      }
+
+      this.isRefreshing = true;
+      try {
+        const { data } = await axios.post<ApiResponse<RefreshTokenResult>>(
+          ENDPOINT.AUTH.REFRESH_TOKEN,
+          undefined,
+          {
+            baseURL: this.http.defaults.baseURL,
+            timeout: this.http.defaults.timeout,
+            withCredentials: true,
+            headers,
+          },
+        );
+        const newAccessToken = data.result.accessToken;
+        tokenStore.setToken(newAccessToken);
+        this.flushQueue(null, newAccessToken);
+
+        if (originalRequest.headers) {
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        }
+        return this.http.request(originalRequest);
+      } catch (refreshError) {
+        this.flushQueue(refreshError, null);
+        return this.handleAuthFailure(refreshError);
+      } finally {
+        this.isRefreshing = false;
+      }
+    }
 
     switch (status) {
       case StatusCode.InternalServerError: {
