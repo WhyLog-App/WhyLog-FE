@@ -5,12 +5,18 @@ import { Icon } from "@/components/common/Icon";
 interface StartMeetingModalProps {
   onClose: () => void;
   onStart: (meetingName: string) => void;
+  isPending?: boolean;
 }
 
-const StartMeetingModal = ({ onClose, onStart }: StartMeetingModalProps) => {
+const StartMeetingModal = ({
+  onClose,
+  onStart,
+  isPending = false,
+}: StartMeetingModalProps) => {
   const [meetingName, setMeetingName] = useState("");
 
   const handleStart = () => {
+    if (isPending) return;
     if (meetingName.trim()) {
       onStart(meetingName.trim());
     }
@@ -81,8 +87,9 @@ const StartMeetingModal = ({ onClose, onStart }: StartMeetingModalProps) => {
                 "linear-gradient(147deg, #5b8def 15.47%, #0063f7 84.42%)",
             }}
             onClick={handleStart}
+            disabled={isPending}
           >
-            시작하기
+            {isPending ? "생성 중..." : "시작하기"}
           </button>
         </div>
       </div>
