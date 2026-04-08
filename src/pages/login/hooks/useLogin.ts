@@ -1,13 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { login } from "@/apis/auth";
 import { ROUTES } from "@/constants/endpoint";
 import type { ApiResponse, LoginResult } from "@/types/auth";
 
 export const useLogin = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -16,7 +17,8 @@ export const useLogin = () => {
     mutationFn: login,
     onSuccess: (result: LoginResult) => {
       localStorage.setItem("accessToken", result.accessToken);
-      navigate(ROUTES.APP_ROOT);
+      const from = location.state?.from?.pathname || ROUTES.APP_ROOT;
+      navigate(from, { replace: true });
     },
     onError: (error: unknown) => {
       if (isAxiosError<ApiResponse<unknown>>(error)) {
