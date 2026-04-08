@@ -5,7 +5,7 @@ const Panel = () => {
   const { pathname } = useLocation();
 
   const renderContent = () => {
-    if (pathname === "/meeting") {
+    if (pathname.startsWith("/meeting")) {
       return <MeetingPanel />;
     }
     return null;

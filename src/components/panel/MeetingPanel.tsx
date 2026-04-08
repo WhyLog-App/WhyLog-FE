@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import IconAddPlusSquare from "@/assets/icons/edit/ic_add_plus_square.svg?react";
 import IconSearch from "@/assets/icons/interface/ic_search.svg?react";
 import { Icon } from "@/components/common/Icon";
+import { useMeetings } from "@/contexts/MeetingsContext";
+import { useElapsedTime } from "@/pages/meeting/hooks/useElapsedTime";
 import MeetingPanelItem from "./MeetingPanelItem";
 import StartMeetingModal from "./StartMeetingModal";
 
@@ -14,6 +17,11 @@ const MOCK_MEETINGS = [
 
 const MeetingPanel = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
+  const { meetings, startMeeting } = useMeetings();
+
+  const liveMeeting = meetings.find((m) => m.status === "in-progress");
+  const elapsed = useElapsedTime(liveMeeting?.startedAt);
 
   return (
     <>
@@ -37,13 +45,16 @@ const MeetingPanel = () => {
       <div className="h-px w-full bg-(--color-border-divider)" />
 
       {/* Live meeting section */}
-      <div className="flex w-full shrink-0 flex-col items-center px-4">
-        <MeetingPanelItem
-          title="진행 중인 회의"
-          isLive
-          elapsedTime="00:18:21"
-        />
-      </div>
+      {liveMeeting && (
+        <div className="flex w-full shrink-0 flex-col items-center px-4">
+          <MeetingPanelItem
+            title={liveMeeting.name || "진행 중인 회의"}
+            isLive
+            elapsedTime={elapsed}
+            onClick={() => navigate(`/meeting/${liveMeeting.id}`)}
+          />
+        </div>
+      )}
 
       {/* Search + meeting list */}
       <div className="flex w-full flex-1 flex-col gap-2 overflow-y-auto px-4">
@@ -74,8 +85,9 @@ const MeetingPanel = () => {
         <StartMeetingModal
           onClose={() => setIsModalOpen(false)}
           onStart={(meetingName) => {
-            console.log("회의 시작:", meetingName);
+            const id = startMeeting(meetingName);
             setIsModalOpen(false);
+            navigate(`/meeting/${id}`);
           }}
         />
       )}

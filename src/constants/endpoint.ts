@@ -16,6 +16,8 @@ export const ROUTES = {
   APP_ROOT: "/",
   SIGNUP: "/signup",
   LOGIN: "/login",
+  MEETING: "/meeting",
+  MEETING_DETAIL: "/meeting/:meetingId",
 } as const;
 
 export default ENDPOINT;
