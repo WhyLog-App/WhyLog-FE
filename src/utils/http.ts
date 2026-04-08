@@ -172,7 +172,12 @@ class Http {
         const { data } = await axios.post<ApiResponse<RefreshTokenResult>>(
           ENDPOINT.AUTH.REFRESH_TOKEN,
           undefined,
-          { withCredentials: true, headers },
+          {
+            baseURL: this.http.defaults.baseURL,
+            timeout: this.http.defaults.timeout,
+            withCredentials: true,
+            headers,
+          },
         );
         const newAccessToken = data.result.accessToken;
         localStorage.setItem("accessToken", newAccessToken);
