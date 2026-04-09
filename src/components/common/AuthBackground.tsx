@@ -1,6 +1,6 @@
 import imgBackground from "@/assets/images/background.webp";
 
-export const LoginBackground = () => {
+export const AuthBackground = () => {
   return (
     <div className="absolute inset-0">
       <div

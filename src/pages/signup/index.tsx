@@ -1,9 +1,9 @@
-import { LoginBackground } from "../login/components/LoginBackground";
+import { AuthBackground } from "@/components/common/AuthBackground";
 
 function SignupPage() {
   return (
     <div className="relative flex h-screen w-screen items-center justify-center overflow-hidden">
-      <LoginBackground />
+      <AuthBackground />
     </div>
   );
 }
