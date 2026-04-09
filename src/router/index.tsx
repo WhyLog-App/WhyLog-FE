@@ -12,6 +12,7 @@ import {
   MeetingPage,
   NotFound,
   SettingsPage,
+  SignupPage,
 } from "../pages";
 
 const allRoutes: RouteObject[] = [
@@ -78,6 +79,10 @@ const allRoutes: RouteObject[] = [
   {
     path: ROUTES.LOGIN,
     element: <LoginPage />,
+  },
+  {
+    path: ROUTES.SIGNUP,
+    element: <SignupPage />,
   },
   {
     path: "/*",

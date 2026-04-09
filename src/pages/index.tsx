@@ -6,3 +6,4 @@ export { default as MeetingPage } from "./meeting";
 export { default as InProgressPage } from "./meeting/InProgressPage";
 export { default as NotFound } from "./notFound";
 export { default as SettingsPage } from "./settings";
+export { default as SignupPage } from "./signup";
