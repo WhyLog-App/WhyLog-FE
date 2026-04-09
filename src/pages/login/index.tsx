@@ -1,4 +1,4 @@
-import { LoginBackground } from "./components/LoginBackground";
+import { AuthBackground } from "@/components/common/AuthBackground";
 import { LoginForm } from "./components/LoginForm";
 import { useLogin } from "./hooks/useLogin";
 
@@ -15,7 +15,7 @@ function LoginPage() {
 
   return (
     <div className="relative flex h-screen w-screen items-center justify-center overflow-hidden">
-      <LoginBackground />
+      <AuthBackground />
       <LoginForm
         email={email}
         password={password}

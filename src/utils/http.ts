@@ -7,7 +7,8 @@ import axios, {
   type AxiosResponse,
   type InternalAxiosRequestConfig,
 } from "axios";
-import ENDPOINT, { ROUTES } from "@/constants/endpoint";
+import ENDPOINT from "@/constants/endpoint";
+import { ROUTES } from "@/constants/routes";
 import type { ApiResponse, RefreshTokenResult } from "@/types/auth";
 import { tokenStore } from "./tokenStore";
 

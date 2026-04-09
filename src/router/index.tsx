@@ -1,19 +1,48 @@
 import type { RouteObject } from "react-router-dom";
 import { useRoutes } from "react-router-dom";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
-import { ROUTES } from "../constants/endpoint";
+import { ROUTES } from "../constants/routes";
 import AppLayout from "../layout/AppLayout";
-import App from "../pages/App";
-import LoginPage from "../pages/login";
-import InProgressPage from "../pages/meeting/InProgressPage";
-import NotFound from "../pages/notFound";
+import {
+  DecisionsPage,
+  GitPage,
+  HomePage,
+  InProgressPage,
+  LoginPage,
+  MeetingPage,
+  NotFound,
+  SettingsPage,
+  SignupPage,
+} from "../pages";
 
 const allRoutes: RouteObject[] = [
   {
     path: ROUTES.APP_ROOT,
     element: (
       <ProtectedRoute>
-        <App />
+        <AppLayout>
+          <HomePage />
+        </AppLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: ROUTES.DECISIONS,
+    element: (
+      <ProtectedRoute>
+        <AppLayout>
+          <DecisionsPage />
+        </AppLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: ROUTES.MEETING,
+    element: (
+      <ProtectedRoute>
+        <AppLayout>
+          <MeetingPage />
+        </AppLayout>
       </ProtectedRoute>
     ),
   },
@@ -28,8 +57,32 @@ const allRoutes: RouteObject[] = [
     ),
   },
   {
+    path: ROUTES.GIT,
+    element: (
+      <ProtectedRoute>
+        <AppLayout>
+          <GitPage />
+        </AppLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: ROUTES.SETTINGS,
+    element: (
+      <ProtectedRoute>
+        <AppLayout>
+          <SettingsPage />
+        </AppLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
     path: ROUTES.LOGIN,
     element: <LoginPage />,
+  },
+  {
+    path: ROUTES.SIGNUP,
+    element: <SignupPage />,
   },
   {
     path: "/*",

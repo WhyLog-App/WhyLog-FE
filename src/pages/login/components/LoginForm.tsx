@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import LogoSymbol from "@/components/logo/LogoSymbol";
 import LogoText from "@/components/logo/LogoText";
-import { ROUTES } from "@/constants/endpoint";
+import { ROUTES } from "@/constants/routes";
 
 interface LoginFormProps {
   email: string;
