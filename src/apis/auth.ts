@@ -20,7 +20,7 @@ export const refreshAccessToken = async (): Promise<string> => {
     undefined,
     { data: ApiResponse<RefreshTokenResult> }
   >(ENDPOINT.AUTH.REFRESH_TOKEN);
-  return data.result.accessToken;
+  return data.result.access_token;
 };
 
 export const logout = async (): Promise<void> => {

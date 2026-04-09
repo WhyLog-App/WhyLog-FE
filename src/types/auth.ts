@@ -13,13 +13,13 @@ export interface LoginRequest {
 export type UserRole = "ROLE_USER" | "ROLE_ADMIN" | string;
 
 export interface LoginResult {
-  accessToken: string;
-  refreshToken: string;
-  memberId: number;
+  access_token: string;
+  refresh_token: string;
+  member_id: number;
   email: string;
   role: UserRole;
 }
 
 export interface RefreshTokenResult {
-  accessToken: string;
+  access_token: string;
 }

@@ -1,6 +1,20 @@
+import { useLocation } from "react-router-dom";
+import MeetingPanel from "./MeetingPanel";
+
 const Panel = () => {
+  const { pathname } = useLocation();
+
+  const renderContent = () => {
+    if (pathname.startsWith("/meeting")) {
+      return <MeetingPanel />;
+    }
+    return null;
+  };
+
   return (
-    <aside className="h-screen w-70 shrink-0 border-r border-solid border-(--color-border-default) bg-(--color-bg-surface) opacity-30 shadow-[0px_0px_2px_0px_rgba(40,41,61,0.04),0px_4px_8px_0px_rgba(96,97,112,0.16)]" />
+    <aside className="flex h-screen w-70 shrink-0 flex-col gap-4 overflow-hidden border-r border-solid border-(--color-border-default) bg-(--color-bg-surface) pt-10 pb-8 shadow-[0px_0px_2px_0px_rgba(40,41,61,0.04),0px_4px_8px_0px_rgba(96,97,112,0.16)]">
+      {renderContent()}
+    </aside>
   );
 };
 

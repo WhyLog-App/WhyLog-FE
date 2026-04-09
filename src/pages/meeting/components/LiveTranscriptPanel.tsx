@@ -1,0 +1,110 @@
+import { useEffect, useMemo, useRef } from "react";
+import IconBell from "@/assets/icons/communication/ic_bell.svg?react";
+import { Icon } from "@/components/common/Icon";
+import type { InterimEntry, TranscriptEntry } from "../hooks/useMeetingRoom";
+
+interface LiveTranscriptPanelProps {
+  transcripts: TranscriptEntry[];
+  interimByMember: Record<string, InterimEntry>;
+  isSupported?: boolean;
+}
+
+const formatTime = (iso: string) => {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const pad = (n: number) => n.toString().padStart(2, "0");
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+
+const LiveTranscriptPanel = ({
+  transcripts,
+  interimByMember,
+  isSupported = true,
+}: LiveTranscriptPanelProps) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const interimEntries = useMemo(
+    () => Object.entries(interimByMember),
+    [interimByMember],
+  );
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Need to scroll when transcripts or interimEntries change
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
+  }, [transcripts, interimEntries]);
+
+  const isEmpty = transcripts.length === 0 && interimEntries.length === 0;
+
+  return (
+    <aside className="flex h-full w-90 shrink-0 flex-col gap-4 overflow-hidden rounded-2xl border border-(--color-border-default) bg-(--color-bg-surface) px-5 py-5">
+      <div className="flex items-center gap-2">
+        <Icon
+          icon={IconBell}
+          size={20}
+          className="text-(--color-text-primary)"
+        />
+        <h3 className="typo-subtitle5 text-(--color-text-primary)">
+          실시간 음성인식
+        </h3>
+      </div>
+
+      {!isSupported && (
+        <div className="rounded-md bg-yellow-50 px-3 py-2">
+          <p className="typo-caption1 text-yellow-800">
+            이 브라우저는 실시간 자막을 지원하지 않습니다. (Chrome/Edge 권장)
+          </p>
+        </div>
+      )}
+
+      <div
+        ref={scrollRef}
+        className="flex flex-1 flex-col gap-4 overflow-y-auto"
+      >
+        {isEmpty && (
+          <p className="typo-body6 text-(--color-text-tertiary)">
+            아직 인식된 발화가 없습니다.
+          </p>
+        )}
+
+        {transcripts.map((item) => (
+          <div key={item.id} className="flex flex-col gap-1">
+            <div className="flex items-center justify-between">
+              <span className="typo-subtitle5 text-(--color-primary-500)">
+                {item.fromName}
+              </span>
+              <span className="typo-caption1 text-(--color-text-tertiary)">
+                {formatTime(item.timestamp)}
+              </span>
+            </div>
+            <p className="typo-body6 text-(--color-text-secondary)">
+              {item.text}
+            </p>
+          </div>
+        ))}
+
+        {interimEntries.map(([key, entry]) => (
+          <div
+            key={`interim-${key}`}
+            className="flex flex-col gap-1 opacity-60"
+          >
+            <div className="flex items-center justify-between">
+              <span className="typo-subtitle5 text-(--color-primary-500)">
+                {entry.fromName}
+              </span>
+              <span className="typo-caption1 text-(--color-text-tertiary)">
+                {formatTime(entry.timestamp)}
+              </span>
+            </div>
+            <p className="typo-body6 text-(--color-text-secondary) italic">
+              {entry.text}
+            </p>
+          </div>
+        ))}
+      </div>
+    </aside>
+  );
+};
+
+export default LiveTranscriptPanel;
