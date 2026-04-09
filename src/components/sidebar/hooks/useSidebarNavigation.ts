@@ -1,7 +1,7 @@
 import { isAxiosError } from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { logout } from "@/apis/auth";
-import { ROUTES } from "@/constants/endpoint";
+import { ROUTES } from "@/constants/routes";
 import { tokenStore } from "@/utils/tokenStore";
 import type { MenuItem } from "../types";
 

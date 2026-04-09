@@ -1,7 +1,7 @@
 import type { RouteObject } from "react-router-dom";
 import { useRoutes } from "react-router-dom";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
-import { ROUTES } from "../constants/endpoint";
+import { ROUTES } from "../constants/routes";
 import AppLayout from "../layout/AppLayout";
 import DecisionsPage from "../pages/decisions";
 import GitPage from "../pages/git";

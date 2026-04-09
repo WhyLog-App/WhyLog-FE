@@ -3,7 +3,7 @@ import { isAxiosError } from "axios";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { login } from "@/apis/auth";
-import { ROUTES } from "@/constants/endpoint";
+import { ROUTES } from "@/constants/routes";
 import type { ApiResponse, LoginResult } from "@/types/auth";
 import { tokenStore } from "@/utils/tokenStore";
 
