@@ -196,10 +196,11 @@ export const useMeetingRoom = ({
     roomRef.current = room;
 
     room.on(RoomEvent.ParticipantConnected, (p: RemoteParticipant) => {
-      setParticipants((prev) => [
-        ...prev,
-        { id: p.identity, name: p.name || p.identity },
-      ]);
+      setParticipants((prev) => {
+        // 중복 체크: WebSocket과 LiveKit 양쪽에서 참가자 관리 시 중복 방지
+        if (prev.some((x) => x.id === p.identity)) return prev;
+        return [...prev, { id: p.identity, name: p.name || p.identity }];
+      });
     });
     room.on(RoomEvent.ParticipantDisconnected, (p: RemoteParticipant) => {
       setParticipants((prev) => prev.filter((x) => x.id !== p.identity));

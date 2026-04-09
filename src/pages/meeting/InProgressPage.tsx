@@ -25,7 +25,11 @@ const InProgressPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const meetingId = meetingIdParam ? Number(meetingIdParam) : null;
+  const meetingId = (() => {
+    if (!meetingIdParam) return null;
+    const num = Number(meetingIdParam);
+    return Number.isNaN(num) ? null : num;
+  })();
   const { data: meetingDetail } = useMeetingDetail(meetingId);
   const meetingName =
     meetingDetail?.name ??
