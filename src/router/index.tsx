@@ -3,14 +3,16 @@ import { useRoutes } from "react-router-dom";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
 import { ROUTES } from "../constants/routes";
 import AppLayout from "../layout/AppLayout";
-import DecisionsPage from "../pages/decisions";
-import GitPage from "../pages/git";
-import HomePage from "../pages/home";
-import LoginPage from "../pages/login";
-import MeetingPage from "../pages/meeting";
-import InProgressPage from "../pages/meeting/InProgressPage";
-import NotFound from "../pages/notFound";
-import SettingsPage from "../pages/settings";
+import {
+  DecisionsPage,
+  GitPage,
+  HomePage,
+  InProgressPage,
+  LoginPage,
+  MeetingPage,
+  NotFound,
+  SettingsPage,
+} from "../pages";
 
 const allRoutes: RouteObject[] = [
   {
