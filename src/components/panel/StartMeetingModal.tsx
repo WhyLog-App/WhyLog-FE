@@ -27,7 +27,7 @@ const StartMeetingModal = ({
       onClose={onClose}
       primaryLabel={isPending ? "생성 중..." : "시작하기"}
       onPrimaryClick={handleStart}
-      isPrimaryDisabled={isPending}
+      isPrimaryDisabled={isPending || !meetingName.trim()}
     >
       <div className="flex flex-col gap-1">
         <label
