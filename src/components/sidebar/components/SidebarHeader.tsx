@@ -1,13 +1,12 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { createTeam } from "@/apis/teams";
 import IconChevronDown from "@/assets/icons/arrow/ic_chevron_down.svg?react";
 import IconAddPlus from "@/assets/icons/edit/ic_add_plus.svg?react";
 import IconMenuBurger from "@/assets/icons/menu/ic_menu_burger.svg?react";
 import { Icon } from "@/components/common/Icon";
 import CreateTeamModal from "@/components/panel/CreateTeamModal";
+import { useCreateTeam } from "@/pages/home/hooks/useCreateTeam";
 import type { Team } from "@/types/team";
-import { TEAMS_QUERY_KEY, useTeams } from "../hooks/useTeams";
+import { useTeams } from "../hooks/useTeams";
 import { TeamListDropdown } from "./TeamListDropdown";
 
 interface SidebarHeaderProps {
@@ -19,13 +18,10 @@ export const SidebarHeader = ({ isOpen }: SidebarHeaderProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentTeam, setCurrentTeam] = useState<Team | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const queryClient = useQueryClient();
   const { data: teams = [] } = useTeams();
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: ({ name }: { name: string }) => createTeam({ name }),
+  const { createTeam, isPending } = useCreateTeam({
     onSuccess: (result) => {
-      queryClient.invalidateQueries({ queryKey: TEAMS_QUERY_KEY });
       setCurrentTeam({ team_id: result.team_id, name: result.name });
       setIsModalOpen(false);
     },
@@ -67,7 +63,7 @@ export const SidebarHeader = ({ isOpen }: SidebarHeaderProps) => {
   };
 
   const handleModalCreate = (teamName: string, _photo: File | null) => {
-    mutate({ name: teamName });
+    createTeam(teamName);
   };
 
   const hasTeams = teams.length > 0;

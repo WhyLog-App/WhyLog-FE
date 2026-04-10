@@ -1,19 +1,24 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { createTeam } from "@/apis/teams";
+import { TEAMS_QUERY_KEY } from "@/components/sidebar/hooks/useTeams";
 import type { ApiResponse } from "@/types/auth";
 import type { CreateTeamResult } from "@/types/team";
 
-export const useCreateTeam = () => {
-  const navigate = useNavigate();
+interface UseCreateTeamOptions {
+  onSuccess?: (result: CreateTeamResult) => void;
+}
+
+export const useCreateTeam = (options?: UseCreateTeamOptions) => {
+  const queryClient = useQueryClient();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const mutation = useMutation({
     mutationFn: ({ name }: { name: string }) => createTeam({ name }),
-    onSuccess: (_result: CreateTeamResult) => {
-      navigate("/");
+    onSuccess: (result: CreateTeamResult) => {
+      queryClient.invalidateQueries({ queryKey: TEAMS_QUERY_KEY });
+      options?.onSuccess?.(result);
     },
     onError: (error: unknown) => {
       if (isAxiosError<ApiResponse<unknown>>(error)) {
