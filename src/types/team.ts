@@ -8,3 +8,8 @@ export interface CreateTeamResult {
   team_id: number;
   name: string;
 }
+
+export interface Team {
+  team_id: number;
+  name: string;
+}

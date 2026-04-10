@@ -1,17 +1,19 @@
 import { useMutation } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { createTeam } from "@/apis/teams";
 import type { ApiResponse } from "@/types/auth";
 import type { CreateTeamResult } from "@/types/team";
 
 export const useCreateTeam = () => {
+  const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const mutation = useMutation({
     mutationFn: ({ name }: { name: string }) => createTeam({ name }),
     onSuccess: (_result: CreateTeamResult) => {
-      // TODO: 팀 목록 쿼리 무효화 또는 팀 페이지로 이동
+      navigate("/");
     },
     onError: (error: unknown) => {
       if (isAxiosError<ApiResponse<unknown>>(error)) {

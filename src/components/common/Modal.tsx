@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode, useEffect } from "react";
 import IconCloseMd from "@/assets/icons/menu/ic_close_md.svg?react";
 import { Icon } from "@/components/common/Icon";
 
