@@ -7,7 +7,7 @@ import IconMenuBurger from "@/assets/icons/menu/ic_menu_burger.svg?react";
 import { Icon } from "@/components/common/Icon";
 import CreateTeamModal from "@/components/panel/CreateTeamModal";
 import type { Team } from "@/types/team";
-import { useTeams } from "../hooks/useTeams";
+import { TEAMS_QUERY_KEY, useTeams } from "../hooks/useTeams";
 import { TeamListDropdown } from "./TeamListDropdown";
 
 interface SidebarHeaderProps {
@@ -24,8 +24,9 @@ export const SidebarHeader = ({ isOpen }: SidebarHeaderProps) => {
 
   const { mutate, isPending } = useMutation({
     mutationFn: ({ name }: { name: string }) => createTeam({ name }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["teams"] });
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: TEAMS_QUERY_KEY });
+      setCurrentTeam({ team_id: result.team_id, name: result.name });
       setIsModalOpen(false);
     },
   });
