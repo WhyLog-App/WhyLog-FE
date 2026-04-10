@@ -1,3 +1,4 @@
+import type { AxiosResponse } from "axios";
 import ENDPOINT from "@/constants/endpoint";
 import type { ApiResponse } from "@/types/auth";
 import type { CreateTeamRequest, CreateTeamResult, Team } from "@/types/team";
@@ -16,7 +17,7 @@ export const createTeam = async (
 ): Promise<CreateTeamResult> => {
   const { data } = await http.post<
     CreateTeamRequest,
-    { data: ApiResponse<CreateTeamResult> }
+    AxiosResponse<ApiResponse<CreateTeamResult>>
   >(ENDPOINT.TEAMS.CREATE, payload);
   if (!data.isSuccess) {
     throw new Error(data.message);
