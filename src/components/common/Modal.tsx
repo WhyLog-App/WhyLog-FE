@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect } from "react";
+import { type ReactNode, useEffect, useId } from "react";
 import IconCloseMd from "@/assets/icons/menu/ic_close_md.svg?react";
 import { Icon } from "@/components/common/Icon";
 
@@ -19,6 +19,8 @@ const Modal = ({
   isPrimaryDisabled = false,
   children,
 }: ModalProps) => {
+  const titleId = useId();
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -32,7 +34,7 @@ const Modal = ({
       className="fixed inset-0 z-50 flex items-center justify-center"
       role="dialog"
       aria-modal="true"
-      aria-labelledby="modal-title"
+      aria-labelledby={titleId}
     >
       {/* Dim Overlay */}
       <button
@@ -46,7 +48,7 @@ const Modal = ({
       <div className="relative flex w-110 flex-col gap-7 overflow-hidden rounded-3xl border border-(--color-border-default) bg-(--color-bg-subtle) px-9 pt-8 pb-9 shadow-[0px_2px_8px_0px_rgba(40,41,61,0.08),0px_20px_32px_0px_rgba(96,97,112,0.24)]">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h3 id="modal-title" className="typo-h5 text-(--color-text-primary)">
+          <h3 id={titleId} className="typo-h5 text-(--color-text-primary)">
             {title}
           </h3>
           <button
