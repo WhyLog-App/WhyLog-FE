@@ -27,7 +27,6 @@ const CreateTeamModal = ({
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
-    if (photoPreview) URL.revokeObjectURL(photoPreview);
 
     if (file) {
       setPhotoFile(file);
