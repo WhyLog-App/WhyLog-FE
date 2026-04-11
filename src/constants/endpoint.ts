@@ -10,6 +10,10 @@ const ENDPOINT = {
     REFRESH_TOKEN: `${API_BASE_URL}/api/auth/refresh-token`,
     LOGOUT: `${API_BASE_URL}/api/auth/logout`,
   },
+  TEAMS: {
+    LIST: `${API_BASE_URL}/api/teams`,
+    CREATE: `${API_BASE_URL}/api/teams`,
+  },
   MEETINGS: {
     CREATE: (teamId: number) => `${API_BASE_URL}/api/teams/${teamId}/meetings`,
     LIST: (teamId: number) => `${API_BASE_URL}/api/teams/${teamId}/meetings`,
