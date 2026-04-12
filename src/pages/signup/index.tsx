@@ -8,6 +8,8 @@ function SignupPage() {
     email,
     password,
     confirmPassword,
+    errorMessage,
+    isPending,
     setName,
     setEmail,
     setPassword,
@@ -23,6 +25,8 @@ function SignupPage() {
         email={email}
         password={password}
         confirmPassword={confirmPassword}
+        errorMessage={errorMessage}
+        isPending={isPending}
         onNameChange={setName}
         onEmailChange={setEmail}
         onPasswordChange={setPassword}

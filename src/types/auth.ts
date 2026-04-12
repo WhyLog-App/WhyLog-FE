@@ -10,9 +10,23 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface SignupRequest {
+  name: string;
+  email: string;
+  password: string;
+}
+
 export type UserRole = "ROLE_USER" | "ROLE_ADMIN" | string;
 
 export interface LoginResult {
+  access_token: string;
+  refresh_token: string;
+  member_id: number;
+  email: string;
+  role: UserRole;
+}
+
+export interface SignupResult {
   access_token: string;
   refresh_token: string;
   member_id: number;

@@ -7,6 +7,7 @@ const ENDPOINT = {
   TEST: `${API_BASE_URL}/test`,
   AUTH: {
     LOGIN: `${API_BASE_URL}/api/auth/login`,
+    SIGNUP: `${API_BASE_URL}/api/auth/signup`,
     REFRESH_TOKEN: `${API_BASE_URL}/api/auth/refresh-token`,
     LOGOUT: `${API_BASE_URL}/api/auth/logout`,
   },

@@ -10,6 +10,8 @@ interface SignupFormProps {
   email: string;
   password: string;
   confirmPassword: string;
+  errorMessage: string | null;
+  isPending: boolean;
   onNameChange: (value: string) => void;
   onEmailChange: (value: string) => void;
   onPasswordChange: (value: string) => void;
@@ -22,6 +24,8 @@ export const SignupForm = ({
   email,
   password,
   confirmPassword,
+  errorMessage,
+  isPending,
   onNameChange,
   onEmailChange,
   onPasswordChange,
@@ -121,15 +125,21 @@ export const SignupForm = ({
       </div>
 
       <div className="flex w-full flex-col items-center gap-3">
+        {errorMessage && (
+          <p className="typo-body6 text-red-500" role="alert">
+            {errorMessage}
+          </p>
+        )}
         <button
           type="submit"
+          disabled={isPending}
           className="typo-button-md flex w-full cursor-pointer items-center justify-center rounded-full py-3 text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
           style={{
             background:
               "linear-gradient(164.49deg, rgb(91, 141, 239) 15.47%, rgb(0, 99, 247) 84.42%)",
           }}
         >
-          가입하기
+          {isPending ? "가입 중..." : "가입하기"}
         </button>
 
         <div className="flex items-center justify-center gap-2 whitespace-nowrap">

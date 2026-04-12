@@ -4,6 +4,8 @@ import type {
   LoginRequest,
   LoginResult,
   RefreshTokenResult,
+  SignupRequest,
+  SignupResult,
 } from "@/types/auth";
 import { http } from "@/utils/http";
 
@@ -12,6 +14,17 @@ export const login = async (payload: LoginRequest): Promise<LoginResult> => {
     LoginRequest,
     { data: ApiResponse<LoginResult> }
   >(ENDPOINT.AUTH.LOGIN, payload);
+  return data.result;
+};
+
+export const signup = async (payload: SignupRequest): Promise<SignupResult> => {
+  const { data } = await http.post<
+    SignupRequest,
+    { data: ApiResponse<SignupResult> }
+  >(ENDPOINT.AUTH.SIGNUP, payload);
+  if (!data.isSuccess) {
+    throw new Error(data.message);
+  }
   return data.result;
 };
 
