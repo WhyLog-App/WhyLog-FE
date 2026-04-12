@@ -44,6 +44,7 @@ export const useSignup = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    if (signupMutation.isPending) return;
     setErrorMessage(null);
 
     const validationError = validate();
