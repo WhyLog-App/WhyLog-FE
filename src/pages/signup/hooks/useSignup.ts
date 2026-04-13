@@ -53,6 +53,7 @@ export const useSignup = () => {
       return;
     }
 
+    // TODO: 프로필 이미지 업로드 API 연동
     signupMutation.mutate({
       name: name.trim(),
       email: email.trim(),
