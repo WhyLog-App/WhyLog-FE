@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import MeetingPanel from "./MeetingPanel";
+import MeetingPanel from "./meeting/MeetingPanel";
 
 const Panel = () => {
   const { pathname } = useLocation();

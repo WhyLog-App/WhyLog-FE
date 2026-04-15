@@ -3,7 +3,7 @@ import IconChevronDown from "@/assets/icons/arrow/ic_chevron_down.svg?react";
 import IconAddPlus from "@/assets/icons/edit/ic_add_plus.svg?react";
 import IconMenuBurger from "@/assets/icons/menu/ic_menu_burger.svg?react";
 import { Icon } from "@/components/common/Icon";
-import CreateTeamModal from "@/components/panel/CreateTeamModal";
+import CreateTeamModal from "@/components/panel/meeting/CreateTeamModal";
 import { useCreateTeam } from "@/pages/home/hooks/useCreateTeam";
 import type { Team } from "@/types/team";
 import { useTeams } from "../hooks/useTeams";
