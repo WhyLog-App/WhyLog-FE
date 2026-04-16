@@ -15,7 +15,8 @@ export const useCreateTeam = (options?: UseCreateTeamOptions) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const mutation = useMutation({
-    mutationFn: ({ name }: { name: string }) => createTeam({ name }),
+    mutationFn: ({ name, image }: { name: string; image?: File }) =>
+      createTeam(name, image),
     onSuccess: (result: CreateTeamResult) => {
       queryClient.invalidateQueries({ queryKey: TEAMS_QUERY_KEY });
       options?.onSuccess?.(result);
@@ -33,9 +34,9 @@ export const useCreateTeam = (options?: UseCreateTeamOptions) => {
   });
 
   return {
-    createTeam: (name: string) => {
+    createTeam: (name: string, image?: File) => {
       setErrorMessage(null);
-      mutation.mutate({ name });
+      mutation.mutate({ name, image });
     },
     isPending: mutation.isPending,
     errorMessage,

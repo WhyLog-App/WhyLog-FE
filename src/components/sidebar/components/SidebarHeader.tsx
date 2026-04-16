@@ -26,7 +26,7 @@ export const SidebarHeader = ({ isOpen }: SidebarHeaderProps) => {
       setCurrentTeam({
         team_id: result.team_id,
         name: result.name,
-        team_image: result.team_image ?? null,
+        team_image: result.image_url ?? null,
       });
       setIsModalOpen(false);
     },
@@ -67,8 +67,8 @@ export const SidebarHeader = ({ isOpen }: SidebarHeaderProps) => {
     setIsModalOpen(true);
   };
 
-  const handleModalCreate = (teamName: string, _photo: File | null) => {
-    createTeam(teamName);
+  const handleModalCreate = (teamName: string, photo: File | null) => {
+    createTeam(teamName, photo ?? undefined);
   };
 
   const hasTeams = teams.length > 0;
@@ -77,7 +77,7 @@ export const SidebarHeader = ({ isOpen }: SidebarHeaderProps) => {
     <>
       <div className="relative flex items-center gap-2" ref={dropdownRef}>
         <div className="flex size-12 shrink-0 items-center justify-center">
-          <Icon icon={IconMenuBurger} size={20} className="h-[14px]" />
+          <Icon icon={IconMenuBurger} size={20} className="h-3.5" />
         </div>
         {isOpen && (
           <>

@@ -8,6 +8,7 @@ export interface CreateTeamResult {
   team_id: number;
   name: string;
   team_image?: string | null;
+  image_url?: string | null;
 }
 
 export interface Team {
