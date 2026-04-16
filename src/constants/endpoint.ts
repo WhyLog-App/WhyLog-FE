@@ -12,7 +12,7 @@ const ENDPOINT = {
     LOGOUT: `${API_BASE_URL}/api/auth/logout`,
   },
   TEAMS: {
-    LIST: `${API_BASE_URL}/api/teams`,
+    LIST: `${API_BASE_URL}/api/members/teams`,
     CREATE: `${API_BASE_URL}/api/teams`,
   },
   MEETINGS: {

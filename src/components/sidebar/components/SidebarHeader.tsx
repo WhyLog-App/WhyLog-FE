@@ -3,6 +3,7 @@ import IconChevronDown from "@/assets/icons/arrow/ic_chevron_down.svg?react";
 import IconAddPlus from "@/assets/icons/edit/ic_add_plus.svg?react";
 import IconMenuBurger from "@/assets/icons/menu/ic_menu_burger.svg?react";
 import { Icon } from "@/components/common/Icon";
+import { TeamImage } from "@/components/common/TeamImage";
 import CreateTeamModal from "@/components/panel/CreateTeamModal";
 import { useCreateTeam } from "@/pages/home/hooks/useCreateTeam";
 import type { Team } from "@/types/team";
@@ -22,7 +23,11 @@ export const SidebarHeader = ({ isOpen }: SidebarHeaderProps) => {
 
   const { createTeam, isPending } = useCreateTeam({
     onSuccess: (result) => {
-      setCurrentTeam({ team_id: result.team_id, name: result.name });
+      setCurrentTeam({
+        team_id: result.team_id,
+        name: result.name,
+        team_image: result.team_image ?? null,
+      });
       setIsModalOpen(false);
     },
   });
@@ -82,7 +87,11 @@ export const SidebarHeader = ({ isOpen }: SidebarHeaderProps) => {
                 onClick={() => setIsDropdownOpen((prev) => !prev)}
                 className="flex cursor-pointer items-center gap-1"
               >
-                <div className="size-[18px] rounded-sm bg-gray-400" />
+                <TeamImage
+                  src={currentTeam?.team_image}
+                  alt={`${currentTeam?.name ?? "팀"} 이미지`}
+                  size={18}
+                />
                 <span className="typo-subtitle3 whitespace-nowrap text-black">
                   {currentTeam?.name ?? "팀 명"}
                 </span>
