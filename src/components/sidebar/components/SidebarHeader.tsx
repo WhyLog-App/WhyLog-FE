@@ -75,7 +75,7 @@ export const SidebarHeader = ({ isOpen }: SidebarHeaderProps) => {
 
   return (
     <>
-      <div className="relative flex items-center gap-2" ref={dropdownRef}>
+      <div className="relative flex items-center gap-1" ref={dropdownRef}>
         <div className="flex size-12 shrink-0 items-center justify-center">
           <Icon icon={IconMenuBurger} size={20} className="h-3.5" />
         </div>
@@ -85,20 +85,24 @@ export const SidebarHeader = ({ isOpen }: SidebarHeaderProps) => {
               <button
                 type="button"
                 onClick={() => setIsDropdownOpen((prev) => !prev)}
-                className="flex cursor-pointer items-center gap-1"
+                className={`group flex cursor-pointer items-center gap-1 rounded-lg px-2 py-1 transition-colors ${
+                  isDropdownOpen ? "bg-action-active" : "hover:bg-action-hover"
+                }`}
               >
                 <TeamImage
                   src={currentTeam?.team_image}
                   alt={`${currentTeam?.name ?? "팀"} 이미지`}
                   size={18}
                 />
-                <span className="typo-subtitle3 whitespace-nowrap text-black">
+                <span className="typo-subtitle5 max-w-24 truncate text-black">
                   {currentTeam?.name ?? "팀 명"}
                 </span>
                 <Icon
                   icon={IconChevronDown}
-                  size={18}
-                  className={`transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`}
+                  size={14}
+                  className={`opacity-0 transition-all duration-200 group-hover:opacity-100 ${
+                    isDropdownOpen ? "rotate-180 opacity-100!" : ""
+                  }`}
                 />
               </button>
             ) : (
