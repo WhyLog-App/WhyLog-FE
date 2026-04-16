@@ -1,8 +1,10 @@
 import type { RouteObject } from "react-router-dom";
 import { useRoutes } from "react-router-dom";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
+import RootRedirect from "../components/routing/RootRedirect";
 import { ROUTES } from "../constants/routes";
 import AppLayout from "../layout/AppLayout";
+import TeamLayout from "../layout/TeamLayout";
 import {
   DecisionsPage,
   GitPage,
@@ -16,56 +18,49 @@ import {
 } from "../pages";
 
 const allRoutes: RouteObject[] = [
+  // 1. 루트 리다이렉트
   {
-    path: ROUTES.APP_ROOT,
+    path: "/",
     element: (
       <ProtectedRoute>
-        <AppLayout>
-          <HomePage />
-        </AppLayout>
+        <RootRedirect />
       </ProtectedRoute>
     ),
   },
+
+  // 2. 팀 기반 라우트 (nested)
   {
-    path: ROUTES.DECISIONS,
+    path: "/team/:teamId",
     element: (
       <ProtectedRoute>
-        <AppLayout>
-          <DecisionsPage />
-        </AppLayout>
+        <TeamLayout />
       </ProtectedRoute>
     ),
+    children: [
+      {
+        index: true,
+        element: <HomePage />,
+      },
+      {
+        path: "decisions",
+        element: <DecisionsPage />,
+      },
+      {
+        path: "meeting",
+        element: <MeetingPage />,
+      },
+      {
+        path: "meeting/:meetingId",
+        element: <InProgressPage />,
+      },
+      {
+        path: "git",
+        element: <GitPage />,
+      },
+    ],
   },
-  {
-    path: ROUTES.MEETING,
-    element: (
-      <ProtectedRoute>
-        <AppLayout>
-          <MeetingPage />
-        </AppLayout>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: ROUTES.MEETING_DETAIL,
-    element: (
-      <ProtectedRoute>
-        <AppLayout>
-          <InProgressPage />
-        </AppLayout>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: ROUTES.GIT,
-    element: (
-      <ProtectedRoute>
-        <AppLayout>
-          <GitPage />
-        </AppLayout>
-      </ProtectedRoute>
-    ),
-  },
+
+  // 3. 팀 독립적 라우트
   {
     path: ROUTES.SETTINGS,
     element: (
@@ -76,6 +71,8 @@ const allRoutes: RouteObject[] = [
       </ProtectedRoute>
     ),
   },
+
+  // 4. 인증 라우트
   {
     path: ROUTES.LOGIN,
     element: <LoginPage />,
@@ -84,6 +81,8 @@ const allRoutes: RouteObject[] = [
     path: ROUTES.SIGNUP,
     element: <SignupPage />,
   },
+
+  // 5. 404
   {
     path: "/*",
     element: <NotFound />,

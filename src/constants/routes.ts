@@ -2,9 +2,24 @@ export const ROUTES = {
   APP_ROOT: "/",
   SIGNUP: "/signup",
   LOGIN: "/login",
+  SETTINGS: "/settings",
+
+  // 팀 기반 라우트
+  TEAM_ROOT: "/team/:teamId",
+  TEAM_HOME: "/team/:teamId",
+  TEAM_DECISIONS: "/team/:teamId/decisions",
+  TEAM_MEETING: "/team/:teamId/meeting",
+  TEAM_MEETING_DETAIL: "/team/:teamId/meeting/:meetingId",
+  TEAM_GIT: "/team/:teamId/git",
+
+  // 레거시 라우트 (하위 호환성)
   DECISIONS: "/decisions",
   MEETING: "/meeting",
   MEETING_DETAIL: "/meeting/:meetingId",
   GIT: "/git",
-  SETTINGS: "/settings",
 } as const;
+
+// 헬퍼 함수: 팀 ID와 경로를 받아 완전한 URL 생성
+export const createTeamRoute = (teamId: number, path: string = "") => {
+  return `/team/${teamId}${path}`;
+};

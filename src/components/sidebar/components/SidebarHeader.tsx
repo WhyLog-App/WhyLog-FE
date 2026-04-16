@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import IconChevronDown from "@/assets/icons/arrow/ic_chevron_down.svg?react";
 import IconAddPlus from "@/assets/icons/edit/ic_add_plus.svg?react";
 import IconMenuBurger from "@/assets/icons/menu/ic_menu_burger.svg?react";
 import { Icon } from "@/components/common/Icon";
 import { TeamImage } from "@/components/common/TeamImage";
 import CreateTeamModal from "@/components/panel/CreateTeamModal";
+import { createTeamRoute } from "@/constants/routes";
+import { useCurrentTeam } from "@/hooks/useCurrentTeam";
 import { useCreateTeam } from "@/pages/home/hooks/useCreateTeam";
 import type { Team } from "@/types/team";
 import { useTeams } from "../hooks/useTeams";
@@ -15,28 +18,20 @@ interface SidebarHeaderProps {
 }
 
 export const SidebarHeader = ({ isOpen }: SidebarHeaderProps) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { currentTeam } = useCurrentTeam();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentTeam, setCurrentTeam] = useState<Team | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { data: teams = [] } = useTeams();
 
   const { createTeam, isPending } = useCreateTeam({
     onSuccess: (result) => {
-      setCurrentTeam({
-        team_id: result.team_id,
-        name: result.name,
-        team_image: result.image_url ?? null,
-      });
       setIsModalOpen(false);
+      navigate(createTeamRoute(result.team_id));
     },
   });
-
-  useEffect(() => {
-    if (teams.length > 0 && !currentTeam) {
-      setCurrentTeam(teams[0]);
-    }
-  }, [teams, currentTeam]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -58,8 +53,13 @@ export const SidebarHeader = ({ isOpen }: SidebarHeaderProps) => {
   }, []);
 
   const handleSelectTeam = (team: Team) => {
-    setCurrentTeam(team);
     setIsDropdownOpen(false);
+
+    // 현재 경로에서 팀 부분 제거
+    const pathWithoutTeam = location.pathname.replace(/^\/team\/\d+/, "");
+
+    // 새 팀으로 동일한 페이지 이동
+    navigate(`/team/${team.team_id}${pathWithoutTeam}`);
   };
 
   const handleCreateTeam = () => {
