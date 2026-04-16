@@ -1,7 +1,7 @@
 import type { AxiosResponse } from "axios";
 import ENDPOINT from "@/constants/endpoint";
 import type { ApiResponse } from "@/types/auth";
-import type { CreateTeamResult, Team } from "@/types/team";
+import type { CreateTeamRequest, CreateTeamResult, Team } from "@/types/team";
 import { http } from "@/utils/http";
 
 export const fetchTeams = async (): Promise<Team[]> => {
@@ -13,19 +13,17 @@ export const fetchTeams = async (): Promise<Team[]> => {
 };
 
 export const createTeam = async (
-  name: string,
-  image?: File,
+  payload: CreateTeamRequest,
 ): Promise<CreateTeamResult> => {
   const formData = new FormData();
 
-  const requestBlob = new Blob([JSON.stringify({ name })], {
+  const requestBlob = new Blob([JSON.stringify({ name: payload.name })], {
     type: "application/json",
   });
   formData.append("request", requestBlob);
 
-  // image part: 이미지가 있을 때만 추가
-  if (image) {
-    formData.append("image", image);
+  if (payload.image) {
+    formData.append("image", payload.image);
   }
 
   const { data } = await http.post<

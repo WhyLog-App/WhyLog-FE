@@ -4,7 +4,7 @@ import { useState } from "react";
 import { createTeam } from "@/apis/teams";
 import { TEAMS_QUERY_KEY } from "@/components/sidebar/hooks/useTeams";
 import type { ApiResponse } from "@/types/auth";
-import type { CreateTeamResult } from "@/types/team";
+import type { CreateTeamRequest, CreateTeamResult } from "@/types/team";
 
 interface UseCreateTeamOptions {
   onSuccess?: (result: CreateTeamResult) => void;
@@ -15,8 +15,7 @@ export const useCreateTeam = (options?: UseCreateTeamOptions) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const mutation = useMutation({
-    mutationFn: ({ name, image }: { name: string; image?: File }) =>
-      createTeam(name, image),
+    mutationFn: (payload: CreateTeamRequest) => createTeam(payload),
     onSuccess: (result: CreateTeamResult) => {
       queryClient.invalidateQueries({ queryKey: TEAMS_QUERY_KEY });
       options?.onSuccess?.(result);
