@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface TeamImageProps {
   src: string | null | undefined;
@@ -14,6 +14,10 @@ export const TeamImage = ({
   className = "",
 }: TeamImageProps) => {
   const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    setImageError(false);
+  }, []);
 
   const showFallback = !src || imageError;
 

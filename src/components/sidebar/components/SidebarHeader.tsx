@@ -101,7 +101,7 @@ export const SidebarHeader = ({ isOpen }: SidebarHeaderProps) => {
                   icon={IconChevronDown}
                   size={14}
                   className={`opacity-0 transition-all duration-200 group-hover:opacity-100 ${
-                    isDropdownOpen ? "rotate-180 opacity-100!" : ""
+                    isDropdownOpen ? "rotate-180 opacity-100" : ""
                   }`}
                 />
               </button>

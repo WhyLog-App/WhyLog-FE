@@ -41,7 +41,7 @@ export const useSidebarNavigation = () => {
     if (!item.path) return false;
 
     if (item.id === "settings") {
-      return location.pathname === "/settings";
+      return location.pathname.endsWith("/settings");
     }
 
     // 팀 경로에서 패턴 매칭

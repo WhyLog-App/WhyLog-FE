@@ -8,19 +8,19 @@ export const useMeetingList = (teamId: number | null) => {
   const ongoingQuery = useQuery<MeetingListItem[]>({
     queryKey: [...MEETING_LIST_QUERY_KEY, teamId, "ONGOING"],
     queryFn: () => {
-      if (!teamId) throw new Error("Team ID is required");
+      if (teamId == null) throw new Error("Team ID is required");
       return listMeetings(teamId, "ONGOING");
     },
-    enabled: !!teamId,
+    enabled: teamId != null,
   });
 
   const completedQuery = useQuery<MeetingListItem[]>({
     queryKey: [...MEETING_LIST_QUERY_KEY, teamId, "COMPLETED"],
     queryFn: () => {
-      if (!teamId) throw new Error("Team ID is required");
+      if (teamId == null) throw new Error("Team ID is required");
       return listMeetings(teamId, "COMPLETED");
     },
-    enabled: !!teamId,
+    enabled: teamId != null,
   });
 
   return {

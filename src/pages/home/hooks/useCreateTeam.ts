@@ -16,8 +16,8 @@ export const useCreateTeam = (options?: UseCreateTeamOptions) => {
 
   const mutation = useMutation({
     mutationFn: (payload: CreateTeamRequest) => createTeam(payload),
-    onSuccess: (result: CreateTeamResult) => {
-      queryClient.invalidateQueries({ queryKey: TEAMS_QUERY_KEY });
+    onSuccess: async (result: CreateTeamResult) => {
+      await queryClient.invalidateQueries({ queryKey: TEAMS_QUERY_KEY });
       options?.onSuccess?.(result);
     },
     onError: (error: unknown) => {

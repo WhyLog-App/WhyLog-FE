@@ -14,7 +14,7 @@ export const useCreateMeeting = (teamId: number | null) => {
 
   const mutation = useMutation({
     mutationFn: ({ name }: { name: string }) => {
-      if (!teamId) throw new Error("Team ID is required");
+      if (teamId == null) throw new Error("Team ID is required");
       return createMeeting(teamId, {
         name,
         startDateTime: new Date().toISOString(),
