@@ -4,6 +4,7 @@ import IconAddPlusSquare from "@/assets/icons/edit/ic_add_plus_square.svg?react"
 import IconSearch from "@/assets/icons/interface/ic_search.svg?react";
 import { Icon } from "@/components/common/Icon";
 import { useMeetings } from "@/contexts/MeetingsContext";
+import { useCurrentTeam } from "@/hooks/useCurrentTeam";
 import { useCreateMeeting } from "@/pages/meeting/hooks/useCreateMeeting";
 import { useElapsedTime } from "@/pages/meeting/hooks/useElapsedTime";
 import { useMeetingList } from "@/pages/meeting/hooks/useMeetingList";
@@ -13,14 +14,15 @@ import StartMeetingModal from "./StartMeetingModal";
 const MeetingPanel = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+  const { teamId } = useCurrentTeam();
   const { meetings } = useMeetings();
-  const { createMeeting, isPending } = useCreateMeeting();
+  const { createMeeting, isPending } = useCreateMeeting(teamId);
   const {
     ongoing: ongoingMeetings,
     completed: completedMeetings,
     isLoading,
     isError,
-  } = useMeetingList();
+  } = useMeetingList(teamId);
 
   const liveMeeting = meetings.find((m) => m.status === "in-progress");
   const elapsed = useElapsedTime(liveMeeting?.startedAt);
@@ -48,23 +50,27 @@ const MeetingPanel = () => {
       <div className="h-px w-full bg-(--color-border-divider)" />
 
       {/* Live meeting section */}
-      {liveMeeting && (
+      {liveMeeting && teamId && (
         <div className="flex w-full shrink-0 flex-col items-center px-4">
           <MeetingPanelItem
             title={liveMeeting.name || "진행 중인 회의"}
             isLive
             elapsedTime={elapsed}
-            onClick={() => navigate(`/meeting/${liveMeeting.id}`)}
+            onClick={() =>
+              navigate(`/team/${teamId}/meeting/${liveMeeting.id}`)
+            }
           />
         </div>
       )}
-      {!liveMeeting && apiOngoing && (
+      {!liveMeeting && apiOngoing && teamId && (
         <div className="flex w-full shrink-0 flex-col items-center px-4">
           <MeetingPanelItem
             title={apiOngoing.name}
             isLive
             elapsedTime={apiOngoing.elapse ?? "00:00:00"}
-            onClick={() => navigate(`/meeting/${apiOngoing.meetingId}`)}
+            onClick={() =>
+              navigate(`/team/${teamId}/meeting/${apiOngoing.meetingId}`)
+            }
           />
         </div>
       )}
@@ -103,7 +109,9 @@ const MeetingPanel = () => {
           <MeetingPanelItem
             key={meeting.meetingId}
             title={meeting.name}
-            onClick={() => navigate(`/meeting/${meeting.meetingId}`)}
+            onClick={() =>
+              teamId && navigate(`/team/${teamId}/meeting/${meeting.meetingId}`)
+            }
           />
         ))}
       </div>

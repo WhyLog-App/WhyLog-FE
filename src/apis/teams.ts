@@ -15,12 +15,29 @@ export const fetchTeams = async (): Promise<Team[]> => {
 export const createTeam = async (
   payload: CreateTeamRequest,
 ): Promise<CreateTeamResult> => {
+  const formData = new FormData();
+
+  const requestBlob = new Blob([JSON.stringify({ name: payload.name })], {
+    type: "application/json",
+  });
+  formData.append("request", requestBlob);
+
+  if (payload.image) {
+    formData.append("image", payload.image);
+  }
+
   const { data } = await http.post<
-    CreateTeamRequest,
+    FormData,
     AxiosResponse<ApiResponse<CreateTeamResult>>
-  >(ENDPOINT.TEAMS.CREATE, payload);
+  >(ENDPOINT.TEAMS.CREATE, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
   if (!data.isSuccess) {
     throw new Error(data.message);
   }
+
   return data.result;
 };

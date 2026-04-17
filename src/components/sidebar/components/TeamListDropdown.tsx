@@ -1,5 +1,6 @@
 import IconAddPlus from "@/assets/icons/edit/ic_add_plus.svg?react";
 import { Icon } from "@/components/common/Icon";
+import { TeamImage } from "@/components/common/TeamImage";
 import type { Team } from "@/types/team";
 
 interface TeamListDropdownProps {
@@ -26,7 +27,11 @@ export const TeamListDropdown = ({
             ${currentTeamId === team.team_id ? "bg-action-active text-text-brand-darker" : "text-text-primary"}
           `}
         >
-          <div className="size-5 shrink-0 rounded-sm bg-gray-400" />
+          <TeamImage
+            src={team.team_image}
+            alt={`${team.name} 이미지`}
+            size={20}
+          />
           <span className="typo-body5 truncate">{team.name}</span>
         </button>
       ))}
