@@ -15,3 +15,12 @@ export interface Team {
   name: string;
   team_image: string | null;
 }
+
+export interface InviteTeamMemberRequest {
+  member_email: string;
+}
+
+export interface InviteTeamMemberResult {
+  team_id: number;
+  member_email: string;
+}

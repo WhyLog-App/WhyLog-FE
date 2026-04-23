@@ -6,10 +6,12 @@ import IconMenuBurger from "@/assets/icons/menu/ic_menu_burger.svg?react";
 import { Icon } from "@/components/common/Icon";
 import { TeamImage } from "@/components/common/TeamImage";
 import CreateTeamModal from "@/components/panel/CreateTeamModal";
+import InviteTeamMemberModal from "@/components/panel/InviteTeamMemberModal";
 import { createTeamRoute } from "@/constants/routes";
 import { useCurrentTeam } from "@/hooks/useCurrentTeam";
 import { useCreateTeam } from "@/pages/home/hooks/useCreateTeam";
 import type { Team } from "@/types/team";
+import { useInviteTeamMember } from "../hooks/useInviteTeamMember";
 import { useTeams } from "../hooks/useTeams";
 import { TeamListDropdown } from "./TeamListDropdown";
 
@@ -23,6 +25,7 @@ export const SidebarHeader = ({ isOpen }: SidebarHeaderProps) => {
   const { currentTeam } = useCurrentTeam();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { data: teams = [] } = useTeams();
 
@@ -30,6 +33,17 @@ export const SidebarHeader = ({ isOpen }: SidebarHeaderProps) => {
     onSuccess: (result) => {
       setIsModalOpen(false);
       navigate(createTeamRoute(result.team_id));
+    },
+  });
+
+  const {
+    invite,
+    isPending: isInvitePending,
+    errorMessage: inviteErrorMessage,
+    resetError: resetInviteError,
+  } = useInviteTeamMember(currentTeam?.team_id ?? null, {
+    onSuccess: () => {
+      setIsInviteModalOpen(false);
     },
   });
 
@@ -65,6 +79,12 @@ export const SidebarHeader = ({ isOpen }: SidebarHeaderProps) => {
   const handleCreateTeam = () => {
     setIsDropdownOpen(false);
     setIsModalOpen(true);
+  };
+
+  const handleInviteMember = () => {
+    setIsDropdownOpen(false);
+    resetInviteError();
+    setIsInviteModalOpen(true);
   };
 
   const handleModalCreate = (teamName: string, photo: File | null) => {
@@ -123,6 +143,7 @@ export const SidebarHeader = ({ isOpen }: SidebarHeaderProps) => {
                 currentTeamId={currentTeam?.team_id ?? null}
                 onSelectTeam={handleSelectTeam}
                 onCreateTeam={handleCreateTeam}
+                onInviteMember={handleInviteMember}
               />
             )}
           </>
@@ -133,6 +154,14 @@ export const SidebarHeader = ({ isOpen }: SidebarHeaderProps) => {
           onClose={() => setIsModalOpen(false)}
           onCreate={handleModalCreate}
           isPending={isPending}
+        />
+      )}
+      {isInviteModalOpen && (
+        <InviteTeamMemberModal
+          onClose={() => setIsInviteModalOpen(false)}
+          onInvite={invite}
+          isPending={isInvitePending}
+          errorMessage={inviteErrorMessage}
         />
       )}
     </>

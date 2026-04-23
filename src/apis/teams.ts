@@ -1,7 +1,13 @@
 import type { AxiosResponse } from "axios";
 import ENDPOINT from "@/constants/endpoint";
 import type { ApiResponse } from "@/types/auth";
-import type { CreateTeamRequest, CreateTeamResult, Team } from "@/types/team";
+import type {
+  CreateTeamRequest,
+  CreateTeamResult,
+  InviteTeamMemberRequest,
+  InviteTeamMemberResult,
+  Team,
+} from "@/types/team";
 import { http } from "@/utils/http";
 
 export const fetchTeams = async (): Promise<Team[]> => {
@@ -34,6 +40,22 @@ export const createTeam = async (
       "Content-Type": "multipart/form-data",
     },
   });
+
+  if (!data.isSuccess) {
+    throw new Error(data.message);
+  }
+
+  return data.result;
+};
+
+export const inviteTeamMember = async (
+  teamId: number,
+  payload: InviteTeamMemberRequest,
+): Promise<InviteTeamMemberResult> => {
+  const { data } = await http.post<
+    InviteTeamMemberRequest,
+    AxiosResponse<ApiResponse<InviteTeamMemberResult>>
+  >(ENDPOINT.TEAMS.INVITE(teamId), payload);
 
   if (!data.isSuccess) {
     throw new Error(data.message);
