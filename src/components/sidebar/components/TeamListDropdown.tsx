@@ -8,6 +8,7 @@ interface TeamListDropdownProps {
   currentTeamId: number | null;
   onSelectTeam: (team: Team) => void;
   onCreateTeam: () => void;
+  onInviteMember?: () => void;
 }
 
 export const TeamListDropdown = ({
@@ -15,6 +16,7 @@ export const TeamListDropdown = ({
   currentTeamId,
   onSelectTeam,
   onCreateTeam,
+  onInviteMember,
 }: TeamListDropdownProps) => {
   return (
     <div className="absolute top-full left-0 z-50 mt-1 w-full rounded-lg border border-border-default bg-bg-surface py-1 shadow-lg">
@@ -37,6 +39,17 @@ export const TeamListDropdown = ({
       ))}
 
       {teams.length > 0 && <div className="mx-3 my-1 h-px bg-border-divider" />}
+
+      {onInviteMember && currentTeamId !== null && (
+        <button
+          type="button"
+          onClick={onInviteMember}
+          className="flex w-full cursor-pointer items-center gap-2 px-4 py-2.5 text-text-secondary transition-colors hover:bg-action-hover"
+        >
+          <Icon icon={IconAddPlus} size={20} className="shrink-0" />
+          <span className="typo-body5">팀원 초대</span>
+        </button>
+      )}
 
       <button
         type="button"
