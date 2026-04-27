@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import LiveTranscriptPanel from "./components/LiveTranscriptPanel";
 import MeetingControls from "./components/MeetingControls";
@@ -24,6 +23,12 @@ const parseMeetingId = (raw: string | undefined): number | null => {
   return Number.isNaN(num) ? null : num;
 };
 
+const parseStartTimestamp = (iso: string | undefined): number | undefined => {
+  if (!iso) return undefined;
+  const t = new Date(iso).getTime();
+  return Number.isNaN(t) ? undefined : t;
+};
+
 const InProgressPage = () => {
   const { meetingId: meetingIdParam } = useParams<{ meetingId: string }>();
   const location = useLocation();
@@ -41,7 +46,7 @@ const InProgressPage = () => {
     : null;
   const memberCount = meetingDetail?.member_count ?? 0;
 
-  const startedAt = useRef(Date.now()).current;
+  const startedAt = parseStartTimestamp(meetingDetail?.start_date_time);
   const elapsed = useElapsedTime(startedAt);
 
   const {

@@ -24,14 +24,20 @@ export interface MeetingListItem {
   elapse: string | null;
 }
 
+export interface MeetingMember {
+  member_id: number;
+  name: string;
+  profile_image: string | null;
+}
+
 export interface MeetingDetail {
   meeting_id: number;
   name: string;
   start_date_time: string;
   end_date_time: string | null;
-  duration: number;
+  duration: number | null;
   member_count: number;
-  members: number[];
+  members: MeetingMember[];
 }
 
 export interface RtcTokenResult {
