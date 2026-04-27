@@ -28,5 +28,10 @@ export const useMeetingList = (teamId: number | null) => {
     completed: completedQuery.data ?? [],
     isLoading: ongoingQuery.isLoading || completedQuery.isLoading,
     isError: ongoingQuery.isError || completedQuery.isError,
+    isFetching: ongoingQuery.isFetching || completedQuery.isFetching,
+    refetch: () => {
+      ongoingQuery.refetch();
+      completedQuery.refetch();
+    },
   };
 };

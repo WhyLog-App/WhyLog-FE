@@ -1,14 +1,11 @@
-import { useMutation } from "@tanstack/react-query";
-import { useRef } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { endMeeting } from "@/apis/meetings";
-import IconClock from "@/assets/icons/media/ic_clock.svg?react";
-import IconCircleUser from "@/assets/icons/user/ic_circle_user.svg?react";
-import { Icon } from "@/components/common/Icon";
 import LiveTranscriptPanel from "./components/LiveTranscriptPanel";
 import MeetingControls from "./components/MeetingControls";
+import MeetingHeader from "./components/MeetingHeader";
 import ParticipantGrid from "./components/ParticipantGrid";
 import { useElapsedTime } from "./hooks/useElapsedTime";
+import { useEndMeeting } from "./hooks/useEndMeeting";
+import { useLocalSpeechFallback } from "./hooks/useLocalSpeechFallback";
 import { useMeetingDetail } from "./hooks/useMeetingDetail";
 import { useMeetingRoom } from "./hooks/useMeetingRoom";
 import { useSpeechRecognition } from "./hooks/useSpeechRecognition";
@@ -20,26 +17,36 @@ const formatStartDateTime = (iso: string) => {
   return `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 };
 
+const parseMeetingId = (raw: string | undefined): number | null => {
+  if (!raw) return null;
+  const num = Number(raw);
+  return Number.isNaN(num) ? null : num;
+};
+
+const parseStartTimestamp = (iso: string | undefined): number | undefined => {
+  if (!iso) return undefined;
+  const t = new Date(iso).getTime();
+  return Number.isNaN(t) ? undefined : t;
+};
+
 const InProgressPage = () => {
   const { meetingId: meetingIdParam } = useParams<{ meetingId: string }>();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const meetingId = (() => {
-    if (!meetingIdParam) return null;
-    const num = Number(meetingIdParam);
-    return Number.isNaN(num) ? null : num;
-  })();
+  const meetingId = parseMeetingId(meetingIdParam);
   const { data: meetingDetail } = useMeetingDetail(meetingId);
+
   const meetingName =
     meetingDetail?.name ??
     (location.state as { name?: string } | null)?.name ??
     "회의";
-  const meetingStart = meetingDetail?.startDateTime
-    ? formatStartDateTime(meetingDetail.startDateTime)
+  const meetingStart = meetingDetail?.start_date_time
+    ? formatStartDateTime(meetingDetail.start_date_time)
     : null;
-  const memberCount = meetingDetail?.memberCount ?? 0;
-  const startedAt = useRef(Date.now()).current;
+  const memberCount = meetingDetail?.member_count ?? 0;
+
+  const startedAt = parseStartTimestamp(meetingDetail?.start_date_time);
   const elapsed = useElapsedTime(startedAt);
 
   const {
@@ -50,22 +57,29 @@ const InProgressPage = () => {
     transcripts,
     interimByMember,
     sendMessage,
+    isMicEnabled,
+    isAudioOutputEnabled,
+    setMicrophoneEnabled,
+    setAudioOutputEnabled,
   } = useMeetingRoom({
     meetingId,
     displayName: "나",
   });
 
+  const { handleInterim, handleFinal, mergeTranscripts, mergeInterim } =
+    useLocalSpeechFallback({
+      isWsConnected,
+      isMicEnabled,
+      sendMessage,
+    });
+
   const { isSupported: isSpeechSupported } = useSpeechRecognition({
-    enabled: isWsConnected,
-    onInterim: (text) => sendMessage("audio_text", text),
-    onFinal: (text) => sendMessage("speech", text),
+    enabled: isMicEnabled, // 마이크 음소거 시 음성 인식도 정지
+    onInterim: handleInterim,
+    onFinal: handleFinal,
   });
 
-  const endMutation = useMutation({
-    mutationFn: (id: number) => endMeeting(id),
-    onSuccess: () => navigate("/"),
-    onError: () => navigate("/"),
-  });
+  const { endMeeting, errorMessage: endErrorMessage } = useEndMeeting();
 
   if (meetingId == null) {
     return null;
@@ -77,72 +91,49 @@ const InProgressPage = () => {
       : [{ id: "self", name: "나", isSelf: true }];
 
   const handleEnd = () => {
-    if (meetingId != null) {
-      endMutation.mutate(meetingId);
-    } else {
-      navigate("/");
-    }
+    if (meetingId != null) endMeeting(meetingId);
+    else navigate("/");
   };
 
   return (
     <div className="flex h-full flex-col py-10">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex flex-col gap-1">
-          <h1 className="typo-h5 text-(--color-text-primary)">{meetingName}</h1>
-          {meetingStart && (
-            <span className="typo-caption text-(--color-text-tertiary)">
-              {meetingStart}
-              {memberCount > 0 ? ` · 참여자 ${memberCount}명` : ""}
-            </span>
-          )}
-        </div>
-        <div className="flex items-center gap-3">
-          <span className="flex items-center gap-1 rounded-full bg-green-50 px-3 py-1">
-            <Icon icon={IconClock} size={16} className="text-green-700" />
-            <span className="typo-body6 text-green-700">{elapsed}</span>
-          </span>
-          <span className="typo-caption text-(--color-text-tertiary)">
-            WS {isWsConnected ? "✓" : "…"} · RTC {isRoomConnected ? "✓" : "…"}
-          </span>
-          <div className="flex -space-x-2">
-            {displayParticipants.slice(0, 3).map((p) => (
-              <span
-                key={p.id}
-                className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-(--color-bg-surface) bg-light-500"
-              >
-                <Icon
-                  icon={IconCircleUser}
-                  size={20}
-                  className="text-(--color-dark-100)"
-                />
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
+      <MeetingHeader
+        meetingName={meetingName}
+        meetingStart={meetingStart}
+        memberCount={memberCount}
+        elapsed={elapsed}
+        isWsConnected={isWsConnected}
+        isRoomConnected={isRoomConnected}
+        participants={displayParticipants}
+      />
 
-      {errorMessage && (
+      {(errorMessage || endErrorMessage) && (
         <div className="mt-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
-          {errorMessage}
+          {errorMessage ?? endErrorMessage}
         </div>
       )}
 
-      {/* Body */}
       <div className="mt-10 flex flex-1 gap-6 overflow-hidden">
         <div className="flex flex-1 flex-col items-center justify-center">
           <ParticipantGrid participants={displayParticipants} />
         </div>
         <LiveTranscriptPanel
-          transcripts={transcripts}
-          interimByMember={interimByMember}
+          transcripts={mergeTranscripts(transcripts)}
+          interimByMember={mergeInterim(interimByMember)}
           isSupported={isSpeechSupported}
         />
       </div>
 
-      {/* Bottom controls */}
       <div className="mt-6 flex justify-center">
-        <MeetingControls onEnd={handleEnd} />
+        <MeetingControls
+          onEnd={handleEnd}
+          isMicEnabled={isMicEnabled}
+          isAudioOutputEnabled={isAudioOutputEnabled}
+          onToggleMic={() => setMicrophoneEnabled(!isMicEnabled)}
+          onToggleAudioOutput={() =>
+            setAudioOutputEnabled(!isAudioOutputEnabled)
+          }
+        />
       </div>
     </div>
   );

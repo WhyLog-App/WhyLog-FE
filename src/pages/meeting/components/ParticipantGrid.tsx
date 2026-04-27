@@ -1,8 +1,8 @@
-import type { Participant } from "@/contexts/MeetingsContext";
+import type { RoomParticipant } from "@/pages/meeting/types";
 import ParticipantTile from "./ParticipantTile";
 
 interface ParticipantGridProps {
-  participants: Participant[];
+  participants: RoomParticipant[];
 }
 
 const ParticipantGrid = ({ participants }: ParticipantGridProps) => {

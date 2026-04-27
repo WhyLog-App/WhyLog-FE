@@ -1,6 +1,6 @@
 export interface CreateMeetingRequest {
   name: string;
-  startDateTime: string;
+  start_date_time: string;
 }
 
 export interface CreateMeetingResult {
@@ -18,20 +18,26 @@ export interface EndMeetingResult {
 export type MeetingStatus = "ONGOING" | "COMPLETED";
 
 export interface MeetingListItem {
-  meetingId: number;
+  meeting_id: number;
   name: string;
   status: MeetingStatus;
   elapse: string | null;
 }
 
-export interface MeetingDetail {
-  meetingId: number;
+export interface MeetingMember {
+  member_id: number;
   name: string;
-  startDateTime: string;
-  endDateTime: string | null;
-  duration: number;
-  memberCount: number;
-  members: number[];
+  profile_image: string | null;
+}
+
+export interface MeetingDetail {
+  meeting_id: number;
+  name: string;
+  start_date_time: string;
+  end_date_time: string | null;
+  duration: number | null;
+  member_count: number;
+  members: MeetingMember[];
 }
 
 export interface RtcTokenResult {
