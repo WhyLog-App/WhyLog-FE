@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import IconArrowsReload from "@/assets/icons/arrow/ic_arrows_reload.svg?react";
 import IconAddPlusSquare from "@/assets/icons/edit/ic_add_plus_square.svg?react";
 import IconSearch from "@/assets/icons/interface/ic_search.svg?react";
 import { Icon } from "@/components/common/Icon";
@@ -21,6 +22,8 @@ const MeetingPanel = () => {
     completed: completedMeetings,
     isLoading,
     isError,
+    isFetching,
+    refetch,
   } = useMeetingList(teamId);
 
   const ongoingMeeting = ongoingMeetings[0];
@@ -30,17 +33,35 @@ const MeetingPanel = () => {
       {/* Header */}
       <div className="flex w-full items-center justify-between px-5">
         <h2 className="typo-h6 text-(--color-text-primary)">회의 목록</h2>
-        <button
-          type="button"
-          className="cursor-pointer"
-          onClick={() => setIsModalOpen(true)}
-        >
-          <Icon
-            icon={IconAddPlusSquare}
-            size={24}
-            className="text-(--color-text-primary)"
-          />
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className="cursor-pointer disabled:opacity-50"
+            onClick={() => refetch()}
+            disabled={isFetching}
+            aria-label="회의 목록 새로고침"
+          >
+            <Icon
+              icon={IconArrowsReload}
+              size={20}
+              className={`text-(--color-text-secondary) ${
+                isFetching ? "animate-spin" : ""
+              }`}
+            />
+          </button>
+          <button
+            type="button"
+            className="cursor-pointer"
+            onClick={() => setIsModalOpen(true)}
+            aria-label="회의 시작"
+          >
+            <Icon
+              icon={IconAddPlusSquare}
+              size={24}
+              className="text-(--color-text-secondary)"
+            />
+          </button>
+        </div>
       </div>
 
       {/* Divider */}
