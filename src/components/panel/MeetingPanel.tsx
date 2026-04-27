@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import IconArrowsReload from "@/assets/icons/arrow/ic_arrows_reload.svg?react";
 import IconAddPlusSquare from "@/assets/icons/edit/ic_add_plus_square.svg?react";
 import IconSearch from "@/assets/icons/interface/ic_search.svg?react";
@@ -14,6 +14,12 @@ const MeetingPanel = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const { teamId } = useCurrentTeam();
+  const { meetingId: activeMeetingIdParam } = useParams<{
+    meetingId?: string;
+  }>();
+  const activeMeetingId = activeMeetingIdParam
+    ? Number(activeMeetingIdParam)
+    : null;
   const { createMeeting, isPending } = useCreateMeeting(teamId, () =>
     setIsModalOpen(false),
   );
@@ -73,6 +79,7 @@ const MeetingPanel = () => {
               key={meeting.meeting_id}
               title={meeting.name}
               isLive
+              isActive={meeting.meeting_id === activeMeetingId}
               elapsedTime={meeting.elapse ?? "00:00:00"}
               onClick={() =>
                 navigate(`/team/${teamId}/meeting/${meeting.meeting_id}`)
@@ -116,6 +123,7 @@ const MeetingPanel = () => {
           <MeetingPanelItem
             key={meeting.meeting_id}
             title={meeting.name}
+            isActive={meeting.meeting_id === activeMeetingId}
             onClick={() =>
               teamId &&
               navigate(`/team/${teamId}/meeting/${meeting.meeting_id}`)
