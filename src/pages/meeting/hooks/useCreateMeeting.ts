@@ -7,7 +7,10 @@ import type { ApiResponse } from "@/types/auth";
 import type { CreateMeetingResult } from "@/types/meeting";
 import { MEETING_LIST_QUERY_KEY } from "./useMeetingList";
 
-export const useCreateMeeting = (teamId: number | null) => {
+export const useCreateMeeting = (
+  teamId: number | null,
+  onSuccess?: () => void,
+) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -22,6 +25,7 @@ export const useCreateMeeting = (teamId: number | null) => {
     },
     onSuccess: (result: CreateMeetingResult) => {
       queryClient.invalidateQueries({ queryKey: MEETING_LIST_QUERY_KEY });
+      onSuccess?.();
       navigate(`/team/${teamId}/meeting/${result.meeting_id}`, {
         state: { name: result.name },
       });

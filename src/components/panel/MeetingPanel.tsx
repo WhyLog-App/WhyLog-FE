@@ -13,7 +13,9 @@ const MeetingPanel = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const { teamId } = useCurrentTeam();
-  const { createMeeting, isPending } = useCreateMeeting(teamId);
+  const { createMeeting, isPending } = useCreateMeeting(teamId, () =>
+    setIsModalOpen(false),
+  );
   const {
     ongoing: ongoingMeetings,
     completed: completedMeetings,
