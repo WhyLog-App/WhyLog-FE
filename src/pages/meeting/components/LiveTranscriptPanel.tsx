@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from "react";
-import IconBell from "@/assets/icons/communication/ic_bell.svg?react";
+import IconChatConversation from "@/assets/icons/media/ic_chat_conversation.svg?react";
 import { Icon } from "@/components/common/Icon";
 import type { InterimEntry, TranscriptEntry } from "../types";
 
@@ -41,13 +41,13 @@ const LiveTranscriptPanel = ({
     <aside className="flex h-full w-90 shrink-0 flex-col gap-4 overflow-hidden rounded-2xl border border-(--color-border-default) bg-(--color-bg-surface) px-5 py-5">
       <div className="flex items-center gap-2">
         <Icon
-          icon={IconBell}
+          icon={IconChatConversation}
           size={20}
-          className="text-(--color-text-primary)"
+          className="text-text-brand-darker"
         />
-        <h3 className="typo-subtitle5 text-(--color-text-primary)">
+        <p className="typo-body6 text-(--color-text-primary)">
           실시간 음성인식
-        </h3>
+        </p>
       </div>
 
       {!isSupported && (
