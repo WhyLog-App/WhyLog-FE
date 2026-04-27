@@ -20,7 +20,7 @@ export const useCreateMeeting = (
       if (teamId == null) throw new Error("Team ID is required");
       return createMeeting(teamId, {
         name,
-        startDateTime: new Date().toISOString(),
+        start_date_time: new Date().toISOString(),
       });
     },
     onSuccess: (result: CreateMeetingResult) => {

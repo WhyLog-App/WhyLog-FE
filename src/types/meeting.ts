@@ -1,6 +1,6 @@
 export interface CreateMeetingRequest {
   name: string;
-  startDateTime: string;
+  start_date_time: string;
 }
 
 export interface CreateMeetingResult {

@@ -74,7 +74,7 @@ const InProgressPage = () => {
     onFinal: handleFinal,
   });
 
-  const { endMeeting } = useEndMeeting();
+  const { endMeeting, errorMessage: endErrorMessage } = useEndMeeting();
 
   if (meetingId == null) {
     return null;
@@ -102,9 +102,9 @@ const InProgressPage = () => {
         participants={displayParticipants}
       />
 
-      {errorMessage && (
+      {(errorMessage || endErrorMessage) && (
         <div className="mt-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
-          {errorMessage}
+          {errorMessage ?? endErrorMessage}
         </div>
       )}
 

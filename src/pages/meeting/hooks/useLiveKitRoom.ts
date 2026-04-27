@@ -29,10 +29,12 @@ export const useLiveKitRoom = ({ meetingId }: UseLiveKitRoomOptions) => {
   const [isAudioOutputEnabled, setIsAudioOutputEnabled] = useState(true);
 
   const roomRef = useRef<Room | null>(null);
-  // 신규 참가자 입장 시 최신 듣기 상태를 참조하기 위한 ref
+  // 이벤트 콜백/connect 이후 시점에 최신 의도 상태를 참조하기 위한 ref
   const isAudioOutputEnabledRef = useRef(true);
+  const isMicEnabledRef = useRef(true);
 
   const setMicrophoneEnabled = useCallback(async (enabled: boolean) => {
+    isMicEnabledRef.current = enabled;
     const room = roomRef.current;
     if (!room) {
       setIsMicEnabled(enabled);
@@ -79,14 +81,24 @@ export const useLiveKitRoom = ({ meetingId }: UseLiveKitRoomOptions) => {
       setParticipants((prev) => prev.filter((x) => x.id !== p.identity));
     });
 
-    // 새 audio track 구독 시 현재 듣기 상태(volume) 적용
-    room.on(RoomEvent.TrackSubscribed, (track: RemoteTrack) => {
+    // 원격 audio track에 현재 듣기 상태(volume) 적용
+    const applyVolumeToTrack = (track: RemoteTrack) => {
       if (track.kind !== Track.Kind.Audio) return;
-      const applyVolume = (el: HTMLMediaElement) => {
+      const apply = (el: HTMLMediaElement) => {
         el.volume = isAudioOutputEnabledRef.current ? 1 : 0;
       };
-      track.attachedElements.forEach(applyVolume);
-      track.on(TrackEvent.ElementAttached, applyVolume);
+      track.attachedElements.forEach(apply);
+      track.on(TrackEvent.ElementAttached, apply);
+    };
+
+    room.on(RoomEvent.TrackSubscribed, (track: RemoteTrack) => {
+      applyVolumeToTrack(track);
+    });
+
+    // 메모리 누수 방지: track 구독 해제 시 ElementAttached 리스너 정리
+    room.on(RoomEvent.TrackUnsubscribed, (track: RemoteTrack) => {
+      if (track.kind !== Track.Kind.Audio) return;
+      track.removeAllListeners(TrackEvent.ElementAttached);
     });
 
     (async () => {
@@ -98,8 +110,30 @@ export const useLiveKitRoom = ({ meetingId }: UseLiveKitRoomOptions) => {
           await room.disconnect();
           return;
         }
+
+        // 이미 입장해 있던 참가자/오디오 트랙 시드 (후발 입장 시나리오)
+        const initial: MeetingParticipant[] = [];
+        room.remoteParticipants.forEach((p) => {
+          initial.push({ id: p.identity, name: p.name || p.identity });
+          p.audioTrackPublications.forEach((pub) => {
+            if (pub.track) applyVolumeToTrack(pub.track);
+          });
+        });
+        if (initial.length > 0) {
+          setParticipants((prev) => {
+            const merged = [...prev];
+            initial.forEach((p) => {
+              if (!merged.some((x) => x.id === p.id)) merged.push(p);
+            });
+            return merged;
+          });
+        }
+
         setIsConnected(true);
-        await room.localParticipant.setMicrophoneEnabled(true);
+        // 사용자가 직전에 mute 했어도 그 의도를 보존
+        await room.localParticipant.setMicrophoneEnabled(
+          isMicEnabledRef.current,
+        );
       } catch (err) {
         if (!cancelled) {
           setErrorMessage(
@@ -117,6 +151,8 @@ export const useLiveKitRoom = ({ meetingId }: UseLiveKitRoomOptions) => {
       roomRef.current = null;
       setIsConnected(false);
       setParticipants([]);
+      // 이전 회의 에러가 새 화면에 잔존하지 않도록 초기화
+      setErrorMessage(null);
     };
   }, [meetingId]);
 
