@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { endMeeting } from "@/apis/meetings";
 import IconClock from "@/assets/icons/media/ic_clock.svg?react";
@@ -10,6 +10,7 @@ import MeetingControls from "./components/MeetingControls";
 import ParticipantGrid from "./components/ParticipantGrid";
 import { useElapsedTime } from "./hooks/useElapsedTime";
 import { useMeetingDetail } from "./hooks/useMeetingDetail";
+import type { InterimEntry, TranscriptEntry } from "./hooks/useMeetingRoom";
 import { useMeetingRoom } from "./hooks/useMeetingRoom";
 import { useSpeechRecognition } from "./hooks/useSpeechRecognition";
 
@@ -55,11 +56,75 @@ const InProgressPage = () => {
     displayName: "나",
   });
 
+  // 로컬 음성 인식 state (WS 미연결 시 UI에 직접 표시)
+  const [localTranscripts, setLocalTranscripts] = useState<TranscriptEntry[]>(
+    [],
+  );
+  const [localInterim, setLocalInterim] = useState<string>("");
+
+  // WS가 연결되면 로컬 interim 초기화 (WS echo가 담당하게 됨)
+  useEffect(() => {
+    if (isWsConnected) {
+      setLocalInterim("");
+    }
+  }, [isWsConnected]);
+
+  const handleInterim = useCallback(
+    (text: string) => {
+      const sent = sendMessage("audio_text", text);
+      if (!sent) {
+        // WS 미연결: 로컬에 직접 표시
+        setLocalInterim(text);
+      }
+    },
+    [sendMessage],
+  );
+
+  const handleFinal = useCallback(
+    (text: string) => {
+      setLocalInterim("");
+      const sent = sendMessage("speech", text);
+      if (!sent) {
+        // WS 미연결: 로컬 transcript에 추가
+        setLocalTranscripts((prev) => [
+          ...prev,
+          {
+            id: `local-${Date.now()}-${prev.length}`,
+            memberId: null,
+            fromName: "나",
+            text,
+            timestamp: new Date().toISOString(),
+            isFinal: true,
+          },
+        ]);
+      }
+    },
+    [sendMessage],
+  );
+
   const { isSupported: isSpeechSupported } = useSpeechRecognition({
-    enabled: isWsConnected,
-    onInterim: (text) => sendMessage("audio_text", text),
-    onFinal: (text) => sendMessage("speech", text),
+    enabled: true, // WS 연결 여부와 무관하게 항상 활성화
+    onInterim: handleInterim,
+    onFinal: handleFinal,
   });
+
+  // 표시용 merged 데이터
+  // - WS 연결됨: WS echo transcript + WS interimByMember (백엔드 연동)
+  // - WS 미연결: 로컬 transcript + 로컬 interim
+  const allTranscripts = [...localTranscripts, ...transcripts];
+
+  const mergedInterimByMember: Record<string, InterimEntry> =
+    localInterim && !isWsConnected
+      ? {
+          ...interimByMember,
+          self: {
+            memberId: null,
+            fromName: "나",
+            text: localInterim,
+            timestamp: new Date().toISOString(),
+          },
+        }
+      : interimByMember;
 
   const endMutation = useMutation({
     mutationFn: (id: number) => endMeeting(id),
@@ -134,8 +199,8 @@ const InProgressPage = () => {
           <ParticipantGrid participants={displayParticipants} />
         </div>
         <LiveTranscriptPanel
-          transcripts={transcripts}
-          interimByMember={interimByMember}
+          transcripts={allTranscripts}
+          interimByMember={mergedInterimByMember}
           isSupported={isSpeechSupported}
         />
       </div>
