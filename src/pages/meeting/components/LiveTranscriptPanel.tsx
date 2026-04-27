@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import IconBell from "@/assets/icons/communication/ic_bell.svg?react";
 import { Icon } from "@/components/common/Icon";
-import type { InterimEntry, TranscriptEntry } from "../hooks/useMeetingRoom";
+import type { InterimEntry, TranscriptEntry } from "../types";
 
 interface LiveTranscriptPanelProps {
   transcripts: TranscriptEntry[];

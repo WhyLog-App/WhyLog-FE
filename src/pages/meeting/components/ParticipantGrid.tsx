@@ -1,4 +1,4 @@
-import type { RoomParticipant } from "@/pages/meeting/hooks/useMeetingRoom";
+import type { RoomParticipant } from "@/pages/meeting/types";
 import ParticipantTile from "./ParticipantTile";
 
 interface ParticipantGridProps {
