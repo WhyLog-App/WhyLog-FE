@@ -26,8 +26,6 @@ const MeetingPanel = () => {
     refetch,
   } = useMeetingList(teamId);
 
-  const ongoingMeeting = ongoingMeetings[0];
-
   return (
     <>
       {/* Header */}
@@ -67,17 +65,20 @@ const MeetingPanel = () => {
       {/* Divider */}
       <div className="h-px w-full bg-(--color-border-divider)" />
 
-      {/* Ongoing meeting section */}
-      {ongoingMeeting && teamId && (
-        <div className="flex w-full shrink-0 flex-col items-center px-4">
-          <MeetingPanelItem
-            title={ongoingMeeting.name}
-            isLive
-            elapsedTime={ongoingMeeting.elapse ?? "00:00:00"}
-            onClick={() =>
-              navigate(`/team/${teamId}/meeting/${ongoingMeeting.meetingId}`)
-            }
-          />
+      {/* Ongoing meetings section */}
+      {ongoingMeetings.length > 0 && teamId && (
+        <div className="flex w-full shrink-0 flex-col gap-2 px-4">
+          {ongoingMeetings.map((meeting) => (
+            <MeetingPanelItem
+              key={meeting.meeting_id}
+              title={meeting.name}
+              isLive
+              elapsedTime={meeting.elapse ?? "00:00:00"}
+              onClick={() =>
+                navigate(`/team/${teamId}/meeting/${meeting.meeting_id}`)
+              }
+            />
+          ))}
         </div>
       )}
 
@@ -113,10 +114,11 @@ const MeetingPanel = () => {
         )}
         {completedMeetings.map((meeting) => (
           <MeetingPanelItem
-            key={meeting.meetingId}
+            key={meeting.meeting_id}
             title={meeting.name}
             onClick={() =>
-              teamId && navigate(`/team/${teamId}/meeting/${meeting.meetingId}`)
+              teamId &&
+              navigate(`/team/${teamId}/meeting/${meeting.meeting_id}`)
             }
           />
         ))}

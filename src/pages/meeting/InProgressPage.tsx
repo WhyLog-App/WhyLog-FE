@@ -36,10 +36,10 @@ const InProgressPage = () => {
     meetingDetail?.name ??
     (location.state as { name?: string } | null)?.name ??
     "회의";
-  const meetingStart = meetingDetail?.startDateTime
-    ? formatStartDateTime(meetingDetail.startDateTime)
+  const meetingStart = meetingDetail?.start_date_time
+    ? formatStartDateTime(meetingDetail.start_date_time)
     : null;
-  const memberCount = meetingDetail?.memberCount ?? 0;
+  const memberCount = meetingDetail?.member_count ?? 0;
 
   const startedAt = useRef(Date.now()).current;
   const elapsed = useElapsedTime(startedAt);

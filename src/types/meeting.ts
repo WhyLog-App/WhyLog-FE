@@ -18,19 +18,19 @@ export interface EndMeetingResult {
 export type MeetingStatus = "ONGOING" | "COMPLETED";
 
 export interface MeetingListItem {
-  meetingId: number;
+  meeting_id: number;
   name: string;
   status: MeetingStatus;
   elapse: string | null;
 }
 
 export interface MeetingDetail {
-  meetingId: number;
+  meeting_id: number;
   name: string;
-  startDateTime: string;
-  endDateTime: string | null;
+  start_date_time: string;
+  end_date_time: string | null;
   duration: number;
-  memberCount: number;
+  member_count: number;
   members: number[];
 }
 
