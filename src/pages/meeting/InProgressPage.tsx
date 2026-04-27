@@ -51,6 +51,10 @@ const InProgressPage = () => {
     transcripts,
     interimByMember,
     sendMessage,
+    isMicEnabled,
+    isAudioOutputEnabled,
+    setMicrophoneEnabled,
+    setAudioOutputEnabled,
   } = useMeetingRoom({
     meetingId,
     displayName: "나",
@@ -62,12 +66,19 @@ const InProgressPage = () => {
   );
   const [localInterim, setLocalInterim] = useState<string>("");
 
-  // WS가 연결되면 로컬 interim 초기화 (WS echo가 담당하게 됨)
+  // WS가 연결되면 로컬 interim 초기화
   useEffect(() => {
     if (isWsConnected) {
       setLocalInterim("");
     }
   }, [isWsConnected]);
+
+  // 마이크 음소거 시 로컬 interim 즉시 제거
+  useEffect(() => {
+    if (!isMicEnabled) {
+      setLocalInterim("");
+    }
+  }, [isMicEnabled]);
 
   const handleInterim = useCallback(
     (text: string) => {
@@ -103,13 +114,13 @@ const InProgressPage = () => {
   );
 
   const { isSupported: isSpeechSupported } = useSpeechRecognition({
-    enabled: true, // WS 연결 여부와 무관하게 항상 활성화
+    enabled: isMicEnabled,
     onInterim: handleInterim,
     onFinal: handleFinal,
   });
 
   // 표시용 merged 데이터
-  // - WS 연결됨: WS echo transcript + WS interimByMember (백엔드 연동)
+  // - WS 연결됨: WS echo transcript + WS interimByMember
   // - WS 미연결: 로컬 transcript + 로컬 interim
   const allTranscripts = [...localTranscripts, ...transcripts];
 
@@ -207,7 +218,15 @@ const InProgressPage = () => {
 
       {/* Bottom controls */}
       <div className="mt-6 flex justify-center">
-        <MeetingControls onEnd={handleEnd} />
+        <MeetingControls
+          onEnd={handleEnd}
+          isMicEnabled={isMicEnabled}
+          isAudioOutputEnabled={isAudioOutputEnabled}
+          onToggleMic={() => setMicrophoneEnabled(!isMicEnabled)}
+          onToggleAudioOutput={() =>
+            setAudioOutputEnabled(!isAudioOutputEnabled)
+          }
+        />
       </div>
     </div>
   );

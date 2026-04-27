@@ -1,4 +1,10 @@
-import { type RemoteParticipant, Room, RoomEvent } from "livekit-client";
+import {
+  type RemoteParticipant,
+  type RemoteTrack,
+  Room,
+  RoomEvent,
+  Track,
+} from "livekit-client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getRtcToken } from "@/apis/meetings";
 import { WS_BASE_URL } from "@/constants/endpoint";
@@ -45,15 +51,50 @@ export const useMeetingRoom = ({
   const [interimByMember, setInterimByMember] = useState<
     Record<string, InterimEntry>
   >({});
+  const [isMicEnabled, setIsMicEnabled] = useState(true);
+  const [isAudioOutputEnabled, setIsAudioOutputEnabled] = useState(true);
 
   const wsRef = useRef<WebSocket | null>(null);
   const roomRef = useRef<Room | null>(null);
+  const isAudioOutputEnabledRef = useRef(true);
 
   const sendMessage = useCallback((type: OutgoingMessageType, text: string) => {
     const ws = wsRef.current;
     if (!ws || ws.readyState !== WebSocket.OPEN) return false;
     ws.send(JSON.stringify({ type, text }));
     return true;
+  }, []);
+
+  // 마이크 트랙
+  const setMicrophoneEnabled = useCallback(async (enabled: boolean) => {
+    const room = roomRef.current;
+    if (!room) {
+      setIsMicEnabled(enabled);
+      return;
+    }
+    try {
+      await room.localParticipant.setMicrophoneEnabled(enabled);
+      setIsMicEnabled(enabled);
+    } catch {
+      /* mic 권한 거부 등 실패 시 상태 변경 안 함 */
+    }
+  }, []);
+
+  // 모든 원격 참가자 audio element volume 제어
+  const setAudioOutputEnabled = useCallback((enabled: boolean) => {
+    isAudioOutputEnabledRef.current = enabled;
+    setIsAudioOutputEnabled(enabled);
+    const room = roomRef.current;
+    if (!room) return;
+    room.remoteParticipants.forEach((p) => {
+      p.audioTrackPublications.forEach((pub) => {
+        const track = pub.track;
+        if (!track) return;
+        track.attachedElements.forEach((el) => {
+          el.volume = enabled ? 1 : 0;
+        });
+      });
+    });
   }, []);
 
   useEffect(() => {
@@ -206,6 +247,16 @@ export const useMeetingRoom = ({
       setParticipants((prev) => prev.filter((x) => x.id !== p.identity));
     });
 
+    // 새 audio track 구독 시 현재 듣기 상태(volume) 적용
+    room.on(RoomEvent.TrackSubscribed, (track: RemoteTrack) => {
+      if (track.kind !== Track.Kind.Audio) return;
+      const applyVolume = (el: HTMLMediaElement) => {
+        el.volume = isAudioOutputEnabledRef.current ? 1 : 0;
+      };
+      track.attachedElements.forEach((el) => applyVolume(el));
+      track.on(Track.Event.ElementAttached, applyVolume);
+    });
+
     (async () => {
       try {
         const { serverUrl, token } = await getRtcToken(meetingId);
@@ -253,5 +304,9 @@ export const useMeetingRoom = ({
     transcripts,
     interimByMember,
     sendMessage,
+    isMicEnabled,
+    isAudioOutputEnabled,
+    setMicrophoneEnabled,
+    setAudioOutputEnabled,
   };
 };
