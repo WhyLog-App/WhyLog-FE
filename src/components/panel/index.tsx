@@ -1,5 +1,6 @@
 import { useLocation } from "react-router-dom";
 import MeetingPanel from "./meeting/MeetingPanel";
+import RepositoryPanel from "./repository/RepositoryPanel";
 
 const Panel = () => {
   const { pathname } = useLocation();
@@ -7,6 +8,9 @@ const Panel = () => {
   const renderContent = () => {
     if (pathname.startsWith("/meeting")) {
       return <MeetingPanel />;
+    }
+    if (pathname.startsWith("/git")) {
+      return <RepositoryPanel />;
     }
     return null;
   };
