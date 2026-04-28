@@ -31,6 +31,8 @@ const MeetingPanel = () => {
     isFetching,
     refetch,
   } = useMeetingList(teamId);
+  const hasAnyMeetings =
+    ongoingMeetings.length > 0 || completedMeetings.length > 0;
 
   return (
     <>
@@ -38,21 +40,23 @@ const MeetingPanel = () => {
       <div className="flex w-full items-center justify-between px-5">
         <h2 className="typo-h6 text-(--color-text-primary)">회의 목록</h2>
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            className="cursor-pointer disabled:opacity-50"
-            onClick={() => refetch()}
-            disabled={isFetching}
-            aria-label="회의 목록 새로고침"
-          >
-            <Icon
-              icon={IconArrowsReload}
-              size={20}
-              className={`text-(--color-text-secondary) ${
-                isFetching ? "animate-spin" : ""
-              }`}
-            />
-          </button>
+          {hasAnyMeetings && (
+            <button
+              type="button"
+              className="cursor-pointer disabled:opacity-50"
+              onClick={() => refetch()}
+              disabled={isFetching}
+              aria-label="회의 목록 새로고침"
+            >
+              <Icon
+                icon={IconArrowsReload}
+                size={20}
+                className={`text-(--color-text-secondary) ${
+                  isFetching ? "animate-spin" : ""
+                }`}
+              />
+            </button>
+          )}
           <button
             type="button"
             className="cursor-pointer"
@@ -89,48 +93,63 @@ const MeetingPanel = () => {
         </div>
       )}
 
-      {/* Search + meeting list */}
-      <div className="flex w-full flex-1 flex-col gap-2 overflow-y-auto px-4">
-        {/* Search bar */}
-        <div className="flex w-full items-center gap-2 rounded-lg bg-(--color-bg-subtle) p-3">
-          <Icon
-            icon={IconSearch}
-            size={24}
-            className="shrink-0 text-(--color-text-disabled)"
-          />
-          <span className="typo-subtitle5 text-(--color-text-disabled)">
-            회의 이름으로 검색하세요...
-          </span>
+      {!isLoading && !isError && !hasAnyMeetings ? (
+        <div className="flex w-full flex-1 flex-col items-center justify-center px-4 text-center">
+          <div className="typo-subtitle4 text-(--color-text-secondary)">
+            진행된 회의가
+            <br />
+            없습니다
+          </div>
+          <div className="mt-2 typo-body6 text-(--color-text-tertiary)">
+            음성 회의를 시작하거나
+            <br />
+            기존 녹음 파일을 업로드해보세요
+          </div>
         </div>
+      ) : (
+        /* Search + meeting list */
+        <div className="flex w-full flex-1 flex-col gap-2 overflow-y-auto px-4">
+          {/* Search bar */}
+          <div className="flex w-full items-center gap-2 rounded-lg bg-(--color-bg-subtle) p-3">
+            <Icon
+              icon={IconSearch}
+              size={24}
+              className="shrink-0 text-(--color-text-brand)"
+            />
+            <span className="typo-subtitle5 text-(--color-text-disabled)">
+              회의 이름으로 검색하세요...
+            </span>
+          </div>
 
-        {/* Meeting list */}
-        {isLoading && (
-          <span className="typo-body6 text-(--color-text-tertiary) px-2">
-            불러오는 중...
-          </span>
-        )}
-        {isError && (
-          <span className="typo-body6 text-(--color-text-tertiary) px-2">
-            회의 목록을 불러오지 못했습니다.
-          </span>
-        )}
-        {!isLoading && !isError && completedMeetings.length === 0 && (
-          <span className="typo-body6 text-(--color-text-tertiary) px-2">
-            완료된 회의가 없습니다.
-          </span>
-        )}
-        {completedMeetings.map((meeting) => (
-          <MeetingPanelItem
-            key={meeting.meeting_id}
-            title={meeting.name}
-            isActive={meeting.meeting_id === activeMeetingId}
-            onClick={() =>
-              teamId &&
-              navigate(`/team/${teamId}/meeting/${meeting.meeting_id}`)
-            }
-          />
-        ))}
-      </div>
+          {/* Meeting list */}
+          {isLoading && (
+            <span className="typo-body6 text-(--color-text-tertiary) px-2">
+              불러오는 중...
+            </span>
+          )}
+          {isError && (
+            <span className="typo-body6 text-(--color-text-tertiary) px-2">
+              회의 목록을 불러오지 못했습니다.
+            </span>
+          )}
+          {!isLoading && !isError && completedMeetings.length === 0 && (
+            <span className="typo-body6 text-(--color-text-tertiary) px-2">
+              완료된 회의가 없습니다.
+            </span>
+          )}
+          {completedMeetings.map((meeting) => (
+            <MeetingPanelItem
+              key={meeting.meeting_id}
+              title={meeting.name}
+              isActive={meeting.meeting_id === activeMeetingId}
+              onClick={() =>
+                teamId &&
+                navigate(`/team/${teamId}/meeting/${meeting.meeting_id}`)
+              }
+            />
+          ))}
+        </div>
+      )}
 
       {isModalOpen && (
         <StartMeetingModal
