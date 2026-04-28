@@ -6,7 +6,7 @@ import IconMenuBurger from "@/assets/icons/menu/ic_menu_burger.svg?react";
 import { Icon } from "@/components/common/Icon";
 import CreateTeamModal from "@/components/panel/meeting/CreateTeamModal";
 import { TeamImage } from "@/components/common/TeamImage";
-import InviteTeamMemberModal from "@/components/panel/InviteTeamMemberModal";
+import InviteTeamMemberModal from "@/components/panel/meeting/InviteTeamMemberModal";
 import { createTeamRoute } from "@/constants/routes";
 import { useCurrentTeam } from "@/hooks/useCurrentTeam";
 import { useCreateTeam } from "@/pages/home/hooks/useCreateTeam";
