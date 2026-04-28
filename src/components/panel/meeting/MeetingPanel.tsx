@@ -96,7 +96,7 @@ const MeetingPanel = () => {
           <Icon
             icon={IconSearch}
             size={24}
-            className="shrink-0 text-(--color-text-disabled)"
+            className="shrink-0 text-(--color-text-brand)"
           />
           <span className="typo-subtitle5 text-(--color-text-disabled)">
             회의 이름으로 검색하세요...
