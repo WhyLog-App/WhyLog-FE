@@ -1,4 +1,5 @@
 import { useLocation } from "react-router-dom";
+import DecisionPanel from "./decision/DecisionPanel";
 import MeetingPanel from "./meeting/MeetingPanel";
 import RepositoryPanel from "./repository/RepositoryPanel";
 
@@ -6,6 +7,9 @@ const Panel = () => {
   const { pathname } = useLocation();
 
   const renderContent = () => {
+    if (/\/decisions(\/|$)/.test(pathname)) {
+      return <DecisionPanel />;
+    }
     if (/\/meeting(\/|$)/.test(pathname)) {
       return <MeetingPanel />;
     }
