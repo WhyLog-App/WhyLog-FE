@@ -9,7 +9,7 @@ const Panel = () => {
     if (/\/meeting(\/|$)/.test(pathname)) {
       return <MeetingPanel />;
     }
-    if (pathname.startsWith("/git")) {
+    if (/\/git(\/|$)/.test(pathname)) {
       return <RepositoryPanel />;
     }
     return null;
