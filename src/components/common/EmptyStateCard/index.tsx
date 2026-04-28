@@ -35,7 +35,7 @@ const EmptyStateCard = ({ page, onAction }: EmptyStateCardProps) => {
       <button
         type="button"
         onClick={onAction}
-        className="flex cursor-pointer items-center gap-2 rounded-xl bg-gradient-to-br from-[#5B8DEF] to-[#0063F7] px-7 py-3.5 shadow-[0px_4px_12px_0px_rgba(30,91,232,0.2)]"
+        className="flex cursor-pointer items-center gap-2 rounded-xl bg-linear-to-br from-[#5B8DEF] to-[#0063F7] px-7 py-3.5 shadow-[0px_4px_12px_0px_rgba(30,91,232,0.2)]"
       >
         <Icon icon={IconAddPlus} size={16} className="text-white" />
         <span className="typo-button-md text-(--color-text-inverse)">

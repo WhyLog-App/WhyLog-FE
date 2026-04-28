@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import IconArrowsReload from "@/assets/icons/arrow/ic_arrows_reload.svg?react";
 import IconAddPlusSquare from "@/assets/icons/edit/ic_add_plus_square.svg?react";
 import IconSearch from "@/assets/icons/interface/ic_search.svg?react";
 import { Icon } from "@/components/common/Icon";
-import { useMeetings } from "@/contexts/MeetingsContext";
+import { useCurrentTeam } from "@/hooks/useCurrentTeam";
 import { useCreateMeeting } from "@/pages/meeting/hooks/useCreateMeeting";
-import { useElapsedTime } from "@/pages/meeting/hooks/useElapsedTime";
 import { useMeetingList } from "@/pages/meeting/hooks/useMeetingList";
 import MeetingPanelItem from "./MeetingPanelItem";
 import StartMeetingModal from "./StartMeetingModal";
@@ -13,59 +13,79 @@ import StartMeetingModal from "./StartMeetingModal";
 const MeetingPanel = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
-  const { meetings } = useMeetings();
-  const { createMeeting, isPending } = useCreateMeeting();
+  const { teamId } = useCurrentTeam();
+  const { meetingId: activeMeetingIdParam } = useParams<{
+    meetingId?: string;
+  }>();
+  const activeMeetingId = activeMeetingIdParam
+    ? Number(activeMeetingIdParam)
+    : null;
+  const { createMeeting, isPending } = useCreateMeeting(teamId, () =>
+    setIsModalOpen(false),
+  );
   const {
     ongoing: ongoingMeetings,
     completed: completedMeetings,
     isLoading,
     isError,
-  } = useMeetingList();
-
-  const liveMeeting = meetings.find((m) => m.status === "in-progress");
-  const elapsed = useElapsedTime(liveMeeting?.startedAt);
-  const apiOngoing = !liveMeeting ? ongoingMeetings[0] : undefined;
+    isFetching,
+    refetch,
+  } = useMeetingList(teamId);
 
   return (
     <>
       {/* Header */}
       <div className="flex w-full items-center justify-between px-5">
         <h2 className="typo-h6 text-(--color-text-primary)">회의 목록</h2>
-        <button
-          type="button"
-          className="cursor-pointer"
-          onClick={() => setIsModalOpen(true)}
-        >
-          <Icon
-            icon={IconAddPlusSquare}
-            size={24}
-            className="text-(--color-text-primary)"
-          />
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className="cursor-pointer disabled:opacity-50"
+            onClick={() => refetch()}
+            disabled={isFetching}
+            aria-label="회의 목록 새로고침"
+          >
+            <Icon
+              icon={IconArrowsReload}
+              size={20}
+              className={`text-(--color-text-secondary) ${
+                isFetching ? "animate-spin" : ""
+              }`}
+            />
+          </button>
+          <button
+            type="button"
+            className="cursor-pointer"
+            onClick={() => setIsModalOpen(true)}
+            aria-label="회의 시작"
+          >
+            <Icon
+              icon={IconAddPlusSquare}
+              size={24}
+              className="text-(--color-text-secondary)"
+            />
+          </button>
+        </div>
       </div>
 
       {/* Divider */}
       <div className="h-px w-full bg-(--color-border-divider)" />
 
-      {/* Live meeting section */}
-      {liveMeeting && (
-        <div className="flex w-full shrink-0 flex-col items-center px-4">
-          <MeetingPanelItem
-            title={liveMeeting.name || "진행 중인 회의"}
-            isLive
-            elapsedTime={elapsed}
-            onClick={() => navigate(`/meeting/${liveMeeting.id}`)}
-          />
-        </div>
-      )}
-      {!liveMeeting && apiOngoing && (
-        <div className="flex w-full shrink-0 flex-col items-center px-4">
-          <MeetingPanelItem
-            title={apiOngoing.name}
-            isLive
-            elapsedTime={apiOngoing.elapse ?? "00:00:00"}
-            onClick={() => navigate(`/meeting/${apiOngoing.meetingId}`)}
-          />
+      {/* Ongoing meetings section */}
+      {ongoingMeetings.length > 0 && teamId && (
+        <div className="flex w-full shrink-0 flex-col gap-2 px-4">
+          {ongoingMeetings.map((meeting) => (
+            <MeetingPanelItem
+              key={meeting.meeting_id}
+              title={meeting.name}
+              isLive
+              isActive={meeting.meeting_id === activeMeetingId}
+              elapsedTime={meeting.elapse ?? "00:00:00"}
+              onClick={() =>
+                navigate(`/team/${teamId}/meeting/${meeting.meeting_id}`)
+              }
+            />
+          ))}
         </div>
       )}
 
@@ -101,9 +121,13 @@ const MeetingPanel = () => {
         )}
         {completedMeetings.map((meeting) => (
           <MeetingPanelItem
-            key={meeting.meetingId}
+            key={meeting.meeting_id}
             title={meeting.name}
-            onClick={() => navigate(`/meeting/${meeting.meetingId}`)}
+            isActive={meeting.meeting_id === activeMeetingId}
+            onClick={() =>
+              teamId &&
+              navigate(`/team/${teamId}/meeting/${meeting.meeting_id}`)
+            }
           />
         ))}
       </div>

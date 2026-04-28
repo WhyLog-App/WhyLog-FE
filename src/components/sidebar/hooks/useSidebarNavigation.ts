@@ -2,12 +2,14 @@ import { isAxiosError } from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { logout } from "@/apis/auth";
 import { ROUTES } from "@/constants/routes";
+import { useCurrentTeam } from "@/hooks/useCurrentTeam";
 import { tokenStore } from "@/utils/tokenStore";
 import type { MenuItem } from "../types";
 
 export const useSidebarNavigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { teamId } = useCurrentTeam();
 
   const handleMenuClick = async (item: MenuItem) => {
     if (item.id === "logout") {
@@ -24,15 +26,29 @@ export const useSidebarNavigation = () => {
       }
       return;
     }
-    if (item.path) {
-      navigate(item.path);
+
+    if (item.id === "settings") {
+      navigate("/settings");
+      return;
+    }
+
+    if (item.path && teamId) {
+      navigate(`/team/${teamId}${item.path}`);
     }
   };
 
   const isActive = (item: MenuItem) => {
     if (!item.path) return false;
-    if (item.path === "/") return location.pathname === "/";
-    return location.pathname.startsWith(item.path);
+
+    if (item.id === "settings") {
+      return location.pathname.endsWith("/settings");
+    }
+
+    // 팀 경로에서 패턴 매칭
+    if (item.path === "/") {
+      return /^\/team\/\d+$/.test(location.pathname);
+    }
+    return location.pathname.includes(item.path);
   };
 
   return { handleMenuClick, isActive };

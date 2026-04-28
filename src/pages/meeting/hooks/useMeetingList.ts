@@ -2,20 +2,25 @@ import { useQuery } from "@tanstack/react-query";
 import { listMeetings } from "@/apis/meetings";
 import type { MeetingListItem } from "@/types/meeting";
 
-// TODO: teamId를 로그인 응답/팀 컨텍스트에서 가져오도록 교체
-const TEMP_TEAM_ID = 3;
-
 export const MEETING_LIST_QUERY_KEY = ["meetings"] as const;
 
-export const useMeetingList = () => {
+export const useMeetingList = (teamId: number | null) => {
   const ongoingQuery = useQuery<MeetingListItem[]>({
-    queryKey: [...MEETING_LIST_QUERY_KEY, TEMP_TEAM_ID, "ONGOING"],
-    queryFn: () => listMeetings(TEMP_TEAM_ID, "ONGOING"),
+    queryKey: [...MEETING_LIST_QUERY_KEY, teamId, "ONGOING"],
+    queryFn: () => {
+      if (teamId == null) throw new Error("Team ID is required");
+      return listMeetings(teamId, "ONGOING");
+    },
+    enabled: teamId != null,
   });
 
   const completedQuery = useQuery<MeetingListItem[]>({
-    queryKey: [...MEETING_LIST_QUERY_KEY, TEMP_TEAM_ID, "COMPLETED"],
-    queryFn: () => listMeetings(TEMP_TEAM_ID, "COMPLETED"),
+    queryKey: [...MEETING_LIST_QUERY_KEY, teamId, "COMPLETED"],
+    queryFn: () => {
+      if (teamId == null) throw new Error("Team ID is required");
+      return listMeetings(teamId, "COMPLETED");
+    },
+    enabled: teamId != null,
   });
 
   return {
@@ -23,5 +28,10 @@ export const useMeetingList = () => {
     completed: completedQuery.data ?? [],
     isLoading: ongoingQuery.isLoading || completedQuery.isLoading,
     isError: ongoingQuery.isError || completedQuery.isError,
+    isFetching: ongoingQuery.isFetching || completedQuery.isFetching,
+    refetch: () => {
+      ongoingQuery.refetch();
+      completedQuery.refetch();
+    },
   };
 };

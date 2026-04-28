@@ -4,7 +4,7 @@ import { useState } from "react";
 import { createTeam } from "@/apis/teams";
 import { TEAMS_QUERY_KEY } from "@/components/sidebar/hooks/useTeams";
 import type { ApiResponse } from "@/types/auth";
-import type { CreateTeamResult } from "@/types/team";
+import type { CreateTeamRequest, CreateTeamResult } from "@/types/team";
 
 interface UseCreateTeamOptions {
   onSuccess?: (result: CreateTeamResult) => void;
@@ -15,9 +15,9 @@ export const useCreateTeam = (options?: UseCreateTeamOptions) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const mutation = useMutation({
-    mutationFn: ({ name }: { name: string }) => createTeam({ name }),
-    onSuccess: (result: CreateTeamResult) => {
-      queryClient.invalidateQueries({ queryKey: TEAMS_QUERY_KEY });
+    mutationFn: (payload: CreateTeamRequest) => createTeam(payload),
+    onSuccess: async (result: CreateTeamResult) => {
+      await queryClient.invalidateQueries({ queryKey: TEAMS_QUERY_KEY });
       options?.onSuccess?.(result);
     },
     onError: (error: unknown) => {
@@ -33,9 +33,9 @@ export const useCreateTeam = (options?: UseCreateTeamOptions) => {
   });
 
   return {
-    createTeam: (name: string) => {
+    createTeam: (name: string, image?: File) => {
       setErrorMessage(null);
-      mutation.mutate({ name });
+      mutation.mutate({ name, image });
     },
     isPending: mutation.isPending,
     errorMessage,

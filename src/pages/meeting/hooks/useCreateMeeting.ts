@@ -7,23 +7,26 @@ import type { ApiResponse } from "@/types/auth";
 import type { CreateMeetingResult } from "@/types/meeting";
 import { MEETING_LIST_QUERY_KEY } from "./useMeetingList";
 
-// TODO: teamId를 로그인 응답/팀 컨텍스트에서 가져오도록 교체
-const TEMP_TEAM_ID = 3;
-
-export const useCreateMeeting = () => {
+export const useCreateMeeting = (
+  teamId: number | null,
+  onSuccess?: () => void,
+) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const mutation = useMutation({
-    mutationFn: ({ name }: { name: string }) =>
-      createMeeting(TEMP_TEAM_ID, {
+    mutationFn: ({ name }: { name: string }) => {
+      if (teamId == null) throw new Error("Team ID is required");
+      return createMeeting(teamId, {
         name,
-        startDateTime: new Date().toISOString(),
-      }),
+        start_date_time: new Date().toISOString(),
+      });
+    },
     onSuccess: (result: CreateMeetingResult) => {
       queryClient.invalidateQueries({ queryKey: MEETING_LIST_QUERY_KEY });
-      navigate(`/meeting/${result.meeting_id}`, {
+      onSuccess?.();
+      navigate(`/team/${teamId}/meeting/${result.meeting_id}`, {
         state: { name: result.name },
       });
     },

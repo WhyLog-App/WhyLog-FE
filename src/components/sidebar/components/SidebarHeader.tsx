@@ -1,11 +1,17 @@
 import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import IconChevronDown from "@/assets/icons/arrow/ic_chevron_down.svg?react";
 import IconAddPlus from "@/assets/icons/edit/ic_add_plus.svg?react";
 import IconMenuBurger from "@/assets/icons/menu/ic_menu_burger.svg?react";
 import { Icon } from "@/components/common/Icon";
 import CreateTeamModal from "@/components/panel/meeting/CreateTeamModal";
+import { TeamImage } from "@/components/common/TeamImage";
+import InviteTeamMemberModal from "@/components/panel/InviteTeamMemberModal";
+import { createTeamRoute } from "@/constants/routes";
+import { useCurrentTeam } from "@/hooks/useCurrentTeam";
 import { useCreateTeam } from "@/pages/home/hooks/useCreateTeam";
 import type { Team } from "@/types/team";
+import { useInviteTeamMember } from "../hooks/useInviteTeamMember";
 import { useTeams } from "../hooks/useTeams";
 import { TeamListDropdown } from "./TeamListDropdown";
 
@@ -14,24 +20,32 @@ interface SidebarHeaderProps {
 }
 
 export const SidebarHeader = ({ isOpen }: SidebarHeaderProps) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { currentTeam } = useCurrentTeam();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentTeam, setCurrentTeam] = useState<Team | null>(null);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { data: teams = [] } = useTeams();
 
   const { createTeam, isPending } = useCreateTeam({
     onSuccess: (result) => {
-      setCurrentTeam({ team_id: result.team_id, name: result.name });
       setIsModalOpen(false);
+      navigate(createTeamRoute(result.team_id));
     },
   });
 
-  useEffect(() => {
-    if (teams.length > 0 && !currentTeam) {
-      setCurrentTeam(teams[0]);
-    }
-  }, [teams, currentTeam]);
+  const {
+    invite,
+    isPending: isInvitePending,
+    errorMessage: inviteErrorMessage,
+    resetError: resetInviteError,
+  } = useInviteTeamMember(currentTeam?.team_id ?? null, {
+    onSuccess: () => {
+      setIsInviteModalOpen(false);
+    },
+  });
 
   useEffect(() => {
     if (!isOpen) {
@@ -53,8 +67,13 @@ export const SidebarHeader = ({ isOpen }: SidebarHeaderProps) => {
   }, []);
 
   const handleSelectTeam = (team: Team) => {
-    setCurrentTeam(team);
     setIsDropdownOpen(false);
+
+    // 현재 경로에서 팀 부분 제거
+    const pathWithoutTeam = location.pathname.replace(/^\/team\/\d+/, "");
+
+    // 새 팀으로 동일한 페이지 이동
+    navigate(`/team/${team.team_id}${pathWithoutTeam}`);
   };
 
   const handleCreateTeam = () => {
@@ -62,17 +81,23 @@ export const SidebarHeader = ({ isOpen }: SidebarHeaderProps) => {
     setIsModalOpen(true);
   };
 
-  const handleModalCreate = (teamName: string, _photo: File | null) => {
-    createTeam(teamName);
+  const handleInviteMember = () => {
+    setIsDropdownOpen(false);
+    resetInviteError();
+    setIsInviteModalOpen(true);
+  };
+
+  const handleModalCreate = (teamName: string, photo: File | null) => {
+    createTeam(teamName, photo ?? undefined);
   };
 
   const hasTeams = teams.length > 0;
 
   return (
     <>
-      <div className="relative flex items-center gap-2" ref={dropdownRef}>
+      <div className="relative flex items-center gap-1" ref={dropdownRef}>
         <div className="flex size-12 shrink-0 items-center justify-center">
-          <Icon icon={IconMenuBurger} size={20} className="h-[14px]" />
+          <Icon icon={IconMenuBurger} size={20} className="h-3.5" />
         </div>
         {isOpen && (
           <>
@@ -80,16 +105,24 @@ export const SidebarHeader = ({ isOpen }: SidebarHeaderProps) => {
               <button
                 type="button"
                 onClick={() => setIsDropdownOpen((prev) => !prev)}
-                className="flex cursor-pointer items-center gap-1"
+                className={`group flex cursor-pointer items-center gap-1 rounded-lg px-2 py-1 transition-colors ${
+                  isDropdownOpen ? "bg-action-active" : "hover:bg-action-hover"
+                }`}
               >
-                <div className="size-[18px] rounded-sm bg-gray-400" />
-                <span className="typo-subtitle3 whitespace-nowrap text-black">
+                <TeamImage
+                  src={currentTeam?.team_image}
+                  alt={`${currentTeam?.name ?? "팀"} 이미지`}
+                  size={18}
+                />
+                <span className="typo-subtitle5 max-w-24 truncate text-black">
                   {currentTeam?.name ?? "팀 명"}
                 </span>
                 <Icon
                   icon={IconChevronDown}
-                  size={18}
-                  className={`transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`}
+                  size={14}
+                  className={`opacity-0 transition-all duration-200 group-hover:opacity-100 ${
+                    isDropdownOpen ? "rotate-180 opacity-100" : ""
+                  }`}
                 />
               </button>
             ) : (
@@ -110,6 +143,7 @@ export const SidebarHeader = ({ isOpen }: SidebarHeaderProps) => {
                 currentTeamId={currentTeam?.team_id ?? null}
                 onSelectTeam={handleSelectTeam}
                 onCreateTeam={handleCreateTeam}
+                onInviteMember={handleInviteMember}
               />
             )}
           </>
@@ -120,6 +154,14 @@ export const SidebarHeader = ({ isOpen }: SidebarHeaderProps) => {
           onClose={() => setIsModalOpen(false)}
           onCreate={handleModalCreate}
           isPending={isPending}
+        />
+      )}
+      {isInviteModalOpen && (
+        <InviteTeamMemberModal
+          onClose={() => setIsInviteModalOpen(false)}
+          onInvite={invite}
+          isPending={isInvitePending}
+          errorMessage={inviteErrorMessage}
         />
       )}
     </>
