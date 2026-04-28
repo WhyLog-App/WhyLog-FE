@@ -42,8 +42,11 @@ const DecisionMeetingCard = ({
     >
       <button
         type="button"
-        className={`flex w-full cursor-pointer flex-col gap-2 rounded-lg px-4 py-3 text-left ${
-          !hasDecisions ? "" : "hover:bg-(--color-action-hover)"
+        disabled={!hasDecisions}
+        className={`flex w-full flex-col gap-2 rounded-lg px-4 py-3 text-left ${
+          !hasDecisions
+            ? "cursor-default"
+            : "cursor-pointer hover:bg-(--color-action-hover)"
         }`}
         onClick={() => {
           if (!hasDecisions) return;

@@ -19,6 +19,7 @@ const RepositoryPanelItem = ({
     <button
       type="button"
       onClick={onClick}
+      aria-pressed={isActive}
       className={`flex w-full cursor-pointer items-center justify-between rounded-lg p-3 ${
         isActive
           ? "bg-(--color-action-active)"
@@ -26,12 +27,22 @@ const RepositoryPanelItem = ({
       }`}
     >
       <span className="flex items-center gap-0.5">
-        <Icon icon={IconGit} size={16} className="text-(--color-text-primary)" />
-        <span className="typo-subtitle5 text-(--color-text-primary)">{name}</span>
+        <Icon
+          icon={IconGit}
+          size={16}
+          className="text-(--color-text-primary)"
+        />
+        <span className="typo-subtitle5 text-(--color-text-primary)">
+          {name}
+        </span>
       </span>
 
       <span className="flex items-center gap-0.5">
-        <Icon icon={IconClock} size={12} className="text-(--color-text-tertiary)" />
+        <Icon
+          icon={IconClock}
+          size={12}
+          className="text-(--color-text-tertiary)"
+        />
         <span className="typo-caption2 text-(--color-text-tertiary)">
           {updatedAtText}
         </span>

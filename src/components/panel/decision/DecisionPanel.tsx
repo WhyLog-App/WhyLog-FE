@@ -32,7 +32,9 @@ const DecisionPanel = () => {
       ?.decisions.at(0)?.id ?? null,
   );
 
-  const hasAnalyzedMeetings = decisionMeetings.length > 0;
+  const hasAnalyzedMeetings = decisionMeetings.some(
+    (meeting) => meeting.decisions.length > 0,
+  );
 
   return (
     <>

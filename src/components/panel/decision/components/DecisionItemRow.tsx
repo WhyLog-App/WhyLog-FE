@@ -24,6 +24,7 @@ const DecisionItemRow = ({
     <button
       type="button"
       onClick={() => onClick(id)}
+      aria-pressed={isActive}
       className={`flex h-8 w-full cursor-pointer items-center gap-3 px-4 text-left ${
         isActive
           ? "bg-(--color-action-active)"
