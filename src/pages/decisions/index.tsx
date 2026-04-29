@@ -1,7 +1,9 @@
+import EmptyStateCard from "@/components/common/EmptyStateCard";
+
 function DecisionsPage() {
   return (
-    <div>
-      <h1>결정 사항</h1>
+    <div className="flex min-h-full w-full items-center justify-center p-8">
+      <EmptyStateCard page="Decisions" />
     </div>
   );
 }

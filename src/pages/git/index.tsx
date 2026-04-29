@@ -1,7 +1,9 @@
+import EmptyStateCard from "@/components/common/EmptyStateCard";
+
 function GitPage() {
   return (
-    <div>
-      <h1>GIT</h1>
+    <div className="flex min-h-full w-full items-center justify-center p-8">
+      <EmptyStateCard page="Git" />
     </div>
   );
 }

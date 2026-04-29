@@ -1,7 +1,9 @@
+import EmptyStateCard from "@/components/common/EmptyStateCard";
+
 function MeetingPage() {
   return (
-    <div>
-      <h1>음성 회의</h1>
+    <div className="flex min-h-full w-full items-center justify-center p-8">
+      <EmptyStateCard page="Meetings" />
     </div>
   );
 }
