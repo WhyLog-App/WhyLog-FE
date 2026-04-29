@@ -81,23 +81,31 @@ export const useLiveKitRoom = ({ meetingId }: UseLiveKitRoomOptions) => {
       setParticipants((prev) => prev.filter((x) => x.id !== p.identity));
     });
 
-    // 원격 audio track에 현재 듣기 상태(volume) 적용
-    const applyVolumeToTrack = (track: RemoteTrack) => {
+    // 원격 audio track 을 DOM 에 attach 해 실제 재생되도록 하고, 현재 듣기 상태 적용
+    const attachAudioTrack = (track: RemoteTrack) => {
       if (track.kind !== Track.Kind.Audio) return;
       const apply = (el: HTMLMediaElement) => {
         el.volume = isAudioOutputEnabledRef.current ? 1 : 0;
       };
+      if (track.attachedElements.length === 0) {
+        const el = track.attach();
+        el.style.display = "none";
+        document.body.appendChild(el);
+      }
       track.attachedElements.forEach(apply);
       track.on(TrackEvent.ElementAttached, apply);
     };
 
     room.on(RoomEvent.TrackSubscribed, (track: RemoteTrack) => {
-      applyVolumeToTrack(track);
+      attachAudioTrack(track);
     });
 
-    // 메모리 누수 방지: track 구독 해제 시 ElementAttached 리스너 정리
+    // 트랙 구독 해제 시 audio element 정리 + 리스너 제거
     room.on(RoomEvent.TrackUnsubscribed, (track: RemoteTrack) => {
       if (track.kind !== Track.Kind.Audio) return;
+      track.detach().forEach((el) => {
+        el.remove();
+      });
       track.removeAllListeners(TrackEvent.ElementAttached);
     });
 
@@ -116,7 +124,7 @@ export const useLiveKitRoom = ({ meetingId }: UseLiveKitRoomOptions) => {
         room.remoteParticipants.forEach((p) => {
           initial.push({ id: p.identity, name: p.name || p.identity });
           p.audioTrackPublications.forEach((pub) => {
-            if (pub.track) applyVolumeToTrack(pub.track);
+            if (pub.track) attachAudioTrack(pub.track);
           });
         });
         if (initial.length > 0) {

@@ -16,15 +16,16 @@ interface UseMeetingSignalingOptions {
 // WebSocket frame 형태
 interface SignalingFrame {
   type: string;
+  meeting_id?: number;
   participants?: Array<{
     id?: string | number;
-    memberId?: string | number;
+    member_id?: string | number;
     name?: string;
     self?: boolean;
   }>;
-  fromMemberId?: number;
-  fromName?: string;
-  memberId?: number;
+  from_member_id?: number;
+  from_name?: string;
+  member_id?: number;
   name?: string;
   text?: string;
   timestamp?: string;
@@ -91,7 +92,7 @@ export const useMeetingSignaling = ({
             if (Array.isArray(msg.participants)) {
               setParticipants(
                 msg.participants.map((p, idx) => ({
-                  id: String(p.memberId ?? p.id ?? idx),
+                  id: String(p.member_id ?? p.id ?? idx),
                   name: p.name ?? `참가자${idx + 1}`,
                   isSelf: p.self,
                 })),
@@ -100,9 +101,9 @@ export const useMeetingSignaling = ({
             break;
           }
           case "participant_joined": {
-            if (msg.memberId != null) {
+            if (msg.member_id != null) {
               setParticipants((prev) => {
-                const id = String(msg.memberId);
+                const id = String(msg.member_id);
                 if (prev.some((p) => p.id === id)) return prev;
                 return [
                   ...prev,
@@ -113,8 +114,8 @@ export const useMeetingSignaling = ({
             break;
           }
           case "participant_left": {
-            if (msg.memberId != null) {
-              const leftId = String(msg.memberId);
+            if (msg.member_id != null) {
+              const leftId = String(msg.member_id);
               setParticipants((prev) => prev.filter((p) => p.id !== leftId));
               setInterimByMember((prev) => {
                 const next = { ...prev };
@@ -125,12 +126,12 @@ export const useMeetingSignaling = ({
             break;
           }
           case "audio_text": {
-            const key = String(msg.fromMemberId ?? "unknown");
+            const key = String(msg.from_member_id ?? "unknown");
             setInterimByMember((prev) => ({
               ...prev,
               [key]: {
-                memberId: msg.fromMemberId ?? null,
-                fromName: msg.fromName ?? "참가자",
+                memberId: msg.from_member_id ?? null,
+                fromName: msg.from_name ?? "참가자",
                 text: msg.text ?? "",
                 timestamp: msg.timestamp ?? new Date().toISOString(),
               },
@@ -138,7 +139,7 @@ export const useMeetingSignaling = ({
             break;
           }
           case "speech": {
-            const key = String(msg.fromMemberId ?? "unknown");
+            const key = String(msg.from_member_id ?? "unknown");
             setInterimByMember((prev) => {
               if (!(key in prev)) return prev;
               const next = { ...prev };
@@ -149,8 +150,8 @@ export const useMeetingSignaling = ({
               ...prev,
               {
                 id: `${key}-${msg.timestamp ?? Date.now()}-${prev.length}`,
-                memberId: msg.fromMemberId ?? null,
-                fromName: msg.fromName ?? "참가자",
+                memberId: msg.from_member_id ?? null,
+                fromName: msg.from_name ?? "참가자",
                 text: msg.text ?? "",
                 timestamp: msg.timestamp ?? new Date().toISOString(),
                 isFinal: true,
