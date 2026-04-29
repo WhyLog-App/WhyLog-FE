@@ -1,4 +1,6 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { decodeAccessToken } from "@/utils/jwt";
+import { tokenStore } from "@/utils/tokenStore";
 import LiveTranscriptPanel from "./components/LiveTranscriptPanel";
 import MeetingControls from "./components/MeetingControls";
 import MeetingHeader from "./components/MeetingHeader";
@@ -49,6 +51,13 @@ const InProgressPage = () => {
   const startedAt = parseStartTimestamp(meetingDetail?.start_date_time);
   const elapsed = useElapsedTime(startedAt);
 
+  const accessToken = tokenStore.getToken();
+  const myMemberId = accessToken
+    ? (decodeAccessToken(accessToken)?.memberId ?? null)
+    : null;
+  const myName =
+    meetingDetail?.members.find((m) => m.member_id === myMemberId)?.name ?? "";
+
   const {
     participants,
     isWsConnected,
@@ -63,7 +72,7 @@ const InProgressPage = () => {
     setAudioOutputEnabled,
   } = useMeetingRoom({
     meetingId,
-    displayName: "나",
+    displayName: myName,
   });
 
   const { handleInterim, handleFinal, mergeTranscripts, mergeInterim } =
@@ -88,7 +97,9 @@ const InProgressPage = () => {
   const displayParticipants =
     participants.length > 0
       ? participants
-      : [{ id: "self", name: "나", isSelf: true }];
+      : myName && myMemberId != null
+        ? [{ id: String(myMemberId), name: myName, isSelf: true }]
+        : [];
 
   const handleEnd = () => {
     if (meetingId != null) endMeeting(meetingId);
