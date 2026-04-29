@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface AudioPlayerBarProps {
   durationSec: number;
-  initialCurrentSec?: number;
+  audioUrl?: string | null;
 }
 
 const RewindIcon = () => (
@@ -64,24 +64,65 @@ const PauseIcon = () => (
   </svg>
 );
 
-const AudioPlayerBar = ({
-  durationSec,
-  initialCurrentSec = 0,
-}: AudioPlayerBarProps) => {
+const AudioPlayerBar = ({ durationSec, audioUrl }: AudioPlayerBarProps) => {
+  const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentSec, setCurrentSec] = useState(0);
+
+  const disabled = !audioUrl;
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: reset state on audio source change
+  useEffect(() => {
+    setIsPlaying(false);
+    setCurrentSec(0);
+  }, [audioUrl]);
+
+  const handleTogglePlay = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (audio.paused) {
+      audio.play().catch(() => setIsPlaying(false));
+    } else {
+      audio.pause();
+    }
+  };
+
+  const handleSeek = (delta: number) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.currentTime = Math.max(
+      0,
+      Math.min(audio.duration || durationSec, audio.currentTime + delta),
+    );
+  };
+
   const progressPct =
     durationSec > 0
-      ? Math.max(
-          0,
-          Math.min(100, Math.round((initialCurrentSec / durationSec) * 100)),
-        )
+      ? Math.max(0, Math.min(100, (currentSec / durationSec) * 100))
       : 0;
 
   return (
     <div className="flex items-center gap-4">
+      {audioUrl ? (
+        <audio
+          ref={audioRef}
+          src={audioUrl}
+          preload="metadata"
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          onEnded={() => setIsPlaying(false)}
+          onTimeUpdate={(e) => setCurrentSec(e.currentTarget.currentTime)}
+          className="hidden"
+        >
+          <track kind="captions" />
+        </audio>
+      ) : null}
+
       <button
         type="button"
-        className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-(--color-text-secondary) hover:bg-(--color-bg-subtle)"
+        onClick={() => handleSeek(-10)}
+        disabled={disabled}
+        className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-(--color-text-secondary) hover:bg-(--color-bg-subtle) disabled:cursor-not-allowed disabled:opacity-40"
         aria-label="뒤로 감기"
       >
         <RewindIcon />
@@ -89,8 +130,9 @@ const AudioPlayerBar = ({
 
       <button
         type="button"
-        onClick={() => setIsPlaying((v) => !v)}
-        className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-(--color-primary-500) text-white hover:opacity-90"
+        onClick={handleTogglePlay}
+        disabled={disabled}
+        className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-(--color-primary-500) text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
         aria-label={isPlaying ? "일시정지" : "재생"}
       >
         {isPlaying ? <PauseIcon /> : <PlayIcon />}
@@ -98,7 +140,9 @@ const AudioPlayerBar = ({
 
       <button
         type="button"
-        className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-(--color-text-secondary) hover:bg-(--color-bg-subtle)"
+        onClick={() => handleSeek(10)}
+        disabled={disabled}
+        className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-(--color-text-secondary) hover:bg-(--color-bg-subtle) disabled:cursor-not-allowed disabled:opacity-40"
         aria-label="앞으로 감기"
       >
         <ForwardIcon />

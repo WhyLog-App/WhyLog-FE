@@ -24,6 +24,12 @@ const ENDPOINT = {
     RTC_TOKEN: (meetingId: number) =>
       `${API_BASE_URL}/api/meetings/${meetingId}/rtc-token`,
     END: (meetingId: number) => `${API_BASE_URL}/api/meetings/${meetingId}/end`,
+    ANALYSIS: (meetingId: number) =>
+      `${API_BASE_URL}/api/meetings/${meetingId}/analysis`,
+    AUDIO: (meetingId: number) =>
+      `${API_BASE_URL}/api/meetings/${meetingId}/audio`,
+    HISTORY: (meetingId: number) =>
+      `${API_BASE_URL}/api/meetings/${meetingId}/history`,
   },
 } as const;
 

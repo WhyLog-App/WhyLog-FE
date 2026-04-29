@@ -1,6 +1,6 @@
 import IconCircleUser from "@/assets/icons/user/ic_circle_user.svg?react";
 import { Icon } from "@/components/common/Icon";
-import type { CompletedTranscriptItem } from "../mocks/completedMeetingMock";
+import type { CompletedTranscriptItem } from "../types/completed";
 
 interface CompletedTranscriptProps {
   items: CompletedTranscriptItem[];
