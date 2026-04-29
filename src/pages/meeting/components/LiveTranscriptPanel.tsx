@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from "react";
 import IconChatConversation from "@/assets/icons/media/ic_chat_conversation.svg?react";
 import { Icon } from "@/components/common/Icon";
 import type { InterimEntry, TranscriptEntry } from "../types";
+import { getMemberColor } from "../utils/memberColor";
 
 interface LiveTranscriptPanelProps {
   transcripts: TranscriptEntry[];
@@ -71,7 +72,10 @@ const LiveTranscriptPanel = ({
         {transcripts.map((item) => (
           <div key={item.id} className="flex flex-col gap-1">
             <div className="flex items-center justify-between">
-              <span className="typo-subtitle5 text-(--color-primary-500)">
+              <span
+                className="typo-subtitle5"
+                style={{ color: getMemberColor(item.memberId, item.fromName) }}
+              >
                 {item.fromName}
               </span>
               <span className="typo-caption1 text-(--color-text-tertiary)">
@@ -90,7 +94,10 @@ const LiveTranscriptPanel = ({
             className="flex flex-col gap-1 opacity-60"
           >
             <div className="flex items-center justify-between">
-              <span className="typo-subtitle5 text-(--color-primary-500)">
+              <span
+                className="typo-subtitle5"
+                style={{ color: getMemberColor(entry.memberId, key) }}
+              >
                 {entry.fromName}
               </span>
               <span className="typo-caption1 text-(--color-text-tertiary)">
