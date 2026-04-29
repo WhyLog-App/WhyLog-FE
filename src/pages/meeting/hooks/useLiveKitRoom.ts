@@ -14,19 +14,26 @@ interface UseLiveKitRoomOptions {
   meetingId: number | null;
 }
 
+const MAX_RETRIES = 3;
+const RETRY_DELAY_MS = 2000;
+
 /**
  * LiveKit SFU(Room) 연결 및 미디어 트랙 제어.
  * - Room 입장 / 퇴장
  * - 참가자 join / leave 이벤트
  * - 마이크 mute/unmute
  * - 원격 audio output volume 제어
+ * - RTC 토큰 발급/연결 실패 시 자동 재시도
  */
 export const useLiveKitRoom = ({ meetingId }: UseLiveKitRoomOptions) => {
   const [participants, setParticipants] = useState<MeetingParticipant[]>([]);
   const [isConnected, setIsConnected] = useState(false);
+  const [hasRtcToken, setHasRtcToken] = useState(false);
+  const [retryAttempt, setRetryAttempt] = useState(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isMicEnabled, setIsMicEnabled] = useState(true);
   const [isAudioOutputEnabled, setIsAudioOutputEnabled] = useState(true);
+  const [, setRetrySignal] = useState(0);
 
   const roomRef = useRef<Room | null>(null);
   // 이벤트 콜백/connect 이후 시점에 최신 의도 상태를 참조하기 위한 ref
@@ -62,6 +69,14 @@ export const useLiveKitRoom = ({ meetingId }: UseLiveKitRoomOptions) => {
         });
       });
     });
+  }, []);
+
+  const manualRetry = useCallback(() => {
+    setErrorMessage(null);
+    setRetryAttempt(0);
+    setHasRtcToken(false);
+    setIsConnected(false);
+    setRetrySignal((n) => n + 1);
   }, []);
 
   useEffect(() => {
@@ -109,10 +124,13 @@ export const useLiveKitRoom = ({ meetingId }: UseLiveKitRoomOptions) => {
       track.removeAllListeners(TrackEvent.ElementAttached);
     });
 
-    (async () => {
+    let attempt = 0;
+    const tryConnect = async (): Promise<void> => {
       try {
         const { serverUrl, token } = await getRtcToken(meetingId);
         if (cancelled) return;
+        setHasRtcToken(true);
+
         await room.connect(serverUrl, token);
         if (cancelled) {
           await room.disconnect();
@@ -138,18 +156,35 @@ export const useLiveKitRoom = ({ meetingId }: UseLiveKitRoomOptions) => {
         }
 
         setIsConnected(true);
+        setErrorMessage(null);
+        setRetryAttempt(0);
         // 사용자가 직전에 mute 했어도 그 의도를 보존
         await room.localParticipant.setMicrophoneEnabled(
           isMicEnabledRef.current,
         );
       } catch (err) {
-        if (!cancelled) {
-          setErrorMessage(
-            err instanceof Error ? err.message : "회의방 연결 실패",
-          );
+        if (cancelled) return;
+        attempt += 1;
+        setRetryAttempt(attempt);
+
+        if (attempt < MAX_RETRIES) {
+          // backoff 후 재시도
+          await new Promise((r) => setTimeout(r, RETRY_DELAY_MS));
+          if (cancelled) return;
+          try {
+            await room.disconnect();
+          } catch {
+            /* noop */
+          }
+          return tryConnect();
         }
+
+        setErrorMessage(
+          err instanceof Error ? err.message : "회의방 연결 실패",
+        );
       }
-    })();
+    };
+    tryConnect();
 
     return () => {
       cancelled = true;
@@ -158,6 +193,7 @@ export const useLiveKitRoom = ({ meetingId }: UseLiveKitRoomOptions) => {
       });
       roomRef.current = null;
       setIsConnected(false);
+      setHasRtcToken(false);
       setParticipants([]);
       // 이전 회의 에러가 새 화면에 잔존하지 않도록 초기화
       setErrorMessage(null);
@@ -167,10 +203,13 @@ export const useLiveKitRoom = ({ meetingId }: UseLiveKitRoomOptions) => {
   return {
     participants,
     isConnected,
+    hasRtcToken,
+    retryAttempt,
     errorMessage,
     isMicEnabled,
     isAudioOutputEnabled,
     setMicrophoneEnabled,
     setAudioOutputEnabled,
+    manualRetry,
   };
 };
