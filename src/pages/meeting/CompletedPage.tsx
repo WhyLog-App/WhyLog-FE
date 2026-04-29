@@ -5,12 +5,7 @@ import CompletedTranscript from "./components/CompletedTranscript";
 import CompletedInfoPanels from "./components/info-panels/CompletedInfoPanels";
 import { useMeetingDetail } from "./hooks/useMeetingDetail";
 import { completedMeetingMock } from "./mocks/completedMeetingMock";
-
-const parseMeetingId = (raw: string | undefined): number | null => {
-  if (!raw) return null;
-  const num = Number(raw);
-  return Number.isNaN(num) ? null : num;
-};
+import { parseMeetingId } from "./utils/parseMeetingId";
 
 const CompletedPage = () => {
   const { meetingId: meetingIdParam } = useParams<{ meetingId: string }>();

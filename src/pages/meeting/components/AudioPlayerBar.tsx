@@ -71,7 +71,10 @@ const AudioPlayerBar = ({
   const [isPlaying, setIsPlaying] = useState(false);
   const progressPct =
     durationSec > 0
-      ? Math.min(100, Math.round((initialCurrentSec / durationSec) * 100))
+      ? Math.max(
+          0,
+          Math.min(100, Math.round((initialCurrentSec / durationSec) * 100)),
+        )
       : 0;
 
   return (

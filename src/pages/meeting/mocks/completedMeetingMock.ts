@@ -32,7 +32,7 @@ export const completedMeetingMock: CompletedMeetingMock = {
   name: "서버 개발 팀 1차 회의",
   start_text: "2026.01.30 일 오후 5:30",
   duration_text: "1시간 20분",
-  member_count: 3,
+  member_count: 4,
   members: [
     { name: "김준용", profile_image: null },
     { name: "유진", profile_image: null },

@@ -6,12 +6,7 @@ import CompletedPage from "./CompletedPage";
 import { useMeetingDetail } from "./hooks/useMeetingDetail";
 import { MEETING_LIST_QUERY_KEY } from "./hooks/useMeetingList";
 import InProgressPage from "./InProgressPage";
-
-const parseMeetingId = (raw: string | undefined): number | null => {
-  if (!raw) return null;
-  const num = Number(raw);
-  return Number.isNaN(num) ? null : num;
-};
+import { parseMeetingId } from "./utils/parseMeetingId";
 
 const MeetingRoutePage = () => {
   const { meetingId: meetingIdParam } = useParams<{ meetingId: string }>();
@@ -43,14 +38,36 @@ const MeetingRoutePage = () => {
   const inCompleted =
     cachedCompleted?.some((m) => m.meeting_id === meetingId) ?? false;
 
-  // 2) fallback: meeting detail의 end_date_time
-  const { data: detail } = useMeetingDetail(meetingId);
+  const cacheResolved = inOngoing || inCompleted;
+
+  // 2) fallback: 캐시로 결정 못 한 경우에만 detail 조회
+  const {
+    data: detail,
+    isLoading,
+    isError,
+  } = useMeetingDetail(meetingId, { enabled: !cacheResolved });
+
+  if (meetingId == null || isError) {
+    return (
+      <div className="flex h-full items-center justify-center text-(--color-text-secondary)">
+        회의를 찾을 수 없습니다.
+      </div>
+    );
+  }
 
   if (inOngoing) return <InProgressPage />;
   if (inCompleted) return <CompletedPage />;
 
   if (detail) {
     return detail.end_date_time ? <CompletedPage /> : <InProgressPage />;
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full items-center justify-center text-(--color-text-secondary)">
+        회의 정보를 불러오는 중...
+      </div>
+    );
   }
 
   return null;
