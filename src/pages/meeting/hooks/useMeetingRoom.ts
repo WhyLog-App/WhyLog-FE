@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import type { RoomParticipant } from "../types";
 import { useLiveKitRoom } from "./useLiveKitRoom";
 import { useMeetingSignaling } from "./useMeetingSignaling";
@@ -13,6 +13,7 @@ interface UseMeetingRoomOptions {
  * - WebSocket(signaling, transcripts) + LiveKit(SFU, 미디어) 두 채널을 묶어
  *   하나의 인터페이스로 노출한다.
  * - 참가자 목록은 두 소스를 병합 (id 기준 중복 제거)
+ * - 연결 진행 상태(hasRtcToken, retryAttempt)와 수동 재시도(manualRetry) 노출
  */
 export const useMeetingRoom = ({
   meetingId,
@@ -29,10 +30,19 @@ export const useMeetingRoom = ({
     return Array.from(map.values());
   }, [signaling.participants, livekit.participants]);
 
+  const manualRetry = useCallback(() => {
+    signaling.manualRetry();
+    livekit.manualRetry();
+  }, [signaling.manualRetry, livekit.manualRetry]);
+
+  const retryAttempt = Math.max(signaling.retryAttempt, livekit.retryAttempt);
+
   return {
     participants,
     isWsConnected: signaling.isConnected,
     isRoomConnected: livekit.isConnected,
+    hasRtcToken: livekit.hasRtcToken,
+    retryAttempt,
     // LiveKit 에러를 우선 노출, 없으면 signaling 에러
     errorMessage: livekit.errorMessage ?? signaling.errorMessage,
     transcripts: signaling.transcripts,
@@ -42,5 +52,6 @@ export const useMeetingRoom = ({
     isAudioOutputEnabled: livekit.isAudioOutputEnabled,
     setMicrophoneEnabled: livekit.setMicrophoneEnabled,
     setAudioOutputEnabled: livekit.setAudioOutputEnabled,
+    manualRetry,
   };
 };

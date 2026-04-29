@@ -2,6 +2,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { decodeAccessToken } from "@/utils/jwt";
 import { tokenStore } from "@/utils/tokenStore";
 import LiveTranscriptPanel from "./components/LiveTranscriptPanel";
+import MeetingConnectionOverlay from "./components/MeetingConnectionOverlay";
 import MeetingControls from "./components/MeetingControls";
 import MeetingHeader from "./components/MeetingHeader";
 import ParticipantGrid from "./components/ParticipantGrid";
@@ -62,6 +63,8 @@ const InProgressPage = () => {
     participants,
     isWsConnected,
     isRoomConnected,
+    hasRtcToken,
+    retryAttempt,
     errorMessage,
     transcripts,
     interimByMember,
@@ -70,10 +73,14 @@ const InProgressPage = () => {
     isAudioOutputEnabled,
     setMicrophoneEnabled,
     setAudioOutputEnabled,
+    manualRetry,
   } = useMeetingRoom({
     meetingId,
     displayName: myName,
   });
+
+  const MAX_CONNECTION_RETRIES = 3;
+  const isConnecting = !isWsConnected || !isRoomConnected;
 
   const { handleInterim, handleFinal, mergeTranscripts, mergeInterim } =
     useLocalSpeechFallback({
@@ -108,6 +115,18 @@ const InProgressPage = () => {
 
   return (
     <div className="flex h-full flex-col py-10">
+      {isConnecting && (
+        <MeetingConnectionOverlay
+          isWsConnected={isWsConnected}
+          isRoomConnected={isRoomConnected}
+          hasRtcToken={hasRtcToken}
+          errorMessage={errorMessage}
+          retryAttempt={retryAttempt}
+          maxRetries={MAX_CONNECTION_RETRIES}
+          onManualRetry={manualRetry}
+          onExit={() => navigate("/")}
+        />
+      )}
       <MeetingHeader
         meetingName={meetingName}
         meetingStart={meetingStart}
@@ -118,7 +137,7 @@ const InProgressPage = () => {
         participants={displayParticipants}
       />
 
-      {(errorMessage || endErrorMessage) && (
+      {!isConnecting && (errorMessage || endErrorMessage) && (
         <div className="mt-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
           {errorMessage ?? endErrorMessage}
         </div>
