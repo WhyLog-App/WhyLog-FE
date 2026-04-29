@@ -59,6 +59,7 @@ export const useMeetingSignaling = ({
 
   useEffect(() => {
     if (meetingId == null) return;
+    if (!displayName) return;
 
     const accessToken = tokenStore.getToken();
     if (!accessToken) {
