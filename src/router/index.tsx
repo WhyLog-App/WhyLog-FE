@@ -9,9 +9,9 @@ import {
   DecisionsPage,
   GitPage,
   HomePage,
-  InProgressPage,
   LoginPage,
   MeetingPage,
+  MeetingRoutePage,
   NotFound,
   SettingsPage,
   SignupPage,
@@ -51,7 +51,7 @@ const allRoutes: RouteObject[] = [
       },
       {
         path: "meeting/:meetingId",
-        element: <InProgressPage />,
+        element: <MeetingRoutePage />,
       },
       {
         path: "git",

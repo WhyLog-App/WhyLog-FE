@@ -4,6 +4,7 @@ export { default as HomePage } from "./home";
 export { default as LoginPage } from "./login";
 export { default as MeetingPage } from "./meeting";
 export { default as InProgressPage } from "./meeting/InProgressPage";
+export { default as MeetingRoutePage } from "./meeting/MeetingRoutePage";
 export { default as NotFound } from "./notFound";
 export { default as SettingsPage } from "./settings";
 export { default as SignupPage } from "./signup";
