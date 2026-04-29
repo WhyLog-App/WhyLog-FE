@@ -2,7 +2,7 @@ import type { EmptyStateContent, EmptyStatePage } from "../types";
 
 export const CONTENT: Record<EmptyStatePage, EmptyStateContent> = {
   Home: {
-    title: "아직 소속된 팀이 없어요",
+    title: "WhyLog에 오신 걸 환영해요",
     description: [
       "새로운 팀을 만들어 코드 변경의 맥락을 기록해보세요.",
       "기존 팀이 있다면 팀원의 초대를 통해 자동으로 참여됩니다.",
