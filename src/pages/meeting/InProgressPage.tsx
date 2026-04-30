@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import Modal from "@/components/common/Modal";
 import { decodeAccessToken } from "@/utils/jwt";
 import { tokenStore } from "@/utils/tokenStore";
 import LiveTranscriptPanel from "./components/LiveTranscriptPanel";
@@ -95,7 +97,12 @@ const InProgressPage = () => {
     onFinal: handleFinal,
   });
 
-  const { endMeeting, errorMessage: endErrorMessage } = useEndMeeting();
+  const {
+    endMeeting,
+    isPending: isEnding,
+    errorMessage: endErrorMessage,
+  } = useEndMeeting();
+  const [isEndConfirmOpen, setIsEndConfirmOpen] = useState(false);
 
   if (meetingId == null) {
     return null;
@@ -108,9 +115,17 @@ const InProgressPage = () => {
         ? [{ id: String(myMemberId), name: myName, isSelf: true }]
         : [];
 
-  const handleEnd = () => {
+  const handleEndClick = () => {
+    if (meetingId == null) {
+      navigate("/");
+      return;
+    }
+    setIsEndConfirmOpen(true);
+  };
+
+  const handleEndConfirm = () => {
     if (meetingId != null) endMeeting(meetingId);
-    else navigate("/");
+    setIsEndConfirmOpen(false);
   };
 
   return (
@@ -156,7 +171,7 @@ const InProgressPage = () => {
 
       <div className="mt-6 flex justify-center">
         <MeetingControls
-          onEnd={handleEnd}
+          onEnd={handleEndClick}
           isMicEnabled={isMicEnabled}
           isAudioOutputEnabled={isAudioOutputEnabled}
           onToggleMic={() => setMicrophoneEnabled(!isMicEnabled)}
@@ -165,6 +180,20 @@ const InProgressPage = () => {
           }
         />
       </div>
+
+      {isEndConfirmOpen && (
+        <Modal
+          title="회의를 종료하시겠어요?"
+          onClose={() => setIsEndConfirmOpen(false)}
+          primaryLabel="종료"
+          onPrimaryClick={handleEndConfirm}
+          isPrimaryDisabled={isEnding}
+        >
+          <p className="typo-body-md text-(--color-text-secondary)">
+            종료 시 회의가 즉시 마감되며 분석이 시작됩니다.
+          </p>
+        </Modal>
+      )}
     </div>
   );
 };
