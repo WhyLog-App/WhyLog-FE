@@ -1,19 +1,40 @@
-import type { CompletedMeetingPanels } from "../../mocks/completedMeetingMock";
+import type { CompletedMeetingPanels } from "../../types/completed";
 import InfoPanelCard from "./InfoPanelCard";
 
 interface CompletedInfoPanelsProps {
   panels: CompletedMeetingPanels;
+  isAnalyzing?: boolean;
 }
 
-const CompletedInfoPanels = ({ panels }: CompletedInfoPanelsProps) => {
+const ANALYZING_PLACEHOLDER = ["분석 중입니다..."];
+
+const CompletedInfoPanels = ({
+  panels,
+  isAnalyzing = false,
+}: CompletedInfoPanelsProps) => {
+  const sections: { title: string; items: string[] }[] = [
+    { title: "회의 기본 정보", items: panels.basicInfo },
+    { title: "논의 주제", items: panels.topics },
+    { title: "핵심 맥락", items: panels.context },
+    { title: "최종 결정", items: panels.finalDecisions },
+    { title: "결정 근거", items: panels.rationale },
+    { title: "기타 언급", items: panels.misc },
+  ];
+
+  const visible = isAnalyzing
+    ? sections.map((s) => ({
+        ...s,
+        items: s.items.length === 0 ? ANALYZING_PLACEHOLDER : s.items,
+      }))
+    : sections.filter((s) => s.items.length > 0);
+
+  if (visible.length === 0) return null;
+
   return (
     <aside className="flex h-full w-80 shrink-0 flex-col gap-4 overflow-y-auto">
-      <InfoPanelCard title="회의 기본 정보" items={panels.basicInfo} />
-      <InfoPanelCard title="논의 주제" items={panels.topics} />
-      <InfoPanelCard title="핵심 맥락" items={panels.context} />
-      <InfoPanelCard title="최종 결정" items={panels.finalDecisions} />
-      <InfoPanelCard title="결정 근거" items={panels.rationale} />
-      <InfoPanelCard title="기타 언급" items={panels.misc} />
+      {visible.map((s) => (
+        <InfoPanelCard key={s.title} title={s.title} items={s.items} />
+      ))}
     </aside>
   );
 };

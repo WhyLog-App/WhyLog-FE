@@ -40,6 +40,37 @@ export interface MeetingDetail {
   members: MeetingMember[];
 }
 
+export interface MeetingAnalysis {
+  analysis_id: number;
+  meeting_id: number;
+  is_analyzed: boolean;
+  meeting_title: string | null;
+  meeting_purpose: string | null;
+  audio_duration: number | null;
+  topics: string[];
+  core_context: string[];
+  application_titles: string[];
+  application_reasons: string[];
+}
+
+export interface MeetingAudio {
+  meeting_id: number;
+  audio_key: string;
+  audio_url: string;
+  audio_duration: number | null;
+}
+
+export interface MeetingHistoryDialogue {
+  member_id: number;
+  content: string;
+  timestamp: string;
+}
+
+export interface MeetingHistory {
+  participants: MeetingMember[];
+  dialogues: MeetingHistoryDialogue[];
+}
+
 export interface RtcTokenResult {
   meeting_id: number;
   room_name: string;

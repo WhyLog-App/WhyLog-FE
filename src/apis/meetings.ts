@@ -4,7 +4,10 @@ import type {
   CreateMeetingRequest,
   CreateMeetingResult,
   EndMeetingResult,
+  MeetingAnalysis,
+  MeetingAudio,
   MeetingDetail,
+  MeetingHistory,
   MeetingListItem,
   MeetingStatus,
   RtcTokenResult,
@@ -69,6 +72,44 @@ export const getRtcToken = async (
     token: data.result.token,
     roomName: data.result.room_name,
   };
+};
+
+export const getMeetingAnalysis = async (
+  meetingId: number,
+): Promise<MeetingAnalysis> => {
+  const { data } = await http.get<
+    unknown,
+    { data: ApiResponse<MeetingAnalysis> }
+  >(ENDPOINT.MEETINGS.ANALYSIS(meetingId));
+  if (!data.isSuccess) {
+    throw new Error(data.message);
+  }
+  return data.result;
+};
+
+export const getMeetingAudio = async (
+  meetingId: number,
+): Promise<MeetingAudio> => {
+  const { data } = await http.get<unknown, { data: ApiResponse<MeetingAudio> }>(
+    ENDPOINT.MEETINGS.AUDIO(meetingId),
+  );
+  if (!data.isSuccess) {
+    throw new Error(data.message);
+  }
+  return data.result;
+};
+
+export const getMeetingHistory = async (
+  meetingId: number,
+): Promise<MeetingHistory> => {
+  const { data } = await http.get<
+    unknown,
+    { data: ApiResponse<MeetingHistory> }
+  >(ENDPOINT.MEETINGS.HISTORY(meetingId));
+  if (!data.isSuccess) {
+    throw new Error(data.message);
+  }
+  return data.result;
 };
 
 export const endMeeting = async (
