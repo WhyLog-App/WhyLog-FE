@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 interface AudioPlayerBarProps {
-  durationSec: number;
+  durationSec?: number | null;
   audioUrl?: string | null;
 }
 
@@ -68,13 +68,22 @@ const AudioPlayerBar = ({ durationSec, audioUrl }: AudioPlayerBarProps) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSec, setCurrentSec] = useState(0);
+  const [loadedDuration, setLoadedDuration] = useState(0);
 
   const disabled = !audioUrl;
+  const propDuration =
+    typeof durationSec === "number" &&
+    Number.isFinite(durationSec) &&
+    durationSec > 0
+      ? durationSec
+      : 0;
+  const effectiveDuration = loadedDuration > 0 ? loadedDuration : propDuration;
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: reset state on audio source change
   useEffect(() => {
     setIsPlaying(false);
     setCurrentSec(0);
+    setLoadedDuration(0);
   }, [audioUrl]);
 
   const handleTogglePlay = () => {
@@ -90,15 +99,18 @@ const AudioPlayerBar = ({ durationSec, audioUrl }: AudioPlayerBarProps) => {
   const handleSeek = (delta: number) => {
     const audio = audioRef.current;
     if (!audio) return;
+    const max = Number.isFinite(audio.duration)
+      ? audio.duration
+      : effectiveDuration;
     audio.currentTime = Math.max(
       0,
-      Math.min(audio.duration || durationSec, audio.currentTime + delta),
+      Math.min(max || 0, audio.currentTime + delta),
     );
   };
 
   const progressPct =
-    durationSec > 0
-      ? Math.max(0, Math.min(100, (currentSec / durationSec) * 100))
+    effectiveDuration > 0
+      ? Math.max(0, Math.min(100, (currentSec / effectiveDuration) * 100))
       : 0;
 
   return (
@@ -112,6 +124,18 @@ const AudioPlayerBar = ({ durationSec, audioUrl }: AudioPlayerBarProps) => {
           onPause={() => setIsPlaying(false)}
           onEnded={() => setIsPlaying(false)}
           onTimeUpdate={(e) => setCurrentSec(e.currentTarget.currentTime)}
+          onSeeked={(e) => setCurrentSec(e.currentTarget.currentTime)}
+          onLoadedMetadata={(e) => {
+            setCurrentSec(e.currentTarget.currentTime);
+            if (Number.isFinite(e.currentTarget.duration)) {
+              setLoadedDuration(e.currentTarget.duration);
+            }
+          }}
+          onDurationChange={(e) => {
+            if (Number.isFinite(e.currentTarget.duration)) {
+              setLoadedDuration(e.currentTarget.duration);
+            }
+          }}
           className="hidden"
         >
           <track kind="captions" />

@@ -130,7 +130,7 @@ const CompletedPage = () => {
           <CompletedTranscript items={transcript} />
           <div className="shrink-0">
             <AudioPlayerBar
-              durationSec={audio?.audio_duration ?? 0}
+              durationSec={audio?.audio_duration ?? null}
               audioUrl={audio?.audio_url ?? null}
             />
           </div>
