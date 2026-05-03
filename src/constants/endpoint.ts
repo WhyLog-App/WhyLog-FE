@@ -17,6 +17,9 @@ const ENDPOINT = {
     INVITE: (teamId: number) =>
       `${API_BASE_URL}/api/teams/${teamId}/invitations`,
   },
+  MEMBERS: {
+    PROFILE_IMAGE: `${API_BASE_URL}/api/members/profile-image`,
+  },
   MEETINGS: {
     CREATE: (teamId: number) => `${API_BASE_URL}/api/teams/${teamId}/meetings`,
     LIST: (teamId: number) => `${API_BASE_URL}/api/teams/${teamId}/meetings`,
