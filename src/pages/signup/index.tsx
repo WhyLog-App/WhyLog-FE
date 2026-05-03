@@ -8,12 +8,14 @@ function SignupPage() {
     email,
     password,
     confirmPassword,
+    profileImagePreview,
     errorMessage,
     isPending,
     setName,
     setEmail,
     setPassword,
     setConfirmPassword,
+    handleProfileImageChange,
     handleSubmit,
   } = useSignup();
 
@@ -25,12 +27,14 @@ function SignupPage() {
         email={email}
         password={password}
         confirmPassword={confirmPassword}
+        profileImagePreview={profileImagePreview}
         errorMessage={errorMessage}
         isPending={isPending}
         onNameChange={setName}
         onEmailChange={setEmail}
         onPasswordChange={setPassword}
         onConfirmPasswordChange={setConfirmPassword}
+        onProfileImageChange={handleProfileImageChange}
         onSubmit={handleSubmit}
       />
     </div>

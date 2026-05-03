@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import iconCamera from "@/assets/icons/media/ic_camera.svg";
 import { Icon } from "@/components/common/Icon";
@@ -10,12 +11,14 @@ interface SignupFormProps {
   email: string;
   password: string;
   confirmPassword: string;
+  profileImagePreview: string | null;
   errorMessage: string | null;
   isPending: boolean;
   onNameChange: (value: string) => void;
   onEmailChange: (value: string) => void;
   onPasswordChange: (value: string) => void;
   onConfirmPasswordChange: (value: string) => void;
+  onProfileImageChange: (file: File | null) => void;
   onSubmit: (e: React.FormEvent) => void;
 }
 
@@ -24,14 +27,22 @@ export const SignupForm = ({
   email,
   password,
   confirmPassword,
+  profileImagePreview,
   errorMessage,
   isPending,
   onNameChange,
   onEmailChange,
   onPasswordChange,
   onConfirmPasswordChange,
+  onProfileImageChange,
   onSubmit,
 }: SignupFormProps) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    onProfileImageChange(event.target.files?.[0] ?? null);
+  };
+
   return (
     <form
       onSubmit={onSubmit}
@@ -53,11 +64,33 @@ export const SignupForm = ({
           <div className="flex w-full items-center gap-3">
             <button
               type="button"
-              className="flex size-12 shrink-0 items-center justify-center rounded-full border border-white bg-white/10"
+              disabled={isPending}
+              className="flex size-12 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-white bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+              onClick={() => fileInputRef.current?.click()}
               aria-label="프로필 이미지 업로드"
             >
-              <Icon icon={iconCamera} size={16} className="text-text-inverse" />
+              {profileImagePreview ? (
+                <img
+                  src={profileImagePreview}
+                  alt="프로필 이미지 미리보기"
+                  className="size-full object-cover"
+                />
+              ) : (
+                <Icon
+                  icon={iconCamera}
+                  size={16}
+                  className="text-text-inverse"
+                />
+              )}
             </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileChange}
+              aria-label="프로필 이미지 파일 선택"
+            />
             <p className="typo-caption1 whitespace-nowrap text-text-tertiary">
               클릭하여 프로필 사진을 업로드하세요
             </p>

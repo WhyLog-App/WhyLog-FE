@@ -34,6 +34,11 @@ export interface SignupResult {
   role: UserRole;
 }
 
+export interface ProfileImageUploadResult {
+  member_id: number;
+  profile_image_url: string;
+}
+
 export interface RefreshTokenResult {
   access_token: string;
 }

@@ -1,24 +1,49 @@
 import { useMutation } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signup } from "@/apis/auth";
 import { ROUTES } from "@/constants/routes";
-import type { ApiResponse, SignupResult } from "@/types/auth";
+import type { ApiResponse } from "@/types/auth";
 import { tokenStore } from "@/utils/tokenStore";
+import { useUploadMemberProfileImage } from "./useUploadMemberProfileImage";
 
 export const useSignup = () => {
   const navigate = useNavigate();
+  const uploadProfileImageMutation = useUploadMemberProfileImage();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [profileImagePreview, setProfileImagePreview] = useState<string | null>(
+    null,
+  );
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  useEffect(() => {
+    return () => {
+      if (profileImagePreview) URL.revokeObjectURL(profileImagePreview);
+    };
+  }, [profileImagePreview]);
+
   const signupMutation = useMutation({
-    mutationFn: signup,
-    onSuccess: (result: SignupResult) => {
+    mutationFn: async () => {
+      const result = await signup({
+        name: name.trim(),
+        email: email.trim(),
+        password,
+      });
+
       tokenStore.setToken(result.access_token);
+
+      if (profileImage) {
+        await uploadProfileImageMutation.mutateAsync(profileImage);
+      }
+
+      return result;
+    },
+    onSuccess: () => {
       navigate(ROUTES.APP_ROOT, { replace: true });
     },
     onError: (error: unknown) => {
@@ -42,6 +67,29 @@ export const useSignup = () => {
     return null;
   };
 
+  const handleProfileImageChange = (file: File | null) => {
+    if (profileImagePreview) {
+      URL.revokeObjectURL(profileImagePreview);
+    }
+
+    if (!file) {
+      setProfileImage(null);
+      setProfileImagePreview(null);
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      setProfileImage(null);
+      setProfileImagePreview(null);
+      setErrorMessage("이미지 파일만 업로드할 수 있습니다.");
+      return;
+    }
+
+    setErrorMessage(null);
+    setProfileImage(file);
+    setProfileImagePreview(URL.createObjectURL(file));
+  };
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (signupMutation.isPending) return;
@@ -53,12 +101,7 @@ export const useSignup = () => {
       return;
     }
 
-    // TODO: 프로필 이미지 업로드 API 연동
-    signupMutation.mutate({
-      name: name.trim(),
-      email: email.trim(),
-      password,
-    });
+    signupMutation.mutate();
   };
 
   return {
@@ -66,12 +109,14 @@ export const useSignup = () => {
     email,
     password,
     confirmPassword,
+    profileImagePreview,
     errorMessage,
     setName,
     setEmail,
     setPassword,
     setConfirmPassword,
+    handleProfileImageChange,
     handleSubmit,
-    isPending: signupMutation.isPending,
+    isPending: signupMutation.isPending || uploadProfileImageMutation.isPending,
   };
 };

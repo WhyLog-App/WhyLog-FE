@@ -3,6 +3,7 @@ import type {
   ApiResponse,
   LoginRequest,
   LoginResult,
+  ProfileImageUploadResult,
   RefreshTokenResult,
   SignupRequest,
   SignupResult,
@@ -25,6 +26,24 @@ export const signup = async (payload: SignupRequest): Promise<SignupResult> => {
   if (!data.isSuccess) {
     throw new Error(data.message);
   }
+  return data.result;
+};
+
+export const uploadMemberProfileImage = async (
+  image: File,
+): Promise<ProfileImageUploadResult> => {
+  const formData = new FormData();
+  formData.append("image", image);
+
+  const { data } = await http.post<
+    FormData,
+    { data: ApiResponse<ProfileImageUploadResult> }
+  >(ENDPOINT.MEMBERS.PROFILE_IMAGE, formData);
+
+  if (!data.isSuccess) {
+    throw new Error(data.message);
+  }
+
   return data.result;
 };
 
