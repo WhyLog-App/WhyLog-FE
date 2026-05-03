@@ -41,6 +41,9 @@ const injectToken = (
     if (token != null && config?.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    if (config.data instanceof FormData && config.headers) {
+      config.headers.delete("Content-Type");
+    }
     return config;
   } catch (error: unknown) {
     const { message } = error as Error;
