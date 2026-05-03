@@ -38,7 +38,11 @@ export const useSignup = () => {
       tokenStore.setToken(result.access_token);
 
       if (profileImage) {
-        await uploadProfileImageMutation.mutateAsync(profileImage);
+        try {
+          await uploadProfileImageMutation.mutateAsync(profileImage);
+        } catch (error) {
+          console.error("프로필 이미지 업로드 실패:", error);
+        }
       }
 
       return result;
@@ -92,7 +96,8 @@ export const useSignup = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    if (signupMutation.isPending) return;
+    if (signupMutation.isPending || uploadProfileImageMutation.isPending)
+      return;
     setErrorMessage(null);
 
     const validationError = validate();
