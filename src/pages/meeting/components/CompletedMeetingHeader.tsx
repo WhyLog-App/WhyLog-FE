@@ -7,6 +7,8 @@ interface CompletedMeetingHeaderProps {
   durationText: string;
   memberCount: number;
   members: { name: string; profile_image: string | null }[];
+  onDeleteClick?: () => void;
+  isDeleting?: boolean;
 }
 
 const EditPenIcon = () => (
@@ -26,12 +28,34 @@ const EditPenIcon = () => (
   </svg>
 );
 
+const TrashIcon = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M3 6h18" />
+    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+    <path d="M10 11v6" />
+    <path d="M14 11v6" />
+  </svg>
+);
+
 const CompletedMeetingHeader = ({
   name,
   startText,
   durationText,
   memberCount,
   members,
+  onDeleteClick,
+  isDeleting = false,
 }: CompletedMeetingHeaderProps) => {
   return (
     <div className="flex flex-col gap-3">
@@ -42,13 +66,26 @@ const CompletedMeetingHeader = ({
             {startText} {durationText} {memberCount}명
           </span>
         </div>
-        <button
-          type="button"
-          className="cursor-pointer text-(--color-text-tertiary) hover:text-(--color-text-secondary)"
-          aria-label="회의 정보 수정"
-        >
-          <EditPenIcon />
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            className="cursor-pointer text-(--color-text-tertiary) hover:text-(--color-text-secondary)"
+            aria-label="회의 정보 수정"
+          >
+            <EditPenIcon />
+          </button>
+          {onDeleteClick && (
+            <button
+              type="button"
+              className="cursor-pointer text-(--color-text-tertiary) hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+              onClick={onDeleteClick}
+              disabled={isDeleting}
+              aria-label="회의 삭제"
+            >
+              <TrashIcon />
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="flex flex-col gap-2">

@@ -3,6 +3,7 @@ import type { ApiResponse } from "@/types/auth";
 import type {
   CreateMeetingRequest,
   CreateMeetingResult,
+  DeleteMeetingResult,
   EndMeetingResult,
   MeetingAnalysis,
   MeetingAudio,
@@ -119,6 +120,19 @@ export const endMeeting = async (
     undefined,
     { data: ApiResponse<EndMeetingResult> }
   >(ENDPOINT.MEETINGS.END(meetingId));
+  if (!data.isSuccess) {
+    throw new Error(data.message);
+  }
+  return data.result;
+};
+
+export const deleteMeeting = async (
+  meetingId: number,
+): Promise<DeleteMeetingResult> => {
+  const { data } = await http.delete<
+    unknown,
+    { data: ApiResponse<DeleteMeetingResult> }
+  >(ENDPOINT.MEETINGS.DELETE(meetingId));
   if (!data.isSuccess) {
     throw new Error(data.message);
   }
