@@ -24,3 +24,7 @@ export interface InviteTeamMemberResult {
   team_id: number;
   member_email: string;
 }
+
+export interface DeleteTeamResult {
+  is_removed: boolean;
+}
