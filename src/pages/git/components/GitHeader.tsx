@@ -1,10 +1,8 @@
+import type { GitRepositoryStats } from "../../../types/git";
+
 interface GitHeaderProps {
   repositoryName: string;
-  stats: {
-    commits: number;
-    connected: number;
-    disconnected: number;
-  };
+  stats: GitRepositoryStats;
 }
 
 const GitHeader = ({ repositoryName, stats }: GitHeaderProps) => {

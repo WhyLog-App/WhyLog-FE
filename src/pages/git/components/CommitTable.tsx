@@ -1,20 +1,9 @@
 import CommitTableRow from "./CommitTableRow";
-
-interface CommitTableItem {
-  id: string;
-  hash: string;
-  message: string;
-  decisionText: string;
-  decisionType: "success" | "warning" | "neutral";
-  authorName: string;
-  dateText: string;
-  changesAdded: number;
-  changesRemoved: number;
-}
+import type { GitCommitItem } from "../../../types/git";
 
 interface CommitTableProps {
-  commits: CommitTableItem[];
-  onRowClick?: (commit: CommitTableItem) => void;
+  commits: GitCommitItem[];
+  onRowClick?: (commit: GitCommitItem) => void;
 }
 
 const CommitTable = ({ commits, onRowClick }: CommitTableProps) => {
@@ -75,5 +64,4 @@ const CommitTable = ({ commits, onRowClick }: CommitTableProps) => {
   );
 };
 
-export type { CommitTableItem };
 export default CommitTable;

@@ -1,4 +1,6 @@
-export const mockGitData = {
+import type { GitPageData } from "../../types/git";
+
+export const mockGitData: GitPageData = {
   repositoryName: "Capstone-Server",
   stats: {
     commits: 8,

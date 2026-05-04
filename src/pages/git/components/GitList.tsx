@@ -2,25 +2,12 @@ import GitHeader from "./GitHeader";
 import CommitTable from "./CommitTable";
 import IconChevronDownDuo from "@/assets/icons/arrow/ic_chevron_down_duo.svg?react";
 import { Icon } from "@/components/common/Icon";
+import type { GitCommitItem, GitRepositoryStats } from "../../../types/git";
 
 interface GitListProps {
   repositoryName: string;
-  stats: {
-    commits: number;
-    connected: number;
-    disconnected: number;
-  };
-  commits: {
-    id: string;
-    hash: string;
-    message: string;
-    decisionText: string;
-    decisionType: "success" | "warning" | "neutral";
-    authorName: string;
-    dateText: string;
-    changesAdded: number;
-    changesRemoved: number;
-  }[];
+  stats: GitRepositoryStats;
+  commits: GitCommitItem[];
 }
 
 const GitList = ({ repositoryName, stats, commits }: GitListProps) => {

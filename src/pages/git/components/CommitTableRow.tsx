@@ -1,22 +1,11 @@
 import IconCalendar from "@/assets/icons/communication/ic_calendar.svg?react";
 import IconCircleUser from "@/assets/icons/user/ic_circle_user.svg?react";
 import { Icon } from "@/components/common/Icon";
-
-interface CommitTableItem {
-  id: string;
-  hash: string;
-  message: string;
-  decisionText: string;
-  decisionType: "success" | "warning" | "neutral";
-  authorName: string;
-  dateText: string;
-  changesAdded: number;
-  changesRemoved: number;
-}
+import type { GitCommitItem } from "../../../types/git";
 
 interface CommitTableRowProps {
-  commit: CommitTableItem;
-  onRowClick?: (commit: CommitTableItem) => void;
+  commit: GitCommitItem;
+  onRowClick?: (commit: GitCommitItem) => void;
 }
 
 const decisionDotClassName = {
