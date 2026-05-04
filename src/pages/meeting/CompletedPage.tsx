@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { useParams } from "react-router-dom";
+import Modal from "@/components/common/Modal";
 import type {
   MeetingAnalysis,
   MeetingHistory,
@@ -8,6 +10,7 @@ import AudioPlayerBar from "./components/AudioPlayerBar";
 import CompletedMeetingHeader from "./components/CompletedMeetingHeader";
 import CompletedTranscript from "./components/CompletedTranscript";
 import CompletedInfoPanels from "./components/info-panels/CompletedInfoPanels";
+import { useDeleteMeeting } from "./hooks/useDeleteMeeting";
 import { useMeetingAnalysis } from "./hooks/useMeetingAnalysis";
 import { useMeetingAudio } from "./hooks/useMeetingAudio";
 import { useMeetingDetail } from "./hooks/useMeetingDetail";
@@ -100,6 +103,12 @@ const CompletedPage = () => {
   const { data: history } = useMeetingHistory(meetingId);
   const { data: analysis } = useMeetingAnalysis(meetingId);
   const { data: audio } = useMeetingAudio(meetingId);
+  const {
+    deleteMeeting,
+    isPending: isDeleting,
+    errorMessage: deleteError,
+  } = useDeleteMeeting();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const name = detail?.name ?? "";
   const startText = formatStartText(detail?.start_date_time);
@@ -125,6 +134,10 @@ const CompletedPage = () => {
             durationText={durationText}
             memberCount={memberCount}
             members={members}
+            onDeleteClick={
+              meetingId != null ? () => setIsDeleteModalOpen(true) : undefined
+            }
+            isDeleting={isDeleting}
           />
           <div className="h-px w-full shrink-0 bg-(--color-border-divider)" />
           <CompletedTranscript items={transcript} />
@@ -138,6 +151,25 @@ const CompletedPage = () => {
 
         <CompletedInfoPanels panels={panels} isAnalyzing={isAnalyzing} />
       </div>
+      {isDeleteModalOpen && meetingId != null && (
+        <Modal
+          title="회의를 삭제하시겠습니까?"
+          onClose={() => !isDeleting && setIsDeleteModalOpen(false)}
+          primaryLabel={isDeleting ? "삭제 중..." : "삭제"}
+          onPrimaryClick={() => deleteMeeting(meetingId)}
+          isPrimaryDisabled={isDeleting}
+        >
+          <div className="flex flex-col gap-2">
+            <p className="typo-body4 text-(--color-text-secondary)">
+              회의 참여자, 대화 기록, 결정사항, 분석 데이터가 모두 삭제되며
+              복구할 수 없습니다.
+            </p>
+            {deleteError && (
+              <p className="typo-caption text-red-500">{deleteError}</p>
+            )}
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
