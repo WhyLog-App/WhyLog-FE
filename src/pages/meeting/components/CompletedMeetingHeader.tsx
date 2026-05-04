@@ -1,3 +1,5 @@
+import IconEditPen from "@/assets/icons/edit/ic_edit_pen.svg?react";
+import IconTrash from "@/assets/icons/edit/ic_trash.svg?react";
 import IconCircleUser from "@/assets/icons/user/ic_circle_user.svg?react";
 import { Icon } from "@/components/common/Icon";
 
@@ -7,24 +9,9 @@ interface CompletedMeetingHeaderProps {
   durationText: string;
   memberCount: number;
   members: { name: string; profile_image: string | null }[];
+  onDeleteClick?: () => void;
+  isDeleting?: boolean;
 }
-
-const EditPenIcon = () => (
-  <svg
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden="true"
-  >
-    <path d="M12 20h9" />
-    <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
-  </svg>
-);
 
 const CompletedMeetingHeader = ({
   name,
@@ -32,6 +19,8 @@ const CompletedMeetingHeader = ({
   durationText,
   memberCount,
   members,
+  onDeleteClick,
+  isDeleting = false,
 }: CompletedMeetingHeaderProps) => {
   return (
     <div className="flex flex-col gap-3">
@@ -42,13 +31,26 @@ const CompletedMeetingHeader = ({
             {startText} {durationText} {memberCount}명
           </span>
         </div>
-        <button
-          type="button"
-          className="cursor-pointer text-(--color-text-tertiary) hover:text-(--color-text-secondary)"
-          aria-label="회의 정보 수정"
-        >
-          <EditPenIcon />
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            className="cursor-pointer text-(--color-text-tertiary) hover:text-(--color-text-secondary)"
+            aria-label="회의 정보 수정"
+          >
+            <Icon icon={IconEditPen} size={16} />
+          </button>
+          {onDeleteClick && (
+            <button
+              type="button"
+              className="cursor-pointer text-(--color-text-tertiary) hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+              onClick={onDeleteClick}
+              disabled={isDeleting}
+              aria-label="회의 삭제"
+            >
+              <Icon icon={IconTrash} size={16} />
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="flex flex-col gap-2">

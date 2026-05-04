@@ -2,7 +2,6 @@ export const ROUTES = {
   APP_ROOT: "/",
   SIGNUP: "/signup",
   LOGIN: "/login",
-  SETTINGS: "/settings",
 
   // 팀 기반 라우트
   TEAM_ROOT: "/team/:teamId",
@@ -11,6 +10,7 @@ export const ROUTES = {
   TEAM_MEETING: "/team/:teamId/meeting",
   TEAM_MEETING_DETAIL: "/team/:teamId/meeting/:meetingId",
   TEAM_GIT: "/team/:teamId/git",
+  TEAM_SETTINGS: "/team/:teamId/settings",
 
   // 레거시 라우트 (하위 호환성)
   DECISIONS: "/decisions",

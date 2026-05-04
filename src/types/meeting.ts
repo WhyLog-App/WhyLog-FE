@@ -15,6 +15,11 @@ export interface EndMeetingResult {
   end_date_time: string;
 }
 
+export interface DeleteMeetingResult {
+  meeting_id: number;
+  is_removed: boolean;
+}
+
 export type MeetingStatus = "ONGOING" | "COMPLETED";
 
 export interface MeetingListItem {

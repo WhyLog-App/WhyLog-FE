@@ -14,6 +14,7 @@ const ENDPOINT = {
   TEAMS: {
     LIST: `${API_BASE_URL}/api/members/teams`,
     CREATE: `${API_BASE_URL}/api/teams`,
+    DELETE: (teamId: number) => `${API_BASE_URL}/api/teams/${teamId}`,
     INVITE: (teamId: number) =>
       `${API_BASE_URL}/api/teams/${teamId}/invitations`,
   },
@@ -24,6 +25,7 @@ const ENDPOINT = {
     CREATE: (teamId: number) => `${API_BASE_URL}/api/teams/${teamId}/meetings`,
     LIST: (teamId: number) => `${API_BASE_URL}/api/teams/${teamId}/meetings`,
     DETAIL: (meetingId: number) => `${API_BASE_URL}/api/meetings/${meetingId}`,
+    DELETE: (meetingId: number) => `${API_BASE_URL}/api/meetings/${meetingId}`,
     RTC_TOKEN: (meetingId: number) =>
       `${API_BASE_URL}/api/meetings/${meetingId}/rtc-token`,
     END: (meetingId: number) => `${API_BASE_URL}/api/meetings/${meetingId}/end`,
