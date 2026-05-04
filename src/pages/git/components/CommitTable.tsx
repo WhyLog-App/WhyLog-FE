@@ -76,7 +76,7 @@ const CommitTable = ({ commits }: CommitTableProps) => {
             className="h-11 border-b border-(--color-light-700) bg-(--color-white)"
           >
             <td className="px-2 py-0 align-middle">
-              <span className="inline-flex items-center rounded-md bg-(--color-purple-50) px-2 py-1 text-[12px] font-medium tracking-[0.01em] text-(--color-purple-700)">
+              <span className="inline-flex items-center rounded-md bg-(--color-purple-50) px-[12px] py-[2px] text-[12px] font-medium tracking-[0.01em] text-(--color-purple-700)">
                 {commit.hash}
               </span>
             </td>
