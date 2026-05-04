@@ -4,6 +4,7 @@ import type { ApiResponse } from "@/types/auth";
 import type {
   CreateTeamRequest,
   CreateTeamResult,
+  DeleteTeamResult,
   InviteTeamMemberRequest,
   InviteTeamMemberResult,
   Team,
@@ -40,6 +41,21 @@ export const createTeam = async (
       "Content-Type": "multipart/form-data",
     },
   });
+
+  if (!data.isSuccess) {
+    throw new Error(data.message);
+  }
+
+  return data.result;
+};
+
+export const deleteTeam = async (
+  teamId: number,
+): Promise<DeleteTeamResult> => {
+  const { data } = await http.delete<
+    unknown,
+    AxiosResponse<ApiResponse<DeleteTeamResult>>
+  >(ENDPOINT.TEAMS.DELETE(teamId));
 
   if (!data.isSuccess) {
     throw new Error(data.message);

@@ -3,7 +3,6 @@ import { useRoutes } from "react-router-dom";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
 import RootRedirect from "../components/routing/RootRedirect";
 import { ROUTES } from "../constants/routes";
-import AppLayout from "../layout/AppLayout";
 import TeamLayout from "../layout/TeamLayout";
 import {
   DecisionsPage,
@@ -57,19 +56,11 @@ const allRoutes: RouteObject[] = [
         path: "git",
         element: <GitPage />,
       },
+      {
+        path: "settings",
+        element: <SettingsPage />,
+      },
     ],
-  },
-
-  // 3. 팀 독립적 라우트
-  {
-    path: ROUTES.SETTINGS,
-    element: (
-      <ProtectedRoute>
-        <AppLayout>
-          <SettingsPage />
-        </AppLayout>
-      </ProtectedRoute>
-    ),
   },
 
   // 4. 인증 라우트

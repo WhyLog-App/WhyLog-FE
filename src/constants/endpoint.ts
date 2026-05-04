@@ -14,6 +14,7 @@ const ENDPOINT = {
   TEAMS: {
     LIST: `${API_BASE_URL}/api/members/teams`,
     CREATE: `${API_BASE_URL}/api/teams`,
+    DELETE: (teamId: number) => `${API_BASE_URL}/api/teams/${teamId}`,
     INVITE: (teamId: number) =>
       `${API_BASE_URL}/api/teams/${teamId}/invitations`,
   },

@@ -27,11 +27,6 @@ export const useSidebarNavigation = () => {
       return;
     }
 
-    if (item.id === "settings") {
-      navigate("/settings");
-      return;
-    }
-
     if (item.path && teamId) {
       navigate(`/team/${teamId}${item.path}`);
     }
@@ -39,10 +34,6 @@ export const useSidebarNavigation = () => {
 
   const isActive = (item: MenuItem) => {
     if (!item.path) return false;
-
-    if (item.id === "settings") {
-      return location.pathname.endsWith("/settings");
-    }
 
     // 팀 경로에서 패턴 매칭
     if (item.path === "/") {
