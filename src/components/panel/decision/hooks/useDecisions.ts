@@ -7,7 +7,10 @@ export const DECISIONS_QUERY_KEY = (teamId: number) =>
 export const useDecisions = (teamId: number | null) => {
   return useQuery({
     queryKey: DECISIONS_QUERY_KEY(teamId ?? 0),
-    queryFn: () => listDecisions(teamId as number),
+    queryFn: () => {
+      if (typeof teamId !== "number" || teamId <= 0) return [];
+      return listDecisions(teamId);
+    },
     enabled: typeof teamId === "number" && teamId > 0,
   });
 };

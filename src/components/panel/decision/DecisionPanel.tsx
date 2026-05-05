@@ -17,13 +17,14 @@ const DecisionPanel = () => {
   const { data, isLoading, isError } = useDecisions(teamId);
 
   const [keyword, setKeyword] = useState("");
+  const normalizedKeyword = keyword.trim();
 
   const decisions = useMemo(() => {
     const list = data ?? [];
-    if (!keyword.trim()) return list;
-    const lower = keyword.trim().toLowerCase();
+    if (!normalizedKeyword) return list;
+    const lower = normalizedKeyword.toLowerCase();
     return list.filter((d) => d.name.toLowerCase().includes(lower));
-  }, [data, keyword]);
+  }, [data, normalizedKeyword]);
 
   const hasDecisions = decisions.length > 0;
 
@@ -46,7 +47,7 @@ const DecisionPanel = () => {
         <div className="flex w-full flex-1 items-center justify-center px-4 typo-subtitle5 text-(--color-text-tertiary)">
           결정사항을 불러오지 못했습니다
         </div>
-      ) : !hasDecisions && !keyword ? (
+      ) : !hasDecisions && !normalizedKeyword ? (
         <div className="flex w-full flex-1 flex-col items-center justify-center px-4 text-center">
           <div className="typo-subtitle4 text-(--color-text-secondary)">
             아직 분석된 회의가
@@ -70,6 +71,7 @@ const DecisionPanel = () => {
             <input
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
+              aria-label="회의 이름 검색"
               placeholder="회의 이름으로 검색하세요..."
               className="w-full bg-transparent typo-subtitle5 text-(--color-text-primary) placeholder:text-(--color-text-disabled) focus:outline-none"
             />
@@ -108,7 +110,7 @@ const DecisionPanel = () => {
             );
           })}
 
-          {!hasDecisions && keyword && (
+          {!hasDecisions && normalizedKeyword && (
             <div className="flex w-full flex-1 items-center justify-center py-8 typo-subtitle5 text-(--color-text-tertiary)">
               검색 결과가 없습니다
             </div>
