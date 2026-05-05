@@ -1,17 +1,22 @@
 import { useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import IconSearch from "@/assets/icons/interface/ic_search.svg?react";
 import { Icon } from "@/components/common/Icon";
 import { useCurrentTeam } from "@/hooks/useCurrentTeam";
 import { useDecisions } from "./hooks/useDecisions";
 
 const DecisionPanel = () => {
+  const navigate = useNavigate();
   const { teamId } = useCurrentTeam();
+  const { decisionId: activeDecisionIdParam } = useParams<{
+    decisionId?: string;
+  }>();
+  const activeDecisionId = activeDecisionIdParam
+    ? Number(activeDecisionIdParam)
+    : null;
   const { data, isLoading, isError } = useDecisions(teamId);
 
   const [keyword, setKeyword] = useState("");
-  const [selectedDecisionId, setSelectedDecisionId] = useState<number | null>(
-    null,
-  );
 
   const decisions = useMemo(() => {
     const list = data ?? [];
@@ -71,12 +76,17 @@ const DecisionPanel = () => {
           </div>
 
           {decisions.map((decision) => {
-            const isActive = selectedDecisionId === decision.decision_id;
+            const isActive = activeDecisionId === decision.decision_id;
             return (
               <button
                 key={decision.decision_id}
                 type="button"
-                onClick={() => setSelectedDecisionId(decision.decision_id)}
+                onClick={() =>
+                  teamId &&
+                  navigate(
+                    `/team/${teamId}/decisions/${decision.decision_id}`,
+                  )
+                }
                 aria-pressed={isActive}
                 className={`flex w-full cursor-pointer items-center justify-between rounded-lg px-4 py-3 text-left ${
                   isActive
