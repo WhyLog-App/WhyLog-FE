@@ -50,9 +50,7 @@ export const createTeam = async (
   return data.result;
 };
 
-export const deleteTeam = async (
-  teamId: number,
-): Promise<DeleteTeamResult> => {
+export const deleteTeam = async (teamId: number): Promise<DeleteTeamResult> => {
   const { data } = await http.delete<
     unknown,
     AxiosResponse<ApiResponse<DeleteTeamResult>>
