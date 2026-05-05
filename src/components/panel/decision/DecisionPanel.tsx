@@ -83,9 +83,7 @@ const DecisionPanel = () => {
                 type="button"
                 onClick={() =>
                   teamId &&
-                  navigate(
-                    `/team/${teamId}/decisions/${decision.decision_id}`,
-                  )
+                  navigate(`/team/${teamId}/decisions/${decision.decision_id}`)
                 }
                 aria-pressed={isActive}
                 className={`flex w-full cursor-pointer items-center justify-between rounded-lg px-4 py-3 text-left ${
