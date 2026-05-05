@@ -1,40 +1,26 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import IconSearch from "@/assets/icons/interface/ic_search.svg?react";
 import { Icon } from "@/components/common/Icon";
-import DecisionMeetingCard from "./components/DecisionMeetingCard";
-import { mockDecisionMeetings } from "./decisionPanelMockData";
-
-type DecisionStatus = "active" | "warning" | "default";
-
-interface DecisionItem {
-  id: string;
-  label: string;
-  status: DecisionStatus;
-}
-
-interface DecisionMeetingItem {
-  id: string;
-  title: string;
-  date: string;
-  decisions: DecisionItem[];
-}
+import { useCurrentTeam } from "@/hooks/useCurrentTeam";
+import { useDecisions } from "./hooks/useDecisions";
 
 const DecisionPanel = () => {
-  const decisionMeetings: DecisionMeetingItem[] = mockDecisionMeetings;
+  const { teamId } = useCurrentTeam();
+  const { data, isLoading, isError } = useDecisions(teamId);
 
-  const [expandedMeetingId, setExpandedMeetingId] = useState<string | null>(
-    decisionMeetings.find((meeting) => meeting.decisions.length > 0)?.id ??
-      null,
-  );
-  const [selectedDecisionId, setSelectedDecisionId] = useState<string | null>(
-    decisionMeetings
-      .find((meeting) => meeting.decisions.length > 0)
-      ?.decisions.at(0)?.id ?? null,
+  const [keyword, setKeyword] = useState("");
+  const [selectedDecisionId, setSelectedDecisionId] = useState<number | null>(
+    null,
   );
 
-  const hasAnalyzedMeetings = decisionMeetings.some(
-    (meeting) => meeting.decisions.length > 0,
-  );
+  const decisions = useMemo(() => {
+    const list = data ?? [];
+    if (!keyword.trim()) return list;
+    const lower = keyword.trim().toLowerCase();
+    return list.filter((d) => d.name.toLowerCase().includes(lower));
+  }, [data, keyword]);
+
+  const hasDecisions = decisions.length > 0;
 
   return (
     <>
@@ -47,7 +33,15 @@ const DecisionPanel = () => {
 
       <div className="h-px w-full bg-(--color-border-divider)" />
 
-      {!hasAnalyzedMeetings ? (
+      {isLoading ? (
+        <div className="flex w-full flex-1 items-center justify-center px-4 typo-subtitle5 text-(--color-text-tertiary)">
+          불러오는 중...
+        </div>
+      ) : isError ? (
+        <div className="flex w-full flex-1 items-center justify-center px-4 typo-subtitle5 text-(--color-text-tertiary)">
+          결정사항을 불러오지 못했습니다
+        </div>
+      ) : !hasDecisions && !keyword ? (
         <div className="flex w-full flex-1 flex-col items-center justify-center px-4 text-center">
           <div className="typo-subtitle4 text-(--color-text-secondary)">
             아직 분석된 회의가
@@ -68,25 +62,49 @@ const DecisionPanel = () => {
               size={24}
               className="shrink-0 text-(--color-text-brand)"
             />
-            <span className="typo-subtitle5 text-(--color-text-disabled)">
-              회의 이름으로 검색하세요...
-            </span>
+            <input
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              placeholder="회의 이름으로 검색하세요..."
+              className="w-full bg-transparent typo-subtitle5 text-(--color-text-primary) placeholder:text-(--color-text-disabled) focus:outline-none"
+            />
           </div>
 
-          {decisionMeetings.map((meeting) => (
-            <DecisionMeetingCard
-              key={meeting.id}
-              meeting={meeting}
-              isExpanded={expandedMeetingId === meeting.id}
-              selectedDecisionId={selectedDecisionId}
-              onToggle={(meetingId) =>
-                setExpandedMeetingId((prev) =>
-                  prev === meetingId ? null : meetingId,
-                )
-              }
-              onSelectDecision={setSelectedDecisionId}
-            />
-          ))}
+          {decisions.map((decision) => {
+            const isActive = selectedDecisionId === decision.decision_id;
+            return (
+              <button
+                key={decision.decision_id}
+                type="button"
+                onClick={() => setSelectedDecisionId(decision.decision_id)}
+                aria-pressed={isActive}
+                className={`flex w-full cursor-pointer items-center justify-between rounded-lg px-4 py-3 text-left ${
+                  isActive
+                    ? "bg-(--color-action-active)"
+                    : "bg-(--color-bg-surface) hover:bg-(--color-action-hover)"
+                }`}
+              >
+                <span
+                  className={`typo-subtitle5 ${
+                    isActive
+                      ? "text-(--color-text-brand)"
+                      : "text-(--color-text-primary)"
+                  }`}
+                >
+                  {decision.name}
+                </span>
+                <span className="typo-caption1 text-(--color-text-tertiary)">
+                  {decision.application_count}
+                </span>
+              </button>
+            );
+          })}
+
+          {!hasDecisions && keyword && (
+            <div className="flex w-full flex-1 items-center justify-center py-8 typo-subtitle5 text-(--color-text-tertiary)">
+              검색 결과가 없습니다
+            </div>
+          )}
         </div>
       )}
     </>

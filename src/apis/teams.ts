@@ -4,6 +4,7 @@ import type { ApiResponse } from "@/types/auth";
 import type {
   CreateTeamRequest,
   CreateTeamResult,
+  DecisionListItem,
   DeleteTeamResult,
   InviteTeamMemberRequest,
   InviteTeamMemberResult,
@@ -56,6 +57,21 @@ export const deleteTeam = async (
     unknown,
     AxiosResponse<ApiResponse<DeleteTeamResult>>
   >(ENDPOINT.TEAMS.DELETE(teamId));
+
+  if (!data.isSuccess) {
+    throw new Error(data.message);
+  }
+
+  return data.result;
+};
+
+export const listDecisions = async (
+  teamId: number,
+): Promise<DecisionListItem[]> => {
+  const { data } = await http.get<
+    unknown,
+    AxiosResponse<ApiResponse<DecisionListItem[]>>
+  >(ENDPOINT.TEAMS.DECISIONS(teamId));
 
   if (!data.isSuccess) {
     throw new Error(data.message);
