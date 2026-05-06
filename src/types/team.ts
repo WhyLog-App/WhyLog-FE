@@ -28,3 +28,9 @@ export interface InviteTeamMemberResult {
 export interface DeleteTeamResult {
   is_removed: boolean;
 }
+
+export interface DecisionListItem {
+  decision_id: number;
+  name: string;
+  application_count: number;
+}

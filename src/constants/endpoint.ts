@@ -17,6 +17,8 @@ const ENDPOINT = {
     DELETE: (teamId: number) => `${API_BASE_URL}/api/teams/${teamId}`,
     INVITE: (teamId: number) =>
       `${API_BASE_URL}/api/teams/${teamId}/invitations`,
+    DECISIONS: (teamId: number) =>
+      `${API_BASE_URL}/api/teams/${teamId}/decisions`,
   },
   MEMBERS: {
     PROFILE_IMAGE: `${API_BASE_URL}/api/members/profile-image`,
