@@ -7,6 +7,7 @@ import { Icon } from "@/components/common/Icon";
 import { useCurrentTeam } from "@/hooks/useCurrentTeam";
 import { useCreateMeeting } from "@/pages/meeting/hooks/useCreateMeeting";
 import { useMeetingList } from "@/pages/meeting/hooks/useMeetingList";
+import { parseRouteId } from "@/utils/parseRouteId";
 import MeetingPanelItem from "./MeetingPanelItem";
 import StartMeetingModal from "./StartMeetingModal";
 
@@ -17,9 +18,7 @@ const MeetingPanel = () => {
   const { meetingId: activeMeetingIdParam } = useParams<{
     meetingId?: string;
   }>();
-  const activeMeetingId = activeMeetingIdParam
-    ? Number(activeMeetingIdParam)
-    : null;
+  const activeMeetingId = parseRouteId(activeMeetingIdParam);
   const { createMeeting, isPending } = useCreateMeeting(teamId, () =>
     setIsModalOpen(false),
   );

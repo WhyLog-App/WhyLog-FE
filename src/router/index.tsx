@@ -45,7 +45,7 @@ const allRoutes: RouteObject[] = [
         element: <DecisionsPage />,
       },
       {
-        path: "decisions/:decisionId",
+        path: "decisions/:decisionId/:applicationId",
         element: <DecisionsPage />,
       },
       {

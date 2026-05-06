@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Modal from "@/components/common/Modal";
 import { decodeAccessToken } from "@/utils/jwt";
+import { parseRouteId } from "@/utils/parseRouteId";
 import { tokenStore } from "@/utils/tokenStore";
 import LiveTranscriptPanel from "./components/LiveTranscriptPanel";
 import MeetingConnectionOverlay from "./components/MeetingConnectionOverlay";
@@ -22,12 +23,6 @@ const formatStartDateTime = (iso: string) => {
   return `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 };
 
-const parseMeetingId = (raw: string | undefined): number | null => {
-  if (!raw) return null;
-  const num = Number(raw);
-  return Number.isNaN(num) ? null : num;
-};
-
 const parseStartTimestamp = (iso: string | undefined): number | undefined => {
   if (!iso) return undefined;
   const t = new Date(iso).getTime();
@@ -39,7 +34,7 @@ const InProgressPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const meetingId = parseMeetingId(meetingIdParam);
+  const meetingId = parseRouteId(meetingIdParam);
   const { data: meetingDetail } = useMeetingDetail(meetingId);
 
   const meetingName =

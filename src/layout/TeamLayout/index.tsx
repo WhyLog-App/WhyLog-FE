@@ -1,5 +1,6 @@
 import { Navigate, Outlet, useParams } from "react-router-dom";
 import { useTeams } from "@/components/sidebar/hooks/useTeams";
+import { parseRouteId } from "@/utils/parseRouteId";
 import AppLayout from "../AppLayout";
 
 const TeamLayout = () => {
@@ -24,7 +25,7 @@ const TeamLayout = () => {
     );
   }
 
-  const teamIdNum = Number(teamId);
+  const teamIdNum = parseRouteId(teamId);
 
   // 팀이 없으면 온보딩 페이지로
   if (!teams || teams.length === 0) {
