@@ -9,11 +9,18 @@ import { useDecisions } from "./hooks/useDecisions";
 const DecisionPanel = () => {
   const navigate = useNavigate();
   const { teamId } = useCurrentTeam();
-  const { decisionId: activeDecisionIdParam } = useParams<{
+  const {
+    decisionId: activeDecisionIdParam,
+    applicationId: activeApplicationIdParam,
+  } = useParams<{
     decisionId?: string;
+    applicationId?: string;
   }>();
   const activeDecisionId = activeDecisionIdParam
     ? Number(activeDecisionIdParam)
+    : null;
+  const activeApplicationId = activeApplicationIdParam
+    ? Number(activeApplicationIdParam)
     : null;
   const { data, isLoading, isError } = useDecisions(teamId);
 
@@ -109,28 +116,15 @@ const DecisionPanel = () => {
               return (
                 <li
                   key={decision.decision_id}
-                  className={`flex w-full flex-col rounded-lg ${
-                    isActive
-                      ? "bg-(--color-action-active)"
-                      : "bg-(--color-bg-surface)"
-                  }`}
+                  className="flex w-full flex-col rounded-lg bg-(--color-bg-surface)"
                 >
                   <button
                     type="button"
                     onClick={() => toggleExpanded(decision.decision_id)}
                     aria-expanded={isExpanded}
-                    aria-pressed={isActive}
-                    className={`flex w-full cursor-pointer items-center justify-between rounded-lg px-4 py-3 text-left ${
-                      isActive ? "" : "hover:bg-(--color-action-hover)"
-                    }`}
+                    className="flex w-full cursor-pointer items-center justify-between rounded-lg px-4 py-3 text-left hover:bg-(--color-action-hover)"
                   >
-                    <span
-                      className={`typo-subtitle5 ${
-                        isActive
-                          ? "text-(--color-text-brand)"
-                          : "text-(--color-text-primary)"
-                      }`}
-                    >
+                    <span className="typo-subtitle5 text-(--color-text-primary)">
                       {decision.name}
                     </span>
                     <Icon
@@ -156,10 +150,21 @@ const DecisionPanel = () => {
                               onClick={() =>
                                 teamId &&
                                 navigate(
-                                  `/team/${teamId}/decisions/${decision.decision_id}`,
+                                  `/team/${teamId}/decisions/${decision.decision_id}/${application.application_id}`,
                                 )
                               }
-                              className="flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-left hover:bg-(--color-action-hover)"
+                              aria-pressed={
+                                isActive &&
+                                activeApplicationId ===
+                                  application.application_id
+                              }
+                              className={`flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-left ${
+                                isActive &&
+                                activeApplicationId ===
+                                  application.application_id
+                                  ? "bg-(--color-action-active)"
+                                  : "hover:bg-(--color-action-hover)"
+                              }`}
                             >
                               <span
                                 aria-hidden="true"
@@ -167,7 +172,9 @@ const DecisionPanel = () => {
                               />
                               <span
                                 className={`typo-subtitle5 ${
-                                  isActive
+                                  isActive &&
+                                  activeApplicationId ===
+                                    application.application_id
                                     ? "text-(--color-text-brand)"
                                     : "text-(--color-text-primary)"
                                 }`}
