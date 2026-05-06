@@ -45,6 +45,10 @@ const allRoutes: RouteObject[] = [
         element: <DecisionsPage />,
       },
       {
+        path: "decisions/:decisionId",
+        element: <DecisionsPage />,
+      },
+      {
         path: "meeting",
         element: <MeetingPage />,
       },

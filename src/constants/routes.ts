@@ -7,6 +7,7 @@ export const ROUTES = {
   TEAM_ROOT: "/team/:teamId",
   TEAM_HOME: "/team/:teamId",
   TEAM_DECISIONS: "/team/:teamId/decisions",
+  TEAM_DECISION_DETAIL: "/team/:teamId/decisions/:decisionId",
   TEAM_MEETING: "/team/:teamId/meeting",
   TEAM_MEETING_DETAIL: "/team/:teamId/meeting/:meetingId",
   TEAM_GIT: "/team/:teamId/git",
