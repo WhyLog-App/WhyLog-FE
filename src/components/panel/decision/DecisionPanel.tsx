@@ -6,6 +6,12 @@ import { Icon } from "@/components/common/Icon";
 import { useCurrentTeam } from "@/hooks/useCurrentTeam";
 import { useDecisions } from "./hooks/useDecisions";
 
+const toNullableNumber = (value?: string) => {
+  if (value == null) return null;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+};
+
 const DecisionPanel = () => {
   const navigate = useNavigate();
   const { teamId } = useCurrentTeam();
@@ -16,12 +22,8 @@ const DecisionPanel = () => {
     decisionId?: string;
     applicationId?: string;
   }>();
-  const activeDecisionId = activeDecisionIdParam
-    ? Number(activeDecisionIdParam)
-    : null;
-  const activeApplicationId = activeApplicationIdParam
-    ? Number(activeApplicationIdParam)
-    : null;
+  const activeDecisionId = toNullableNumber(activeDecisionIdParam);
+  const activeApplicationId = toNullableNumber(activeApplicationIdParam);
   const { data, isLoading, isError } = useDecisions(teamId);
 
   const [keyword, setKeyword] = useState("");
