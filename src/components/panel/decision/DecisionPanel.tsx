@@ -4,13 +4,8 @@ import IconChevronDown from "@/assets/icons/arrow/ic_chevron_down.svg?react";
 import IconSearch from "@/assets/icons/interface/ic_search.svg?react";
 import { Icon } from "@/components/common/Icon";
 import { useCurrentTeam } from "@/hooks/useCurrentTeam";
+import { parseRouteId } from "@/utils/parseRouteId";
 import { useDecisions } from "./hooks/useDecisions";
-
-const toNullableNumber = (value?: string) => {
-  if (value == null) return null;
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : null;
-};
 
 const DecisionPanel = () => {
   const navigate = useNavigate();
@@ -22,8 +17,8 @@ const DecisionPanel = () => {
     decisionId?: string;
     applicationId?: string;
   }>();
-  const activeDecisionId = toNullableNumber(activeDecisionIdParam);
-  const activeApplicationId = toNullableNumber(activeApplicationIdParam);
+  const activeDecisionId = parseRouteId(activeDecisionIdParam);
+  const activeApplicationId = parseRouteId(activeApplicationIdParam);
   const { data, isLoading, isError } = useDecisions(teamId);
 
   const [keyword, setKeyword] = useState("");

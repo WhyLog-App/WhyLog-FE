@@ -6,6 +6,7 @@ import type {
   MeetingHistory,
   MeetingMember,
 } from "@/types/meeting";
+import { parseRouteId } from "@/utils/parseRouteId";
 import AudioPlayerBar from "./components/AudioPlayerBar";
 import CompletedMeetingHeader from "./components/CompletedMeetingHeader";
 import CompletedTranscript from "./components/CompletedTranscript";
@@ -19,7 +20,6 @@ import type {
   CompletedMeetingPanels,
   CompletedTranscriptItem,
 } from "./types/completed";
-import { parseMeetingId } from "./utils/parseMeetingId";
 
 const WEEKDAY = ["일", "월", "화", "수", "목", "금", "토"];
 
@@ -97,7 +97,7 @@ const buildTranscript = (
 
 const CompletedPage = () => {
   const { meetingId: meetingIdParam } = useParams<{ meetingId: string }>();
-  const meetingId = parseMeetingId(meetingIdParam);
+  const meetingId = parseRouteId(meetingIdParam);
 
   const { data: detail } = useMeetingDetail(meetingId);
   const { data: history } = useMeetingHistory(meetingId);

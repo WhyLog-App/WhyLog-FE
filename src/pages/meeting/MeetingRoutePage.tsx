@@ -2,15 +2,15 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { useCurrentTeam } from "@/hooks/useCurrentTeam";
 import type { MeetingListItem } from "@/types/meeting";
+import { parseRouteId } from "@/utils/parseRouteId";
 import CompletedPage from "./CompletedPage";
 import { useMeetingDetail } from "./hooks/useMeetingDetail";
 import { MEETING_LIST_QUERY_KEY } from "./hooks/useMeetingList";
 import InProgressPage from "./InProgressPage";
-import { parseMeetingId } from "./utils/parseMeetingId";
 
 const MeetingRoutePage = () => {
   const { meetingId: meetingIdParam } = useParams<{ meetingId: string }>();
-  const meetingId = parseMeetingId(meetingIdParam);
+  const meetingId = parseRouteId(meetingIdParam);
   const { teamId } = useCurrentTeam();
 
   const queryClient = useQueryClient();
