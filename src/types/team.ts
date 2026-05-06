@@ -29,8 +29,13 @@ export interface DeleteTeamResult {
   is_removed: boolean;
 }
 
+export interface DecisionApplicationItem {
+  application_id: number;
+  name: string;
+}
+
 export interface DecisionListItem {
   decision_id: number;
   name: string;
-  application_count: number;
+  applications: DecisionApplicationItem[];
 }

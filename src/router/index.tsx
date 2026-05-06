@@ -6,6 +6,7 @@ import { ROUTES } from "../constants/routes";
 import TeamLayout from "../layout/TeamLayout";
 import {
   DecisionsPage,
+  DecisionsRoutePage,
   GitPage,
   HomePage,
   LoginPage,
@@ -45,8 +46,8 @@ const allRoutes: RouteObject[] = [
         element: <DecisionsPage />,
       },
       {
-        path: "decisions/:decisionId",
-        element: <DecisionsPage />,
+        path: "decisions/:decisionId/:applicationId",
+        element: <DecisionsRoutePage />,
       },
       {
         path: "meeting",

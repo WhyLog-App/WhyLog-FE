@@ -1,23 +1,40 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import IconChevronDown from "@/assets/icons/arrow/ic_chevron_down.svg?react";
 import IconSearch from "@/assets/icons/interface/ic_search.svg?react";
 import { Icon } from "@/components/common/Icon";
 import { useCurrentTeam } from "@/hooks/useCurrentTeam";
+import { parseRouteId } from "@/utils/parseRouteId";
 import { useDecisions } from "./hooks/useDecisions";
 
 const DecisionPanel = () => {
   const navigate = useNavigate();
   const { teamId } = useCurrentTeam();
-  const { decisionId: activeDecisionIdParam } = useParams<{
+  const {
+    decisionId: activeDecisionIdParam,
+    applicationId: activeApplicationIdParam,
+  } = useParams<{
     decisionId?: string;
+    applicationId?: string;
   }>();
-  const activeDecisionId = activeDecisionIdParam
-    ? Number(activeDecisionIdParam)
-    : null;
+  const activeDecisionId = parseRouteId(activeDecisionIdParam);
+  const activeApplicationId = parseRouteId(activeApplicationIdParam);
   const { data, isLoading, isError } = useDecisions(teamId);
 
   const [keyword, setKeyword] = useState("");
   const normalizedKeyword = keyword.trim();
+
+  const [expandedIds, setExpandedIds] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    if (activeDecisionId == null) return;
+    setExpandedIds((prev) => {
+      if (prev.has(activeDecisionId)) return prev;
+      const next = new Set(prev);
+      next.add(activeDecisionId);
+      return next;
+    });
+  }, [activeDecisionId]);
 
   const decisions = useMemo(() => {
     const list = data ?? [];
@@ -27,6 +44,18 @@ const DecisionPanel = () => {
   }, [data, normalizedKeyword]);
 
   const hasDecisions = decisions.length > 0;
+
+  const toggleExpanded = (decisionId: number) => {
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(decisionId)) {
+        next.delete(decisionId);
+      } else {
+        next.add(decisionId);
+      }
+      return next;
+    });
+  };
 
   return (
     <>
@@ -77,38 +106,87 @@ const DecisionPanel = () => {
             />
           </div>
 
-          {decisions.map((decision) => {
-            const isActive = activeDecisionId === decision.decision_id;
-            return (
-              <button
-                key={decision.decision_id}
-                type="button"
-                onClick={() =>
-                  teamId &&
-                  navigate(`/team/${teamId}/decisions/${decision.decision_id}`)
-                }
-                aria-pressed={isActive}
-                className={`flex w-full cursor-pointer items-center justify-between rounded-lg px-4 py-3 text-left ${
-                  isActive
-                    ? "bg-(--color-action-active)"
-                    : "bg-(--color-bg-surface) hover:bg-(--color-action-hover)"
-                }`}
-              >
-                <span
-                  className={`typo-subtitle5 ${
-                    isActive
-                      ? "text-(--color-text-brand)"
-                      : "text-(--color-text-primary)"
-                  }`}
+          <ul className="flex w-full flex-col gap-2">
+            {decisions.map((decision) => {
+              const isActive = activeDecisionId === decision.decision_id;
+              const isExpanded = expandedIds.has(decision.decision_id);
+              return (
+                <li
+                  key={decision.decision_id}
+                  className="flex w-full flex-col rounded-lg bg-(--color-bg-surface)"
                 >
-                  {decision.name}
-                </span>
-                <span className="typo-caption1 text-(--color-text-tertiary)">
-                  {decision.application_count}
-                </span>
-              </button>
-            );
-          })}
+                  <button
+                    type="button"
+                    onClick={() => toggleExpanded(decision.decision_id)}
+                    aria-expanded={isExpanded}
+                    className="flex w-full cursor-pointer items-center justify-between rounded-lg px-4 py-3 text-left hover:bg-(--color-action-hover)"
+                  >
+                    <span className="typo-subtitle5 text-(--color-text-primary)">
+                      {decision.name}
+                    </span>
+                    <Icon
+                      icon={IconChevronDown}
+                      size={20}
+                      className={`shrink-0 text-(--color-text-tertiary) transition-transform ${
+                        isExpanded ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+
+                  {isExpanded &&
+                    (decision.applications.length === 0 ? (
+                      <div className="px-4 pb-3 typo-caption1 text-(--color-text-tertiary)">
+                        연관된 적용 사항이 없습니다
+                      </div>
+                    ) : (
+                      <ul className="flex w-full flex-col gap-1 px-2 pb-2">
+                        {decision.applications.map((application) => (
+                          <li key={application.application_id}>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                teamId &&
+                                navigate(
+                                  `/team/${teamId}/decisions/${decision.decision_id}/${application.application_id}`,
+                                )
+                              }
+                              aria-pressed={
+                                isActive &&
+                                activeApplicationId ===
+                                  application.application_id
+                              }
+                              className={`flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-left ${
+                                isActive &&
+                                activeApplicationId ===
+                                  application.application_id
+                                  ? "bg-(--color-action-active)"
+                                  : "hover:bg-(--color-action-hover)"
+                              }`}
+                            >
+                              <span
+                                aria-hidden="true"
+                                className="inline-block h-2 w-2 shrink-0 rounded-full bg-(--color-text-brand)"
+                              />
+                              <span
+                                className={`typo-subtitle5 ${
+                                  isActive &&
+                                  activeApplicationId ===
+                                    application.application_id
+                                    ? "text-(--color-text-brand)"
+                                    : "text-(--color-text-primary)"
+                                }`}
+                              >
+                                {application.name}
+                              </span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    ))}
+                </li>
+              );
+            })}
+          </ul>
 
           {!hasDecisions && normalizedKeyword && (
             <div className="flex w-full flex-1 items-center justify-center py-8 typo-subtitle5 text-(--color-text-tertiary)">
