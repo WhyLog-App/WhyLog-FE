@@ -1,4 +1,5 @@
 export { default as DecisionsPage } from "./decisions";
+export { default as DecisionsRoutePage } from "./decisions/DecisionsRoutePage";
 export { default as GitPage } from "./git";
 export { default as HomePage } from "./home";
 export { default as LoginPage } from "./login";
