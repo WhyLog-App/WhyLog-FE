@@ -1,26 +1,26 @@
 import { useState } from "react";
 import IconAddPlusSquare from "@/assets/icons/edit/ic_add_plus_square.svg?react";
 import { Icon } from "@/components/common/Icon";
-import RepositoryPanelItem from "./RepositoryPanelItem";
+import GitPanelItem from "./GitPanelItem";
 
-interface RepositoryItem {
+interface GitItem {
   id: string;
   name: string;
   updatedAtText: string;
 }
 
-const mockRepositories: RepositoryItem[] = [
+const mockGitItems: GitItem[] = [
   { id: "repo-1", name: "Capston-Server", updatedAtText: "14 mins ago" },
   { id: "repo-2", name: "Capston-AI", updatedAtText: "35 mins ago" },
   { id: "repo-3", name: "Capston-Web", updatedAtText: "1 hour ago" },
 ];
 
-const RepositoryPanel = () => {
+const GitPanel = () => {
   const [selectedId, setSelectedId] = useState<string | null>(
-    mockRepositories[0]?.id ?? null,
+    mockGitItems[0]?.id ?? null,
   );
 
-  const hasRepositories = mockRepositories.length > 0;
+  const hasGitItems = mockGitItems.length > 0;
 
   return (
     <>
@@ -41,7 +41,7 @@ const RepositoryPanel = () => {
 
       <div className="h-px w-full bg-(--color-border-divider)" />
 
-      {!hasRepositories && (
+      {!hasGitItems && (
         <div className="flex w-full flex-1 flex-col items-center justify-center px-4">
           <div className="flex w-full flex-col items-start gap-2 text-center">
             <div className="typo-subtitle4 w-full text-(--color-text-secondary)">
@@ -56,15 +56,15 @@ const RepositoryPanel = () => {
         </div>
       )}
 
-      {hasRepositories && (
+      {hasGitItems && (
         <div className="flex w-full flex-1 flex-col gap-2 overflow-y-auto px-4">
-          {mockRepositories.map((repo) => (
-            <RepositoryPanelItem
-              key={repo.id}
-              name={repo.name}
-              updatedAtText={repo.updatedAtText}
-              isActive={repo.id === selectedId}
-              onClick={() => setSelectedId(repo.id)}
+          {mockGitItems.map((item) => (
+            <GitPanelItem
+              key={item.id}
+              name={item.name}
+              updatedAtText={item.updatedAtText}
+              isActive={item.id === selectedId}
+              onClick={() => setSelectedId(item.id)}
             />
           ))}
         </div>
@@ -73,4 +73,4 @@ const RepositoryPanel = () => {
   );
 };
 
-export default RepositoryPanel;
+export default GitPanel;

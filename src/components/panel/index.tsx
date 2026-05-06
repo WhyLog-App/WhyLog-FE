@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 import DecisionPanel from "./decision/DecisionPanel";
 import MeetingPanel from "./meeting/MeetingPanel";
-import RepositoryPanel from "./repository/RepositoryPanel";
+import GitPanel from "./git/GitPanel";
 
 const Panel = () => {
   const { pathname } = useLocation();
@@ -13,7 +13,7 @@ const Panel = () => {
   } else if (/\/meeting(\/|$)/.test(pathname)) {
     content = <MeetingPanel />;
   } else if (/\/git(\/|$)/.test(pathname)) {
-    content = <RepositoryPanel />;
+    content = <GitPanel />;
   }
 
   if (!content) return null;

@@ -2,19 +2,19 @@ import IconClock from "@/assets/icons/media/ic_clock.svg?react";
 import IconGit from "@/assets/icons/media/ic_git.svg?react";
 import { Icon } from "@/components/common/Icon";
 
-interface RepositoryPanelItemProps {
+interface GitPanelItemProps {
   name: string;
   updatedAtText: string;
   isActive?: boolean;
   onClick?: () => void;
 }
 
-const RepositoryPanelItem = ({
+const GitPanelItem = ({
   name,
   updatedAtText,
   isActive = false,
   onClick,
-}: RepositoryPanelItemProps) => {
+}: GitPanelItemProps) => {
   return (
     <button
       type="button"
@@ -51,4 +51,4 @@ const RepositoryPanelItem = ({
   );
 };
 
-export default RepositoryPanelItem;
+export default GitPanelItem;
