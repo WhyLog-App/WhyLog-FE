@@ -1,5 +1,13 @@
 export type DecisionType = "success" | "warning" | "neutral";
 
+export interface GitHubTokenRequest {
+  access_token: string;
+}
+
+export interface GitHubTokenResult {
+  access_token: string;
+}
+
 export interface GitRepositoryStats {
   commits: number;
   connected: number;

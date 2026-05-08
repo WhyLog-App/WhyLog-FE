@@ -38,6 +38,9 @@ const ENDPOINT = {
     HISTORY: (meetingId: number) =>
       `${API_BASE_URL}/api/meetings/${meetingId}/history`,
   },
+  GIT: {
+    GITHUB_TOKEN: `${API_BASE_URL}/api/github/token`,
+  },
 } as const;
 
 export const WS_BASE_URL = API_BASE_URL.replace(/^http/i, "ws");

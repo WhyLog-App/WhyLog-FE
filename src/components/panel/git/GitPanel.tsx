@@ -1,7 +1,9 @@
 import { useState } from "react";
 import IconAddPlusSquare from "@/assets/icons/edit/ic_add_plus_square.svg?react";
 import { Icon } from "@/components/common/Icon";
+import GitTokenModal from "./GitTokenModal";
 import GitPanelItem from "./GitPanelItem";
+import { useRegisterGitHubToken } from "@/pages/git/hooks/useRegisterGitHubToken";
 
 interface GitItem {
   id: string;
@@ -19,6 +21,12 @@ const GitPanel = () => {
   const [selectedId, setSelectedId] = useState<string | null>(
     mockGitItems[0]?.id ?? null,
   );
+  const [isTokenModalOpen, setIsTokenModalOpen] = useState(false);
+
+  const { registerGitHubToken, isPending, errorMessage } =
+    useRegisterGitHubToken({
+      onSuccess: () => setIsTokenModalOpen(false),
+    });
 
   const hasGitItems = mockGitItems.length > 0;
 
@@ -30,6 +38,7 @@ const GitPanel = () => {
           type="button"
           className="cursor-pointer"
           aria-label="레포지토리 연동"
+          onClick={() => setIsTokenModalOpen(true)}
         >
           <Icon
             icon={IconAddPlusSquare}
@@ -68,6 +77,15 @@ const GitPanel = () => {
             />
           ))}
         </div>
+      )}
+
+      {isTokenModalOpen && (
+        <GitTokenModal
+          onClose={() => setIsTokenModalOpen(false)}
+          onRegister={registerGitHubToken}
+          isPending={isPending}
+          errorMessage={errorMessage}
+        />
       )}
     </>
   );
