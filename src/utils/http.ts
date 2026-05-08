@@ -162,7 +162,8 @@ class Http {
       originalRequest &&
       !originalRequest._retry &&
       !originalRequest.url?.includes("/api/auth/refresh-token") &&
-      !originalRequest.url?.includes("/api/auth/login")
+      !originalRequest.url?.includes("/api/auth/login") &&
+      !originalRequest.url?.includes("/api/github/token")
     ) {
       originalRequest._retry = true;
 
