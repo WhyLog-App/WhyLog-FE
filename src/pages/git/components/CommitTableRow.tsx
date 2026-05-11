@@ -17,7 +17,7 @@ const decisionDotClassName = {
 const CommitTableRow = ({ commit, onRowClick }: CommitTableRowProps) => {
   return (
     <tr
-      className="h-11 border-b border-(--color-light-700) bg-(--color-white) cursor-pointer hover:bg-(--color-gray-50)"
+      className="h-11 border-b border-(--color-light-700) cursor-pointer hover:bg-(--color-action-hover)"
       onClick={() => onRowClick?.(commit)}
     >
       <td className="px-2 py-0 align-middle">
