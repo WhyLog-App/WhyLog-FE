@@ -157,12 +157,15 @@ class Http {
     const status = response?.status;
     const originalRequest = error.config as RetriableRequestConfig | undefined;
 
+    const isGitHubTokenError = (response?.data as any)?.code === "GIT_401_1";
+
     if (
       status === StatusCode.Unauthorized &&
       originalRequest &&
       !originalRequest._retry &&
       !originalRequest.url?.includes("/api/auth/refresh-token") &&
-      !originalRequest.url?.includes("/api/auth/login")
+      !originalRequest.url?.includes("/api/auth/login") &&
+      !isGitHubTokenError
     ) {
       originalRequest._retry = true;
 

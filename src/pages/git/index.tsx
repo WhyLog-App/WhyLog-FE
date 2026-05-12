@@ -1,9 +1,14 @@
-import EmptyStateCard from "@/components/common/EmptyStateCard";
+import GitList from "./components/GitList.tsx";
+import { mockGitData } from "./mockData";
 
 function GitPage() {
   return (
-    <div className="flex min-h-full w-full items-center justify-center p-8">
-      <EmptyStateCard page="Git" />
+    <div className="flex w-full flex-col py-[60px]">
+      <GitList
+        repositoryName={mockGitData.repositoryName}
+        stats={mockGitData.stats}
+        commits={mockGitData.commits}
+      />
     </div>
   );
 }
