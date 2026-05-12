@@ -103,6 +103,8 @@ const GitPanel = () => {
   };
 
   const handleSyncRepository = async (repositoryId: number) => {
+    if (isSyncing) return;
+
     setSyncingRepositoryId(repositoryId);
     try {
       await syncRepository(repositoryId);
@@ -157,6 +159,7 @@ const GitPanel = () => {
               updatedAtText={item.updatedAtText}
               isActive={item.id === selectedId}
               isSyncing={isSyncing && syncingRepositoryId === item.repositoryId}
+              isSyncDisabled={isSyncing}
               onSelect={() => setSelectedId(item.id)}
               onSync={handleSyncRepository}
             />
