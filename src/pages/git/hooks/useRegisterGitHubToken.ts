@@ -33,11 +33,7 @@ export const useRegisterGitHubToken = (
           error.response?.data?.message ??
             "토큰 등록에 실패했습니다. 다시 시도해주세요.",
         );
-
-        if (error instanceof Error) {
-          setErrorMessage(error.message);
-          return;
-        }
+        return;
       }
 
       if (error instanceof Error) {
