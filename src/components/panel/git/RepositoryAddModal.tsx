@@ -51,8 +51,14 @@ const RepositoryAddModal = ({
       isPrimaryDisabled={isPending || !name.trim() || !url.trim()}
     >
       <div className="flex flex-col gap-1">
-        <label className="typo-label text-(--color-text-secondary)">이름</label>
+        <label
+          htmlFor="repo-name"
+          className="typo-label text-(--color-text-secondary)"
+        >
+          이름
+        </label>
         <input
+          id="repo-name"
           value={name}
           onChange={(e) => {
             setName(e.target.value);
@@ -63,8 +69,14 @@ const RepositoryAddModal = ({
           disabled={isPending}
         />
 
-        <label className="typo-label text-(--color-text-secondary)">URL</label>
+        <label
+          htmlFor="repo-url"
+          className="typo-label text-(--color-text-secondary)"
+        >
+          URL
+        </label>
         <input
+          id="repo-url"
           value={url}
           onChange={(e) => {
             setUrl(e.target.value);
