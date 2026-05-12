@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import IconAddPlusSquare from "@/assets/icons/edit/ic_add_plus_square.svg?react";
 import { Icon } from "@/components/common/Icon";
+import { formatSyncDate } from "@/utils/date";
 import GitTokenModal from "./GitTokenModal";
 import GitPanelItem from "./GitPanelItem";
 import { useRegisterGitHubToken } from "@/pages/git/hooks/useRegisterGitHubToken";
 import { useCheckGitHubToken } from "@/pages/git/hooks/useCheckGitHubToken";
+import { useGetRepositories } from "@/pages/git/hooks/useGetRepositories";
 import RepositoryAddModal from "./RepositoryAddModal";
 import useAddRepository from "@/pages/git/hooks/useAddRepository";
 import { useCurrentTeam } from "@/hooks/useCurrentTeam";
@@ -15,18 +18,11 @@ interface GitItem {
   updatedAtText: string;
 }
 
-const mockGitItems: GitItem[] = [
-  { id: "repo-1", name: "Capston-Server", updatedAtText: "14 mins ago" },
-  { id: "repo-2", name: "Capston-AI", updatedAtText: "35 mins ago" },
-  { id: "repo-3", name: "Capston-Web", updatedAtText: "1 hour ago" },
-];
-
 const GitPanel = () => {
-  const [selectedId, setSelectedId] = useState<string | null>(
-    mockGitItems[0]?.id ?? null,
-  );
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isTokenModalOpen, setIsTokenModalOpen] = useState(false);
   const [isRepoModalOpen, setIsRepoModalOpen] = useState(false);
+  const queryClient = useQueryClient();
 
   const { registerGitHubToken, isPending, errorMessage } =
     useRegisterGitHubToken();
@@ -36,6 +32,8 @@ const GitPanel = () => {
 
   const { teamId } = useCurrentTeam();
 
+  const { data: repositories = [] } = useGetRepositories(teamId);
+
   const {
     addRepository,
     isPending: isAdding,
@@ -43,7 +41,9 @@ const GitPanel = () => {
   } = useAddRepository({
     onSuccess: () => {
       setIsRepoModalOpen(false);
-      // TODO: 레포지토리 목록 새로고침
+      queryClient.invalidateQueries({
+        queryKey: ["repositories", teamId],
+      });
     },
     onTokenExpired: () => {
       setIsRepoModalOpen(false);
@@ -51,7 +51,23 @@ const GitPanel = () => {
     },
   });
 
-  const hasGitItems = mockGitItems.length > 0;
+  const gitItems: GitItem[] = useMemo(
+    () =>
+      repositories.map((repo) => ({
+        id: String(repo.repository_id),
+        name: repo.name,
+        updatedAtText: formatSyncDate(repo.last_sync_date_time),
+      })),
+    [repositories],
+  );
+
+  const hasGitItems = gitItems.length > 0;
+
+  useEffect(() => {
+    if (selectedId === null && hasGitItems) {
+      setSelectedId(gitItems[0]?.id ?? null);
+    }
+  }, [hasGitItems, gitItems, selectedId]);
 
   const handleAddButtonClick = () => {
     if (isCheckingToken) return;
@@ -101,7 +117,7 @@ const GitPanel = () => {
 
       {hasGitItems && (
         <div className="flex w-full flex-1 flex-col gap-2 overflow-y-auto px-4">
-          {mockGitItems.map((item) => (
+          {gitItems.map((item) => (
             <GitPanelItem
               key={item.id}
               name={item.name}

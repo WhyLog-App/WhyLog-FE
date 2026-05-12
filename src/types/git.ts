@@ -46,7 +46,8 @@ export interface AddRepositoryResult {
 export interface RepositoryItem {
   repository_id: number;
   name: string;
-  url: string;
+  url?: string;
+  last_sync_date_time?: string;
 }
 
 export interface CheckGitHubTokenStatusResult {

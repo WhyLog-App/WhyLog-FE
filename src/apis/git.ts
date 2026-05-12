@@ -7,6 +7,7 @@ import type {
   AddRepositoryRequest,
   AddRepositoryResult,
   CheckGitHubTokenStatusResult,
+  RepositoryItem,
 } from "@/types/git";
 import { http } from "@/utils/http";
 
@@ -58,3 +59,18 @@ export const checkGitHubTokenStatus =
 
     return data.result;
   };
+
+export const getRepositories = async (
+  teamId: number,
+): Promise<RepositoryItem[]> => {
+  const { data } = await http.get<
+    void,
+    AxiosResponse<ApiResponse<RepositoryItem[]>>
+  >(ENDPOINT.TEAMS.REPOSITORIES(teamId));
+
+  if (!data.isSuccess) {
+    throw new Error(data.message);
+  }
+
+  return data.result;
+};
