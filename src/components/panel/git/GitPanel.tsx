@@ -45,6 +45,10 @@ const GitPanel = () => {
       setIsRepoModalOpen(false);
       // TODO: 레포지토리 목록 새로고침
     },
+    onTokenExpired: () => {
+      setIsRepoModalOpen(false);
+      setIsTokenModalOpen(true);
+    },
   });
 
   const hasGitItems = mockGitItems.length > 0;

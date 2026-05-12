@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { useState } from "react";
 import { addRepository } from "@/apis/git";
@@ -6,14 +6,17 @@ import type { AddRepositoryRequest, AddRepositoryResult } from "@/types/git";
 
 interface UseAddRepositoryOptions {
   onSuccess?: (result: AddRepositoryResult) => void;
+  onTokenExpired?: () => void;
 }
 
 interface ErrorResponse {
   message?: string;
+  code?: string;
 }
 
 export const useAddRepository = (options?: UseAddRepositoryOptions) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: ({
@@ -28,6 +31,15 @@ export const useAddRepository = (options?: UseAddRepositoryOptions) => {
     },
     onError: (error: unknown) => {
       if (isAxiosError<ErrorResponse>(error)) {
+        // GitHub 토큰 만료 감지
+        if (error.response?.data?.code === "GIT_401_1") {
+          queryClient.setQueryData(["github-token-status"], {
+            is_registered: false,
+          });
+          options?.onTokenExpired?.();
+          return;
+        }
+
         const message = error.response?.data?.message;
         setErrorMessage(
           message ?? "레포지토리 추가에 실패했습니다. 다시 시도해주세요.",
