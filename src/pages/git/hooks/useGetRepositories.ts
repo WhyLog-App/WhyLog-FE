@@ -4,7 +4,7 @@ import { getRepositories } from "@/apis/git";
 export const useGetRepositories = (teamId: number | null) => {
   return useQuery({
     queryKey: ["repositories", teamId],
-    queryFn: () => getRepositories(teamId!),
-    enabled: !!teamId,
+    queryFn: () => getRepositories(teamId as number),
+    enabled: teamId !== null,
   });
 };
