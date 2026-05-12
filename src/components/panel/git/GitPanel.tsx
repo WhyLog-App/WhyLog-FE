@@ -4,6 +4,10 @@ import { Icon } from "@/components/common/Icon";
 import GitTokenModal from "./GitTokenModal";
 import GitPanelItem from "./GitPanelItem";
 import { useRegisterGitHubToken } from "@/pages/git/hooks/useRegisterGitHubToken";
+import { useCheckGitHubToken } from "@/pages/git/hooks/useCheckGitHubToken";
+import RepositoryAddModal from "./RepositoryAddModal";
+import useAddRepository from "@/pages/git/hooks/useAddRepository";
+import { useCurrentTeam } from "@/hooks/useCurrentTeam";
 
 interface GitItem {
   id: string;
@@ -22,13 +26,38 @@ const GitPanel = () => {
     mockGitItems[0]?.id ?? null,
   );
   const [isTokenModalOpen, setIsTokenModalOpen] = useState(false);
+  const [isRepoModalOpen, setIsRepoModalOpen] = useState(false);
 
   const { registerGitHubToken, isPending, errorMessage } =
-    useRegisterGitHubToken({
-      onSuccess: () => setIsTokenModalOpen(false),
-    });
+    useRegisterGitHubToken();
+
+  const { data: tokenStatus, isLoading: isCheckingToken } =
+    useCheckGitHubToken();
+
+  const { teamId } = useCurrentTeam();
+
+  const {
+    addRepository,
+    isPending: isAdding,
+    errorMessage: addError,
+  } = useAddRepository({
+    onSuccess: () => {
+      setIsRepoModalOpen(false);
+      // TODO: 레포지토리 목록 새로고침
+    },
+  });
 
   const hasGitItems = mockGitItems.length > 0;
+
+  const handleAddButtonClick = () => {
+    if (isCheckingToken) return;
+
+    if (tokenStatus?.is_registered) {
+      setIsRepoModalOpen(true);
+    } else {
+      setIsTokenModalOpen(true);
+    }
+  };
 
   return (
     <>
@@ -38,7 +67,8 @@ const GitPanel = () => {
           type="button"
           className="cursor-pointer"
           aria-label="레포지토리 연동"
-          onClick={() => setIsTokenModalOpen(true)}
+          onClick={handleAddButtonClick}
+          disabled={isCheckingToken}
         >
           <Icon
             icon={IconAddPlusSquare}
@@ -83,8 +113,24 @@ const GitPanel = () => {
         <GitTokenModal
           onClose={() => setIsTokenModalOpen(false)}
           onRegister={registerGitHubToken}
+          onNext={() => {
+            setIsTokenModalOpen(false);
+            setIsRepoModalOpen(true);
+          }}
           isPending={isPending}
           errorMessage={errorMessage}
+        />
+      )}
+
+      {isRepoModalOpen && (
+        <RepositoryAddModal
+          onClose={() => setIsRepoModalOpen(false)}
+          onAdd={(payload) => {
+            if (!teamId) return;
+            addRepository(teamId, payload);
+          }}
+          isPending={isAdding}
+          errorMessage={addError}
         />
       )}
     </>

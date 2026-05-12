@@ -15,6 +15,8 @@ const ENDPOINT = {
     LIST: `${API_BASE_URL}/api/members/teams`,
     CREATE: `${API_BASE_URL}/api/teams`,
     DELETE: (teamId: number) => `${API_BASE_URL}/api/teams/${teamId}`,
+    REPOSITORIES: (teamId: number) =>
+      `${API_BASE_URL}/api/teams/${teamId}/repositories`,
     INVITE: (teamId: number) =>
       `${API_BASE_URL}/api/teams/${teamId}/invitations`,
     DECISIONS: (teamId: number) =>
@@ -40,6 +42,7 @@ const ENDPOINT = {
   },
   GIT: {
     GITHUB_TOKEN: `${API_BASE_URL}/api/github/token`,
+    GITHUB_TOKEN_STATUS: `${API_BASE_URL}/api/github/token/status`,
   },
 } as const;
 

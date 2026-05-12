@@ -3,7 +3,8 @@ import Modal from "@/components/common/Modal";
 
 interface GitTokenModalProps {
   onClose: () => void;
-  onRegister: (accessToken: string) => void | Promise<void>;
+  onRegister: (accessToken: string) => Promise<boolean>;
+  onNext?: () => void;
   isPending?: boolean;
   errorMessage?: string | null;
 }
@@ -11,6 +12,7 @@ interface GitTokenModalProps {
 const GitTokenModal = ({
   onClose,
   onRegister,
+  onNext,
   isPending = false,
   errorMessage,
 }: GitTokenModalProps) => {
@@ -18,7 +20,7 @@ const GitTokenModal = ({
   const [validationErrorMessage, setValidationErrorMessage] = useState("");
   const displayErrorMessage = validationErrorMessage || errorMessage;
 
-  const handleTokenSubmit = () => {
+  const handleTokenSubmit = async () => {
     if (isPending) return;
 
     const trimmedToken = token.trim();
@@ -29,7 +31,11 @@ const GitTokenModal = ({
     }
 
     setValidationErrorMessage("");
-    onRegister(trimmedToken);
+    const isSuccess = await onRegister(trimmedToken);
+
+    if (isSuccess) {
+      onNext?.();
+    }
   };
 
   const handleClose = () => {
@@ -42,7 +48,7 @@ const GitTokenModal = ({
     <Modal
       title="GitHub 토큰 등록"
       onClose={handleClose}
-      primaryLabel={isPending ? "등록 중..." : "등록"}
+      primaryLabel={isPending ? "등록 중..." : "다음"}
       onPrimaryClick={handleTokenSubmit}
       isPrimaryDisabled={isPending || !token.trim()}
     >

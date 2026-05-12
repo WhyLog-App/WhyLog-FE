@@ -31,3 +31,24 @@ export interface GitPageData {
   stats: GitRepositoryStats;
   commits: GitCommitItem[];
 }
+
+export interface AddRepositoryRequest {
+  name: string;
+  url: string;
+}
+
+export interface AddRepositoryResult {
+  repository_id: number;
+  name: string;
+  url: string;
+}
+
+export interface RepositoryItem {
+  repository_id: number;
+  name: string;
+  url: string;
+}
+
+export interface CheckGitHubTokenStatusResult {
+  is_registered: boolean;
+}

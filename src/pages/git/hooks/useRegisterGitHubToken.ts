@@ -1,9 +1,12 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { useState } from "react";
 import { registerGitHubToken } from "@/apis/git";
 import type { ApiResponse } from "@/types/auth";
-import type { GitHubTokenResult } from "@/types/git";
+import type {
+  CheckGitHubTokenStatusResult,
+  GitHubTokenResult,
+} from "@/types/git";
 
 interface UseRegisterGitHubTokenOptions {
   onSuccess?: (result: GitHubTokenResult) => void;
@@ -12,11 +15,16 @@ interface UseRegisterGitHubTokenOptions {
 export const useRegisterGitHubToken = (
   options?: UseRegisterGitHubTokenOptions,
 ) => {
+  const queryClient = useQueryClient();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const mutation = useMutation({
     mutationFn: (accessToken: string) => registerGitHubToken(accessToken),
     onSuccess: (result: GitHubTokenResult) => {
+      queryClient.setQueryData<CheckGitHubTokenStatusResult>(
+        ["github-token-status"],
+        { is_registered: true },
+      );
       options?.onSuccess?.(result);
     },
     onError: (error: unknown) => {
@@ -25,6 +33,15 @@ export const useRegisterGitHubToken = (
           error.response?.data?.message ??
             "토큰 등록에 실패했습니다. 다시 시도해주세요.",
         );
+
+        if (error instanceof Error) {
+          setErrorMessage(error.message);
+          return;
+        }
+      }
+
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
         return;
       }
 
@@ -33,9 +50,15 @@ export const useRegisterGitHubToken = (
   });
 
   return {
-    registerGitHubToken: (accessToken: string) => {
+    registerGitHubToken: async (accessToken: string): Promise<boolean> => {
       setErrorMessage(null);
-      mutation.mutate(accessToken);
+
+      try {
+        await mutation.mutateAsync(accessToken);
+        return true;
+      } catch {
+        return false;
+      }
     },
     isPending: mutation.isPending,
     errorMessage,

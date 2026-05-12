@@ -1,7 +1,13 @@
 import type { AxiosResponse } from "axios";
 import ENDPOINT from "@/constants/endpoint";
 import type { ApiResponse } from "@/types/auth";
-import type { GitHubTokenRequest, GitHubTokenResult } from "@/types/git";
+import type {
+  GitHubTokenRequest,
+  GitHubTokenResult,
+  AddRepositoryRequest,
+  AddRepositoryResult,
+  CheckGitHubTokenStatusResult,
+} from "@/types/git";
 import { http } from "@/utils/http";
 
 export const registerGitHubToken = async (
@@ -22,3 +28,33 @@ export const registerGitHubToken = async (
 
   return data.result;
 };
+
+export const addRepository = async (
+  teamId: number,
+  payload: AddRepositoryRequest,
+): Promise<AddRepositoryResult> => {
+  const { data } = await http.post<
+    AddRepositoryRequest,
+    AxiosResponse<ApiResponse<AddRepositoryResult>>
+  >(ENDPOINT.TEAMS.REPOSITORIES(teamId), payload);
+
+  if (!data.isSuccess) {
+    throw new Error(data.message);
+  }
+
+  return data.result;
+};
+
+export const checkGitHubTokenStatus =
+  async (): Promise<CheckGitHubTokenStatusResult> => {
+    const { data } = await http.get<
+      void,
+      AxiosResponse<ApiResponse<CheckGitHubTokenStatusResult>>
+    >(ENDPOINT.GIT.GITHUB_TOKEN_STATUS);
+
+    if (!data.isSuccess) {
+      throw new Error(data.message);
+    }
+
+    return data.result;
+  };
