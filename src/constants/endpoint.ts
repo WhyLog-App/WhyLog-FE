@@ -43,6 +43,8 @@ const ENDPOINT = {
   GIT: {
     GITHUB_TOKEN: `${API_BASE_URL}/api/github/token`,
     GITHUB_TOKEN_STATUS: `${API_BASE_URL}/api/github/token/status`,
+    REPOSITORY_SYNC: (repositoryId: number) =>
+      `${API_BASE_URL}/api/repositories/${repositoryId}/sync`,
   },
 } as const;
 

@@ -43,6 +43,10 @@ export interface AddRepositoryResult {
   url: string;
 }
 
+export interface RepositorySyncResult {
+  repository_id: number;
+}
+
 export interface RepositoryItem {
   repository_id: number;
   name: string;

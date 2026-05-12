@@ -10,9 +10,11 @@ import { useCheckGitHubToken } from "@/pages/git/hooks/useCheckGitHubToken";
 import { useGetRepositories } from "@/pages/git/hooks/useGetRepositories";
 import RepositoryAddModal from "./RepositoryAddModal";
 import useAddRepository from "@/pages/git/hooks/useAddRepository";
+import useSyncRepository from "@/pages/git/hooks/useSyncRepository";
 import { useCurrentTeam } from "@/hooks/useCurrentTeam";
 
 interface GitItem {
+  repositoryId: number;
   id: string;
   name: string;
   updatedAtText: string;
@@ -34,6 +36,10 @@ const GitPanel = () => {
 
   const { data: repositories = [] } = useGetRepositories(teamId);
 
+  const [syncingRepositoryId, setSyncingRepositoryId] = useState<number | null>(
+    null,
+  );
+
   const {
     addRepository,
     isPending: isAdding,
@@ -51,9 +57,26 @@ const GitPanel = () => {
     },
   });
 
+  const {
+    syncRepository,
+    isPending: isSyncing,
+    errorMessage: syncError,
+  } = useSyncRepository({
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["repositories", teamId],
+      });
+    },
+    onTokenExpired: () => {
+      setIsRepoModalOpen(false);
+      setIsTokenModalOpen(true);
+    },
+  });
+
   const gitItems: GitItem[] = useMemo(
     () =>
       repositories.map((repo) => ({
+        repositoryId: repo.repository_id,
         id: String(repo.repository_id),
         name: repo.name,
         updatedAtText: formatSyncDate(repo.last_sync_date_time),
@@ -76,6 +99,15 @@ const GitPanel = () => {
       setIsRepoModalOpen(true);
     } else {
       setIsTokenModalOpen(true);
+    }
+  };
+
+  const handleSyncRepository = async (repositoryId: number) => {
+    setSyncingRepositoryId(repositoryId);
+    try {
+      await syncRepository(repositoryId);
+    } finally {
+      setSyncingRepositoryId(null);
     }
   };
 
@@ -120,10 +152,13 @@ const GitPanel = () => {
           {gitItems.map((item) => (
             <GitPanelItem
               key={item.id}
+              repositoryId={item.repositoryId}
               name={item.name}
               updatedAtText={item.updatedAtText}
               isActive={item.id === selectedId}
-              onClick={() => setSelectedId(item.id)}
+              isSyncing={isSyncing && syncingRepositoryId === item.repositoryId}
+              onSelect={() => setSelectedId(item.id)}
+              onSync={handleSyncRepository}
             />
           ))}
         </div>
@@ -152,6 +187,12 @@ const GitPanel = () => {
           isPending={isAdding}
           errorMessage={addError}
         />
+      )}
+
+      {syncError && (
+        <p className="px-5 pt-2 text-sm text-(--color-error-500)">
+          {syncError}
+        </p>
       )}
     </>
   );
