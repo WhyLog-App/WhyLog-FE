@@ -31,10 +31,11 @@ const GitTokenModal = ({
     }
 
     setValidationErrorMessage("");
-    const isSuccess = await onRegister(trimmedToken);
-
-    if (isSuccess) {
-      onNext?.();
+    try {
+      const isSuccess = await onRegister(trimmedToken);
+      if (isSuccess) onNext?.();
+    } catch {
+      // 상위에서 전달한 errorMessage 렌더링 경로를 사용
     }
   };
 
