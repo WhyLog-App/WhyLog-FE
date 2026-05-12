@@ -7,6 +7,7 @@ import type {
   AddRepositoryRequest,
   AddRepositoryResult,
   CheckGitHubTokenStatusResult,
+  RepositoryCommitListResult,
   RepositoryItem,
   RepositorySyncResult,
 } from "@/types/git";
@@ -68,6 +69,24 @@ export const getRepositories = async (
     void,
     AxiosResponse<ApiResponse<RepositoryItem[]>>
   >(ENDPOINT.TEAMS.REPOSITORIES(teamId));
+
+  if (!data.isSuccess) {
+    throw new Error(data.message);
+  }
+
+  return data.result;
+};
+
+export const getRepositoryCommits = async (
+  repositoryId: number,
+  cursor?: number,
+): Promise<RepositoryCommitListResult> => {
+  const { data } = await http.get<
+    void,
+    AxiosResponse<ApiResponse<RepositoryCommitListResult>>
+  >(ENDPOINT.GIT.COMMITS(repositoryId), {
+    params: cursor === undefined ? undefined : { cursor },
+  });
 
   if (!data.isSuccess) {
     throw new Error(data.message);

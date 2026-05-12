@@ -26,6 +26,30 @@ export interface GitCommitItem {
   changesRemoved: number;
 }
 
+export interface RepositoryCommitConnectedApplication {
+  application_id: number;
+  name: string;
+}
+
+export interface RepositoryCommitItem {
+  commit_id: number;
+  hash: string;
+  message: string;
+  author_name: string;
+  date_time: string;
+  added_lines: number;
+  deleted_lines: number;
+  connected_application: RepositoryCommitConnectedApplication | null;
+}
+
+export interface RepositoryCommitListResult {
+  commit_dtolist: RepositoryCommitItem[];
+  commit_list_size: number;
+  is_first: boolean;
+  has_next: boolean;
+  next_cursor_id: number | null;
+}
+
 export interface GitPageData {
   repositoryName: string;
   stats: GitRepositoryStats;

@@ -62,6 +62,10 @@ const allRoutes: RouteObject[] = [
         element: <GitPage />,
       },
       {
+        path: "git/:repositoryId",
+        element: <GitPage />,
+      },
+      {
         path: "settings",
         element: <SettingsPage />,
       },

@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo } from "react";
+import { useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import IconAddPlusSquare from "@/assets/icons/edit/ic_add_plus_square.svg?react";
 import { Icon } from "@/components/common/Icon";
@@ -12,6 +13,7 @@ import RepositoryAddModal from "./RepositoryAddModal";
 import useAddRepository from "@/pages/git/hooks/useAddRepository";
 import useSyncRepository from "@/pages/git/hooks/useSyncRepository";
 import { useCurrentTeam } from "@/hooks/useCurrentTeam";
+import { parseRouteId } from "@/utils/parseRouteId";
 
 interface GitItem {
   repositoryId: number;
@@ -21,10 +23,10 @@ interface GitItem {
 }
 
 const GitPanel = () => {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isTokenModalOpen, setIsTokenModalOpen] = useState(false);
   const [isRepoModalOpen, setIsRepoModalOpen] = useState(false);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const { registerGitHubToken, isPending, errorMessage } =
     useRegisterGitHubToken();
@@ -33,6 +35,8 @@ const GitPanel = () => {
     useCheckGitHubToken();
 
   const { teamId } = useCurrentTeam();
+  const params = useParams<{ repositoryId?: string }>();
+  const selectedRepositoryIdFromRoute = parseRouteId(params.repositoryId);
 
   const { data: repositories = [] } = useGetRepositories(teamId);
 
@@ -85,12 +89,6 @@ const GitPanel = () => {
   );
 
   const hasGitItems = gitItems.length > 0;
-
-  useEffect(() => {
-    if (selectedId === null && hasGitItems) {
-      setSelectedId(gitItems[0]?.id ?? null);
-    }
-  }, [hasGitItems, gitItems, selectedId]);
 
   const handleAddButtonClick = () => {
     if (isCheckingToken) return;
@@ -157,9 +155,12 @@ const GitPanel = () => {
               repositoryId={item.repositoryId}
               name={item.name}
               updatedAtText={item.updatedAtText}
-              isActive={item.id === selectedId}
+              isActive={item.repositoryId === selectedRepositoryIdFromRoute}
               isSyncing={isSyncing && syncingRepositoryId === item.repositoryId}
-              onSelect={() => setSelectedId(item.id)}
+              onSelect={() => {
+                if (!teamId) return;
+                navigate(`/team/${teamId}/git/${item.repositoryId}`);
+              }}
               onSync={handleSyncRepository}
             />
           ))}
