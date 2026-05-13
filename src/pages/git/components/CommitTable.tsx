@@ -10,12 +10,12 @@ const CommitTable = ({ commits, onRowClick }: CommitTableProps) => {
   return (
     <table className="w-full table-fixed border-collapse">
       <colgroup>
-        <col className="w-[120px]" />
-        <col className="w-[280px]" />
-        <col className="w-[240px]" />
-        <col className="w-[160px]" />
-        <col className="w-[200px]" />
-        <col className="w-[120px]" />
+        <col className="w-[9%]" />
+        <col className="w-[28%]" />
+        <col className="w-[20%]" />
+        <col className="w-[14%]" />
+        <col className="w-[19%]" />
+        <col className="w-[10%]" />
       </colgroup>
       <thead>
         <tr className="h-11 border-b border-(--color-light-700)">
