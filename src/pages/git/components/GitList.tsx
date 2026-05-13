@@ -12,6 +12,7 @@ interface GitListProps {
   isLoading?: boolean;
   isFetchingNextPage?: boolean;
   onLoadMore?: () => void;
+  onCommitClick?: (commit: GitCommitItem) => void;
 }
 
 const GitList = ({
@@ -22,6 +23,7 @@ const GitList = ({
   isLoading = false,
   isFetchingNextPage = false,
   onLoadMore,
+  onCommitClick,
 }: GitListProps) => {
   if (isLoading) {
     return (
@@ -47,7 +49,7 @@ const GitList = ({
       <GitHeader repositoryName={repositoryName} stats={stats} />
 
       <div className="overflow-hidden rounded-[16px] border border-white bg-[rgba(255,255,255,0.5)] px-5 pt-7 pb-7">
-        <CommitTable commits={commits} />
+        <CommitTable commits={commits} onRowClick={onCommitClick} />
       </div>
 
       {hasNextPage && onLoadMore && (

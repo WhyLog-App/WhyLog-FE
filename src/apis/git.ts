@@ -7,6 +7,7 @@ import type {
   AddRepositoryRequest,
   AddRepositoryResult,
   CheckGitHubTokenStatusResult,
+  CommitDetailResult,
   RepositoryCommitListResult,
   RepositoryItem,
   RepositorySyncResult,
@@ -87,6 +88,22 @@ export const getRepositoryCommits = async (
   >(ENDPOINT.GIT.COMMITS(repositoryId), {
     params: cursor === undefined ? undefined : { cursor },
   });
+
+  if (!data.isSuccess) {
+    throw new Error(data.message);
+  }
+
+  return data.result;
+};
+
+export const getCommitDetail = async (
+  repositoryId: number,
+  commitHash: string,
+): Promise<CommitDetailResult> => {
+  const { data } = await http.get<
+    void,
+    AxiosResponse<ApiResponse<CommitDetailResult>>
+  >(ENDPOINT.GIT.COMMIT_DETAIL(repositoryId, commitHash));
 
   if (!data.isSuccess) {
     throw new Error(data.message);

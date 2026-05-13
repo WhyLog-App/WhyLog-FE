@@ -7,6 +7,7 @@ import TeamLayout from "../layout/TeamLayout";
 import {
   DecisionsPage,
   DecisionsRoutePage,
+  GitCommitDetailPage,
   GitPage,
   HomePage,
   LoginPage,
@@ -64,6 +65,10 @@ const allRoutes: RouteObject[] = [
       {
         path: "git/:repositoryId",
         element: <GitPage />,
+      },
+      {
+        path: "git/:repositoryId/:commitHash",
+        element: <GitCommitDetailPage />,
       },
       {
         path: "settings",

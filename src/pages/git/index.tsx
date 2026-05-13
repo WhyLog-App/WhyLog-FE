@@ -1,5 +1,6 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import GitList from "./components/GitList";
+import EmptyStateCard from "@/components/common/EmptyStateCard";
 import { useCurrentTeam } from "@/hooks/useCurrentTeam";
 import { useGetRepositories } from "./hooks/useGetRepositories";
 import { useGetRepositoryCommits } from "./hooks/useGetRepositoryCommits";
@@ -36,19 +37,11 @@ function GitPage() {
 
   const routeRepositoryId = parseRouteId(params.repositoryId);
 
-  useEffect(() => {
-    if (!params.repositoryId && repositories.length > 0) {
-      void navigate(`/team/${teamId}/git/${repositories[0].repository_id}`, {
-        replace: true,
-      });
-    }
-  }, [params.repositoryId, repositories, teamId, navigate]);
-
   const selectedRepository = useMemo(
     () =>
       repositories.find(
         (repository) => repository.repository_id === routeRepositoryId,
-      ) ?? repositories[0],
+      ),
     [repositories, routeRepositoryId],
   );
 
@@ -82,6 +75,14 @@ function GitPage() {
     [commits],
   );
 
+  if (!repositoryId) {
+    return (
+      <div className="flex min-h-full w-full items-center justify-center p-8">
+        <EmptyStateCard page="Git" />
+      </div>
+    );
+  }
+
   return (
     <div className="flex w-full flex-col py-[60px]">
       <GitList
@@ -91,6 +92,12 @@ function GitPage() {
         hasNextPage={hasNextPage}
         isLoading={isLoading}
         isFetchingNextPage={isFetchingNextPage}
+        onCommitClick={(commit) => {
+          if (!repositoryId) return;
+          void navigate(
+            `/team/${teamId}/git/${repositoryId}/${encodeURIComponent(commit.hash)}`,
+          );
+        }}
         onLoadMore={() => {
           void fetchNextPage();
         }}
