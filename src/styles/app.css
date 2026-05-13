@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
-@import "./base/normalize.css";
-@import "./base/base.css";
+@import "./base/normalize.css" layer(base);
+@import "./base/base.css" layer(base);
 
 @theme {
   /* Breakpoints */
@@ -230,6 +230,28 @@
   --text-label--line-height: 1.25rem;
   --text-legend: 0.8125rem;
   --text-legend--line-height: 1.125rem;
+
+  /* === Landing page tokens === */
+  --color-ink-900: #1c1c28;
+  --color-ink-700: #28293d;
+  --color-ink-500: #555770;
+  --color-ink-300: #8f90a6;
+  --color-ink-100: #c7c9d9;
+
+  --color-line-soft: #ebebf0;
+  --color-line-medium: #e4e4eb;
+  --color-line-faint: #f2f2f5;
+
+  --color-sand-50: #fafafc;
+  --color-sand-100: #f5f5f8;
+  --color-sand-200: #efeff4;
+
+  --color-accent-lavender: #a78bfa;
+  --color-accent-pink: #f0abfc;
+  --color-accent-sky: #7ab7ff;
+
+  --tracking-tightish: -0.02em;
+  --tracking-tighter2: -0.035em;
 }
 
 /* Compound typography utilities */
