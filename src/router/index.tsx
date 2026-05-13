@@ -10,6 +10,7 @@ import {
   GitCommitDetailPage,
   GitPage,
   HomePage,
+  LandingPage,
   LoginPage,
   MeetingPage,
   MeetingRoutePage,
@@ -75,6 +76,12 @@ const allRoutes: RouteObject[] = [
         element: <SettingsPage />,
       },
     ],
+  },
+
+  // 3. 랜딩
+  {
+    path: ROUTES.LANDING,
+    element: <LandingPage />,
   },
 
   // 4. 인증 라우트

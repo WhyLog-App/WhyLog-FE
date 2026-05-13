@@ -143,9 +143,9 @@ class Http {
     tokenStore.clearToken();
     if (
       typeof window !== "undefined" &&
-      window.location.pathname !== ROUTES.LOGIN
+      window.location.pathname !== ROUTES.LANDING
     ) {
-      window.location.replace(ROUTES.LOGIN);
+      window.location.replace(ROUTES.LANDING);
     }
     return Promise.reject(error);
   }
