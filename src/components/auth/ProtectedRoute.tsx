@@ -12,7 +12,7 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
   const hasToken = tokenStore.hasToken();
 
   if (!hasToken) {
-    return <Navigate to={ROUTES.LOGIN} replace state={{ from: location }} />;
+    return <Navigate to={ROUTES.LANDING} replace state={{ from: location }} />;
   }
 
   return children;

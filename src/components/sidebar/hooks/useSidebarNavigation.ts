@@ -16,13 +16,13 @@ export const useSidebarNavigation = () => {
       try {
         await logout();
         tokenStore.clearToken();
-        navigate(ROUTES.LOGIN);
+        navigate(ROUTES.LANDING);
       } catch (error) {
         console.error("로그아웃 요청이 실패해 로컬 세션만 정리했습니다.", {
           status: isAxiosError(error) ? error.response?.status : undefined,
         });
         tokenStore.clearToken();
-        navigate(ROUTES.LOGIN);
+        navigate(ROUTES.LANDING);
       }
       return;
     }
