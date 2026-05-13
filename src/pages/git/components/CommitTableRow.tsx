@@ -14,6 +14,13 @@ const decisionDotClassName = {
   neutral: "bg-(--color-gray-400)",
 } as const;
 
+const shortenHash = (hash: string) => hash.slice(0, 7);
+
+const shortenMessage = (message: string, visibleLength = 28) =>
+  message.length > visibleLength
+    ? `${message.slice(0, visibleLength)}...`
+    : message;
+
 const CommitTableRow = ({ commit, onRowClick }: CommitTableRowProps) => {
   return (
     <tr
@@ -21,25 +28,33 @@ const CommitTableRow = ({ commit, onRowClick }: CommitTableRowProps) => {
       onClick={() => onRowClick?.(commit)}
     >
       <td className="px-2 py-0 align-middle">
-        <span className="inline-flex items-center rounded-md bg-(--color-purple-50) px-[12px] py-[2px] text-[12px] font-medium tracking-[0.01em] text-(--color-purple-700)">
-          {commit.hash}
+        <span
+          className="inline-flex w-[75px] max-w-full items-center justify-center truncate rounded-md bg-(--color-purple-50) px-[12px] py-[2px] text-[12px] font-medium tracking-[0.01em] text-(--color-purple-700)"
+          title={commit.hash}
+        >
+          {shortenHash(commit.hash)}
         </span>
       </td>
       <td className="px-2 py-0 align-middle">
-        <span className="typo-body5 font-semibold text-(--color-text-primary)">
-          {commit.message}
+        <span
+          className="block truncate typo-body5 font-semibold text-(--color-text-primary)"
+          title={commit.message}
+        >
+          {shortenMessage(commit.message)}
         </span>
       </td>
       <td className="px-2 py-0 align-middle">
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-0 items-center gap-2">
           {commit.decisionType === "neutral" ? (
-            <span className="typo-body5 text-[rgba(0,0,0,0.3)]">-</span>
+            <span className="block truncate typo-body5 text-[rgba(0,0,0,0.3)]">
+              -
+            </span>
           ) : (
             <>
               <span
                 className={`inline-flex h-2 w-2 shrink-0 rounded-full ${decisionDotClassName[commit.decisionType]}`}
               />
-              <span className="typo-body5 text-(--color-text-secondary)">
+              <span className="block min-w-0 truncate typo-body5 text-(--color-text-secondary)">
                 {commit.decisionText}
               </span>
             </>
@@ -47,13 +62,13 @@ const CommitTableRow = ({ commit, onRowClick }: CommitTableRowProps) => {
         </div>
       </td>
       <td className="px-2 py-0 align-middle">
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-0 items-center gap-2">
           <Icon
             icon={IconCircleUser}
             size={14}
             className="text-(--color-dark-100)"
           />
-          <span className="typo-body5 text-(--color-text-secondary)">
+          <span className="block min-w-0 truncate typo-body5 text-(--color-text-secondary)">
             {commit.authorName}
           </span>
         </div>

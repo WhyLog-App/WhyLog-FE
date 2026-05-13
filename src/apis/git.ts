@@ -1,4 +1,4 @@
-import type { AxiosResponse } from "axios";
+import { isAxiosError, type AxiosResponse } from "axios";
 import ENDPOINT from "@/constants/endpoint";
 import type { ApiResponse } from "@/types/auth";
 import type {
@@ -7,6 +7,8 @@ import type {
   AddRepositoryRequest,
   AddRepositoryResult,
   CheckGitHubTokenStatusResult,
+  CommitDetailResult,
+  RepositoryCommitListResult,
   RepositoryItem,
   RepositorySyncResult,
 } from "@/types/git";
@@ -49,16 +51,23 @@ export const addRepository = async (
 
 export const checkGitHubTokenStatus =
   async (): Promise<CheckGitHubTokenStatusResult> => {
-    const { data } = await http.get<
-      void,
-      AxiosResponse<ApiResponse<CheckGitHubTokenStatusResult>>
-    >(ENDPOINT.GIT.GITHUB_TOKEN_STATUS);
+    try {
+      const { data } = await http.get<
+        void,
+        AxiosResponse<ApiResponse<CheckGitHubTokenStatusResult>>
+      >(ENDPOINT.GIT.GITHUB_TOKEN_STATUS);
 
-    if (!data.isSuccess) {
-      throw new Error(data.message);
+      if (!data.isSuccess) {
+        return { is_registered: false };
+      }
+
+      return data.result;
+    } catch (error) {
+      if (isAxiosError(error) && error.response?.data?.code === "GIT_400_2") {
+        return { is_registered: false };
+      }
+      throw error;
     }
-
-    return data.result;
   };
 
 export const getRepositories = async (
@@ -68,6 +77,40 @@ export const getRepositories = async (
     void,
     AxiosResponse<ApiResponse<RepositoryItem[]>>
   >(ENDPOINT.TEAMS.REPOSITORIES(teamId));
+
+  if (!data.isSuccess) {
+    throw new Error(data.message);
+  }
+
+  return data.result;
+};
+
+export const getRepositoryCommits = async (
+  repositoryId: number,
+  cursor?: number,
+): Promise<RepositoryCommitListResult> => {
+  const { data } = await http.get<
+    void,
+    AxiosResponse<ApiResponse<RepositoryCommitListResult>>
+  >(ENDPOINT.GIT.COMMITS(repositoryId), {
+    params: cursor === undefined ? undefined : { cursor },
+  });
+
+  if (!data.isSuccess) {
+    throw new Error(data.message);
+  }
+
+  return data.result;
+};
+
+export const getCommitDetail = async (
+  repositoryId: number,
+  commitHash: string,
+): Promise<CommitDetailResult> => {
+  const { data } = await http.get<
+    void,
+    AxiosResponse<ApiResponse<CommitDetailResult>>
+  >(ENDPOINT.GIT.COMMIT_DETAIL(repositoryId, commitHash));
 
   if (!data.isSuccess) {
     throw new Error(data.message);

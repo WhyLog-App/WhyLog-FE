@@ -43,6 +43,10 @@ const ENDPOINT = {
   GIT: {
     GITHUB_TOKEN: `${API_BASE_URL}/api/github/token`,
     GITHUB_TOKEN_STATUS: `${API_BASE_URL}/api/github/token/status`,
+    COMMITS: (repositoryId: number) =>
+      `${API_BASE_URL}/api/repositories/${repositoryId}/commits`,
+    COMMIT_DETAIL: (repositoryId: number, commitHash: string) =>
+      `${API_BASE_URL}/api/repositories/${repositoryId}/commits/${encodeURIComponent(commitHash)}`,
     REPOSITORY_SYNC: (repositoryId: number) =>
       `${API_BASE_URL}/api/repositories/${repositoryId}/sync`,
   },
