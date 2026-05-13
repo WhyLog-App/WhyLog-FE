@@ -99,7 +99,6 @@ const HeroSection = () => {
             <button
               type="button"
               disabled
-              aria-disabled="true"
               title="준비중"
               className="btn-ghost h-13 px-6 rounded-full text-[15px] font-semibold inline-flex items-center gap-2.5 opacity-60 cursor-not-allowed"
             >

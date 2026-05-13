@@ -414,11 +414,11 @@
 .whylog-landing details > summary::-webkit-details-marker {
   display: none;
 }
-.whylog-landing details[open] .faq-icon {
-  transform: rotate(45deg);
-}
 .whylog-landing .faq-icon {
   transition: transform 0.3s ease;
+}
+.whylog-landing details[open] .faq-icon {
+  transform: rotate(45deg);
 }
 
 /* === Mono === */

@@ -24,14 +24,9 @@ const Footer = () => (
             {col.title}
           </p>
           <ul className="space-y-2.5 text-[14px] text-ink-700">
-            {col.items.map((i) => (
-              <li key={i}>
-                <span
-                  aria-disabled="true"
-                  className="text-ink-700/80 cursor-default"
-                >
-                  {i}
-                </span>
+            {col.items.map((item) => (
+              <li key={`${col.id}-${item}`}>
+                <span className="text-ink-700/80 cursor-default">{item}</span>
               </li>
             ))}
           </ul>
@@ -43,11 +38,11 @@ const Footer = () => (
     <div className="max-w-7xl mx-auto px-6 py-6 flex flex-wrap items-center justify-between gap-4">
       <p className="text-[12px] text-ink-300">WhyLog · {CONTACT_EMAIL}</p>
       <div className="flex items-center gap-4 text-[12px] text-ink-300">
-        <span aria-disabled="true">개인정보처리방침</span>
+        <span>개인정보처리방침</span>
         <span className="text-line-soft">·</span>
-        <span aria-disabled="true">이용약관</span>
+        <span>이용약관</span>
         <span className="text-line-soft">·</span>
-        <span aria-disabled="true">보안</span>
+        <span>보안</span>
       </div>
     </div>
   </footer>

@@ -8,7 +8,7 @@ const FinalCtaSection = () => {
   return (
     <section className="relative overflow-hidden grain py-36 mesh-bg-strong alive">
       <div className="relative max-w-4xl mx-auto px-6 text-center reveal">
-        <div className="relative mx-auto mb-10 w-45 h-[18h-45
+        <div className="relative mx-auto mb-10 w-[180px] h-[180px]">
           <div
             className="absolute -inset-12 rounded-full opacity-70"
             style={{
@@ -47,7 +47,6 @@ const FinalCtaSection = () => {
           <button
             type="button"
             disabled
-            aria-disabled="true"
             title="준비중"
             className="btn-ghost h-14 px-7 rounded-full text-[15px] font-semibold opacity-60 cursor-not-allowed"
           >
