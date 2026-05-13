@@ -18,7 +18,8 @@ const CommitChangedFile = ({ file }: CommitChangedFileProps) => {
   const renderDiffContent = () => {
     if (file.lines.length === 1 && file.lines[0].type === "context") {
       const content = file.lines[0].content ?? "";
-      const looksLikeUnified = /^(?:[ +-@]|\+\+\+|---)/m.test(content);
+      const looksLikeUnified =
+        /^(?:diff --git\s|index\s|@@\s|---\s|\+\+\+\s)/m.test(content);
 
       if (looksLikeUnified) {
         const { oldStr, newStr } = parseUnifiedDiff(content);
@@ -43,37 +44,39 @@ const CommitChangedFile = ({ file }: CommitChangedFileProps) => {
 
     return (
       <>
-        {(file.lines || []).map((line: GitCommitDetailFileLine, index: number) => (
-          <div
-            key={`${file.fileName}-${index}`}
-            className={`flex items-stretch border-b border-[#d4edda] last:border-b-0 min-h-[37px] ${
-              line.type === "added"
-                ? "bg-[#e8f5e9]"
-                : line.type === "removed"
-                  ? "bg-(--color-red-50)"
-                  : "bg-[#f8fdf9]"
-            }`}
-          >
-            <div className="w-[48px] shrink-0 flex items-center justify-end pr-3">
-              <span className="font-mono typo-caption1 text-(--color-text-secondary)">
-                {line.lineNumber ?? ""}
-              </span>
+        {(file.lines || []).map(
+          (line: GitCommitDetailFileLine, index: number) => (
+            <div
+              key={`${file.fileName}-${index}`}
+              className={`flex items-stretch border-b border-[#d4edda] last:border-b-0 min-h-[37px] ${
+                line.type === "added"
+                  ? "bg-[#e8f5e9]"
+                  : line.type === "removed"
+                    ? "bg-(--color-red-50)"
+                    : "bg-[#f8fdf9]"
+              }`}
+            >
+              <div className="w-[48px] shrink-0 flex items-center justify-end pr-3">
+                <span className="font-mono typo-caption1 text-(--color-text-secondary)">
+                  {line.lineNumber ?? ""}
+                </span>
+              </div>
+              <div className="flex-1 flex items-center px-3">
+                <pre
+                  className={`font-mono typo-caption1 whitespace-pre-wrap ${
+                    line.type === "added"
+                      ? "text-[#2e7d32]"
+                      : line.type === "removed"
+                        ? "text-(--color-red-700)"
+                        : "text-(--color-text-primary)"
+                  }`}
+                >
+                  {line.content}
+                </pre>
+              </div>
             </div>
-            <div className="flex-1 flex items-center px-3">
-              <pre
-                className={`font-mono typo-caption1 whitespace-pre-wrap ${
-                  line.type === "added"
-                    ? "text-[#2e7d32]"
-                    : line.type === "removed"
-                      ? "text-(--color-red-700)"
-                      : "text-(--color-text-primary)"
-                }`}
-              >
-                {line.content}
-              </pre>
-            </div>
-          </div>
-        ))}
+          ),
+        )}
       </>
     );
   };
