@@ -14,8 +14,7 @@ const decisionDotClassName = {
   neutral: "bg-(--color-gray-400)",
 } as const;
 
-const shortenHash = (hash: string, visibleLength = 7) =>
-  hash.length > visibleLength ? `${hash.slice(0, visibleLength)}...` : hash;
+const shortenHash = (hash: string) => hash.slice(0, 7);
 
 const shortenMessage = (message: string, visibleLength = 28) =>
   message.length > visibleLength
@@ -30,7 +29,7 @@ const CommitTableRow = ({ commit, onRowClick }: CommitTableRowProps) => {
     >
       <td className="px-2 py-0 align-middle">
         <span
-          className="inline-flex w-[75px] max-w-full items-center truncate rounded-md bg-(--color-purple-50) px-[12px] py-[2px] text-[12px] font-medium tracking-[0.01em] text-(--color-purple-700)"
+          className="inline-flex w-[75px] max-w-full items-center justify-center truncate rounded-md bg-(--color-purple-50) px-[12px] py-[2px] text-[12px] font-medium tracking-[0.01em] text-(--color-purple-700)"
           title={commit.hash}
         >
           {shortenHash(commit.hash)}
