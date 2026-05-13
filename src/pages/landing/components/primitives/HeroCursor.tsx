@@ -15,6 +15,24 @@ const HeroCursor = () => {
 
     let half = 9;
     const state = { x: 0, y: 0, tx: 0, ty: 0, started: false };
+    let raf = 0;
+
+    const tick = () => {
+      state.x += (state.tx - state.x) * 0.18;
+      state.y += (state.ty - state.y) * 0.18;
+      half = dot.offsetWidth / 2;
+      dot.style.transform = `translate3d(${state.x - half}px, ${state.y - half}px, 0)`;
+      raf = requestAnimationFrame(tick);
+    };
+    const startLoop = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(tick);
+    };
+    const stopLoop = () => {
+      if (!raf) return;
+      cancelAnimationFrame(raf);
+      raf = 0;
+    };
 
     const onMove = (e: MouseEvent) => {
       const r = hero.getBoundingClientRect();
@@ -28,10 +46,12 @@ const HeroCursor = () => {
     };
     const onEnter = () => {
       dot.style.opacity = "1";
+      startLoop();
     };
     const onLeave = () => {
       dot.style.opacity = "0";
       state.started = false;
+      stopLoop();
     };
     const onOver = (e: MouseEvent) => {
       const t = e.target as HTMLElement | null;
@@ -39,23 +59,13 @@ const HeroCursor = () => {
       else dot.classList.remove("is-hover");
     };
 
-    let raf = 0;
-    const tick = () => {
-      state.x += (state.tx - state.x) * 0.18;
-      state.y += (state.ty - state.y) * 0.18;
-      half = dot.offsetWidth / 2;
-      dot.style.transform = `translate3d(${state.x - half}px, ${state.y - half}px, 0)`;
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-
     hero.addEventListener("mousemove", onMove, { passive: true });
     hero.addEventListener("mouseenter", onEnter);
     hero.addEventListener("mouseleave", onLeave);
     hero.addEventListener("mouseover", onOver);
 
     return () => {
-      cancelAnimationFrame(raf);
+      stopLoop();
       hero.removeEventListener("mousemove", onMove);
       hero.removeEventListener("mouseenter", onEnter);
       hero.removeEventListener("mouseleave", onLeave);

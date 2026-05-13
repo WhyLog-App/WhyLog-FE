@@ -146,12 +146,12 @@ const FeaturesSection = () => (
                 <span className="text-[10px] num font-semibold text-ink-300 mr-1">
                   12:24
                 </span>
-                <div className="flex-1 flex items-center gap-[3px] h-8">
+                <div className="flex-1 flex items-center gap-0.75 h-8">
                   {WAVEFORM_BARS.map((h, i) => (
                     <span
                       // biome-ignore lint/suspicious/noArrayIndexKey: static waveform
                       key={i}
-                      className={`block w-[3px] rounded-full ${
+                      className={`block w-0.75 rounded-full ${
                         h >= 80 ? "bg-primary-500" : "bg-primary-300"
                       }`}
                       style={{ height: `${h}%` }}
@@ -164,7 +164,7 @@ const FeaturesSection = () => (
               </div>
             </div>
           </TiltCard>
-          <div className="absolute -top-8 -right-6 iri-morph w-[88px] h-[88px] float-a" />
+          <div className="absolute -top-8 -right-6 iri-morph w-22 h-22 float-a" />
         </div>
       </div>
 
@@ -225,7 +225,7 @@ const FeaturesSection = () => (
                 </p>
                 <div className="space-y-3">
                   <div className="flex gap-3">
-                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary-300 to-primary-500 flex-shrink-0" />
+                    <div className="w-7 h-7 rounded-full bg-linear-to-br from-primary-300 to-primary-500 shrink-0" />
                     <div>
                       <p className="text-[12px] font-semibold text-ink-900">
                         김준용{" "}
@@ -241,7 +241,7 @@ const FeaturesSection = () => (
                   </div>
                   <div className="flex gap-3">
                     <div
-                      className="w-7 h-7 rounded-full flex-shrink-0"
+                      className="w-7 h-7 rounded-full shrink-0"
                       style={{
                         background: "linear-gradient(135deg, #a78bfa, #f0abfc)",
                       }}
@@ -263,7 +263,7 @@ const FeaturesSection = () => (
               </div>
             </div>
           </TiltCard>
-          <div className="absolute -bottom-8 -left-6 iri-sphere w-[68px] h-[68px] float-c" />
+          <div className="absolute -bottom-8 -left-6 iri-sphere w-17 h-17 float-c" />
         </div>
 
         <div className="col-span-12 lg:col-span-5 order-1 lg:order-2">
@@ -356,19 +356,19 @@ const FeaturesSection = () => (
                       {row.sha}
                     </span>
                     <span className="text-ink-700 truncate">{row.msg}</span>
-                    <button
-                      type="button"
-                      className="text-primary-500 font-semibold text-[12px] cursor-pointer text-left bg-transparent"
+                    <span
+                      aria-hidden="true"
+                      className="text-primary-500 font-semibold text-[12px] text-left"
                     >
                       사유 보기
-                    </button>
+                    </span>
                     <span className="text-right">
-                      <button
-                        type="button"
-                        className="text-[11px] font-semibold text-white bg-primary-500 px-2.5 py-1 rounded-md"
+                      <span
+                        aria-hidden="true"
+                        className="inline-block text-[11px] font-semibold text-white bg-primary-500 px-2.5 py-1 rounded-md"
                       >
                         연결
-                      </button>
+                      </span>
                     </span>
                   </div>
                 ))}
@@ -408,7 +408,7 @@ const FeaturesSection = () => (
               </div>
             </div>
           </TiltCard>
-          <div className="absolute -top-6 -right-6 iri-sphere w-[72px] h-[72px] float-b" />
+          <div className="absolute -top-6 -right-6 iri-sphere w-18 h-18 float-b" />
         </div>
       </div>
     </div>

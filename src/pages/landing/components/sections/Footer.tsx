@@ -26,10 +26,12 @@ const Footer = () => (
           <ul className="space-y-2.5 text-[14px] text-ink-700">
             {col.items.map((i) => (
               <li key={i}>
-                {/* biome-ignore lint/a11y/useValidAnchor: placeholder — 각 서브페이지 라우팅 미정 */}
-                <a href="#" className="hover:text-primary-500 transition">
+                <span
+                  aria-disabled="true"
+                  className="text-ink-700/80 cursor-default"
+                >
                   {i}
-                </a>
+                </span>
               </li>
             ))}
           </ul>
@@ -41,20 +43,11 @@ const Footer = () => (
     <div className="max-w-7xl mx-auto px-6 py-6 flex flex-wrap items-center justify-between gap-4">
       <p className="text-[12px] text-ink-300">WhyLog · {CONTACT_EMAIL}</p>
       <div className="flex items-center gap-4 text-[12px] text-ink-300">
-        {/* biome-ignore lint/a11y/useValidAnchor: placeholder — 정책 페이지 라우팅 미정 */}
-        <a href="#" className="hover:text-ink-700 transition">
-          개인정보처리방침
-        </a>
+        <span aria-disabled="true">개인정보처리방침</span>
         <span className="text-line-soft">·</span>
-        {/* biome-ignore lint/a11y/useValidAnchor: placeholder — 정책 페이지 라우팅 미정 */}
-        <a href="#" className="hover:text-ink-700 transition">
-          이용약관
-        </a>
+        <span aria-disabled="true">이용약관</span>
         <span className="text-line-soft">·</span>
-        {/* biome-ignore lint/a11y/useValidAnchor: placeholder — 정책 페이지 라우팅 미정 */}
-        <a href="#" className="hover:text-ink-700 transition">
-          보안
-        </a>
+        <span aria-disabled="true">보안</span>
       </div>
     </div>
   </footer>

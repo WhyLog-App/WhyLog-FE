@@ -23,7 +23,10 @@ const FaqSection = () => (
               <span className="text-[16px] font-semibold text-ink-900">
                 {f.q}
               </span>
-              <span className="faq-icon w-7 h-7 rounded-full bg-primary-50 text-primary-500 flex items-center justify-center text-[16px] font-bold">
+              <span
+                aria-hidden="true"
+                className="faq-icon w-7 h-7 rounded-full bg-primary-50 text-primary-500 flex items-center justify-center text-[16px] font-bold"
+              >
                 +
               </span>
             </summary>

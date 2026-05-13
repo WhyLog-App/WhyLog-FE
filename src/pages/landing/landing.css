@@ -4,17 +4,17 @@
    ============================================================ */
 
 .whylog-landing {
-  font-family: "Pretendard", "Pretendard Variable", "Inter", sans-serif;
+  font-family: Pretendard, "Pretendard Variable", Inter, sans-serif;
   color: #1c1c28;
   background: #fafafc;
   font-feature-settings: "ss01", "tnum", "cv02", "cv03", "cv04";
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  text-rendering: optimizelegibility;
   scroll-behavior: smooth;
 }
 
 .whylog-landing .num {
-  font-family: "Inter", sans-serif;
+  font-family: Inter, sans-serif;
   font-feature-settings: "tnum", "ss01";
   font-variant-numeric: tabular-nums;
 }

@@ -16,6 +16,7 @@ const CountUp = ({ to, duration = 1600, suffix = "" }: Props) => {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    let rafId = 0;
     el.textContent = `0${suffix}`;
     const obs = new IntersectionObserver(
       (entries) => {
@@ -28,14 +29,17 @@ const CountUp = ({ to, duration = 1600, suffix = "" }: Props) => {
           const eased = 1 - (1 - k) ** 3;
           const v = Math.round(to * eased);
           el.textContent = `${v}${suffix}`;
-          if (k < 1) requestAnimationFrame(tick);
+          if (k < 1) rafId = requestAnimationFrame(tick);
         };
-        requestAnimationFrame(tick);
+        rafId = requestAnimationFrame(tick);
       },
       { threshold: 0.4 },
     );
     obs.observe(el);
-    return () => obs.disconnect();
+    return () => {
+      obs.disconnect();
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, [to, duration, suffix]);
   return <span ref={ref}>0{suffix}</span>;
 };

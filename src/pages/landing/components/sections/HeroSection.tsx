@@ -27,7 +27,7 @@ const HeroSection = () => {
         <img
           src={HERO_IMAGE}
           alt=""
-          className="absolute -right-[12%] -top-[6%] w-[820px] max-w-[80vw] opacity-90 pointer-events-none float-a select-none"
+          className="absolute -right-[12%] -top-[6%] w-205 max-w-[80vw] opacity-90 pointer-events-none float-a select-none"
           style={{
             mixBlendMode: "multiply",
             filter: "saturate(108%) contrast(102%)",
@@ -41,7 +41,7 @@ const HeroSection = () => {
         style={{ transform: "translate3d(0, var(--py, 0px), 0)" }}
       >
         <div
-          className="absolute -left-32 top-1/3 w-[520px] h-[520px] rounded-full opacity-60 pointer-events-none float-b"
+          className="absolute -left-32 top-1/3 w-130 h-130 rounded-full opacity-60 pointer-events-none float-b"
           style={{
             background:
               "radial-gradient(closest-side, rgba(167,139,250,0.45), transparent 70%)",
@@ -72,7 +72,7 @@ const HeroSection = () => {
             />
           </h1>
 
-          <p className="mt-7 max-w-[560px] text-[19px] leading-[1.65] text-ink-500">
+          <p className="mt-7 max-w-140 text-[19px] leading-[1.65] text-ink-500">
             회의에서 결정된 맥락이 코드 커밋까지 자연스럽게 이어지는
             <br className="hidden md:block" />
             AI 기반 의사결정 관리 플랫폼.
@@ -82,7 +82,7 @@ const HeroSection = () => {
             <button
               type="button"
               onClick={goSignup}
-              className="btn-primary h-[52px] px-7 rounded-full text-[15px] font-semibold inline-flex items-center gap-2"
+              className="btn-primary h-13 px-7 rounded-full text-[15px] font-semibold inline-flex items-center gap-2"
             >
               무료로 시작하기
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -98,15 +98,21 @@ const HeroSection = () => {
             </button>
             <button
               type="button"
-              className="btn-ghost h-[52px] px-6 rounded-full text-[15px] font-semibold inline-flex items-center gap-2.5"
+              disabled
+              aria-disabled="true"
+              title="준비중"
+              className="btn-ghost h-13 px-6 rounded-full text-[15px] font-semibold inline-flex items-center gap-2.5 opacity-60 cursor-not-allowed"
             >
-              <span className="w-7 h-7 rounded-full bg-primary-50 inline-flex items-center justify-center">
+              <span
+                aria-hidden="true"
+                className="w-7 h-7 rounded-full bg-primary-50 inline-flex items-center justify-center"
+              >
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="#1E5BE8">
                   <title>재생</title>
                   <path d="M8 5v14l11-7z" />
                 </svg>
               </span>
-              데모 영상 보기
+              데모 영상 보기 (준비중)
             </button>
           </div>
 
@@ -131,7 +137,7 @@ const HeroSection = () => {
 
               <span className="inline-flex items-center gap-2 text-[14px] font-semibold">
                 <span
-                  className="num inline-flex items-center justify-center w-[22px] h-[22px] rounded-md text-white text-[9px] font-extrabold tracking-tight"
+                  className="num inline-flex items-center justify-center w-5.5 h-5.5 rounded-md text-white text-[9px] font-extrabold tracking-tight"
                   style={{
                     background: "linear-gradient(135deg, #1c1c28, #28293d)",
                   }}
@@ -168,7 +174,7 @@ const HeroSection = () => {
 
               <span className="inline-flex items-center gap-2 text-[14px] font-semibold">
                 <span
-                  className="num inline-flex items-center justify-center w-[22px] h-[22px] rounded-md text-white text-[9px] font-extrabold tracking-tight"
+                  className="num inline-flex items-center justify-center w-5.5 h-5.5 rounded-md text-white text-[9px] font-extrabold tracking-tight"
                   style={{
                     background:
                       "linear-gradient(135deg, #ef4444 0%, #f59e0b 50%, #3b82f6 100%)",
@@ -183,7 +189,7 @@ const HeroSection = () => {
           </div>
         </div>
 
-        <div className="col-span-12 lg:col-span-5 relative h-[420px] lg:h-[560px] hidden lg:block" />
+        <div className="col-span-12 lg:col-span-5 relative h-105 lg:h-140 hidden lg:block" />
       </div>
     </section>
   );

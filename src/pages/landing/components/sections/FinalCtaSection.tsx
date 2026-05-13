@@ -8,7 +8,7 @@ const FinalCtaSection = () => {
   return (
     <section className="relative overflow-hidden grain py-36 mesh-bg-strong alive">
       <div className="relative max-w-4xl mx-auto px-6 text-center reveal">
-        <div className="relative mx-auto mb-10 w-[180px] h-[180px]">
+        <div className="relative mx-auto mb-10 w-45 h-[18h-45
           <div
             className="absolute -inset-12 rounded-full opacity-70"
             style={{
@@ -30,7 +30,7 @@ const FinalCtaSection = () => {
           <button
             type="button"
             onClick={goSignup}
-            className="btn-primary h-[56px] px-8 rounded-full text-[15px] font-semibold inline-flex items-center gap-2"
+            className="btn-primary h-14 px-8 rounded-full text-[15px] font-semibold inline-flex items-center gap-2"
           >
             무료로 시작하기
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -46,9 +46,12 @@ const FinalCtaSection = () => {
           </button>
           <button
             type="button"
-            className="btn-ghost h-[56px] px-7 rounded-full text-[15px] font-semibold"
+            disabled
+            aria-disabled="true"
+            title="준비중"
+            className="btn-ghost h-14 px-7 rounded-full text-[15px] font-semibold opacity-60 cursor-not-allowed"
           >
-            팀 데모 요청하기
+            팀 데모 요청하기 (준비중)
           </button>
         </div>
         <p className="mt-7 text-[12.5px] text-ink-300">
