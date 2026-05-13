@@ -100,45 +100,8 @@ export const MOCK_DECISION_DETAIL_VIEW_MODEL: DecisionDetailViewModel = {
       reason: "",
     },
   ],
-  recommended_commits: [
-    {
-      repository_name: "Nect-Backend",
-      commit_hash: "a13f9c2",
-      message: "feat: 마이페이지 API 구현",
-      reason_summary: "Redis 키 정책 분리 작업이 포함된 커밋",
-      is_linked: false,
-    },
-    {
-      repository_name: "Nect-Backend",
-      commit_hash: "a13f9c2",
-      message: "feat: 마이페이지 API 구현",
-      reason_summary: "세션 인터페이스 추출",
-      is_linked: false,
-    },
-    {
-      repository_name: "SpeakOn/Fe",
-      commit_hash: "a13f9c2",
-      message: "feat: 유저 프로필 컴포넌트 구현",
-      reason_summary: "관련 세션 처리 로직 변경",
-      is_linked: false,
-    },
-    {
-      repository_name: "Nect-Backend",
-      commit_hash: "a13f9c2",
-      message: "refactor: 코드 리팩토링",
-      reason_summary: "키 네이밍 규칙 정리",
-      is_linked: false,
-    },
-  ],
-  linked_commits: [
-    {
-      repository_name: "Nect-Backend",
-      commit_hash: "b8fd9ad",
-      message: "feat: API 구현",
-      reason_summary: "이 커밋은 관련된 이슈를 해결하는 커밋입니다.",
-      is_linked: true,
-    },
-  ],
+  recommended_commits: [],
+  linked_commits: [],
   footer_stats: {
     evidence_utterance_count: 42,
     participant_consensus_label: "높음",

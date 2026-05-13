@@ -3,22 +3,35 @@ import IconArrowsReload from "@/assets/icons/arrow/ic_arrows_reload.svg?react";
 import IconAddPlus from "@/assets/icons/edit/ic_add_plus.svg?react";
 import { Icon } from "@/components/common/Icon";
 import type {
-  CommitTab,
-  DecisionFooterStats,
-  RecommendedCommit,
-} from "@/types/decision";
+  ApplicationConnectedCommit,
+  ApplicationRecommendedCommit,
+} from "@/types/application";
+import type { CommitTab, DecisionFooterStats } from "@/types/decision";
 import GlassCard from "./GlassCard";
 
 interface CommitTableCardProps {
-  recommendedCommits: RecommendedCommit[];
-  linkedCommits: RecommendedCommit[];
+  recommendedCommits: ApplicationRecommendedCommit[];
+  linkedCommits: ApplicationConnectedCommit[];
   footerStats: DecisionFooterStats;
   className?: string;
 }
 
+const formatCommittedDate = (iso: string) => {
+  if (!iso) return "-";
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return iso;
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const dd = String(date.getDate()).padStart(2, "0");
+  return `${yyyy}.${mm}.${dd}`;
+};
+
 const CommitHashBadge = ({ hash }: { hash: string }) => (
-  <span className="inline-flex items-center justify-center rounded bg-[#f5e5ff] px-3 py-0.5 font-mono text-[10px] leading-3.75 text-purple-700">
-    {hash}
+  <span
+    title={hash}
+    className="inline-flex items-center justify-center rounded bg-[#f5e5ff] px-3 py-0.5 font-mono text-[10px] leading-3.75 text-purple-700"
+  >
+    {hash.slice(0, 6)}
   </span>
 );
 
@@ -51,7 +64,8 @@ const CommitTableCard = ({
   className = "",
 }: CommitTableCardProps) => {
   const [tab, setTab] = useState<CommitTab>("recommended");
-  const rows = tab === "recommended" ? recommendedCommits : linkedCommits;
+  const rowCount =
+    tab === "recommended" ? recommendedCommits.length : linkedCommits.length;
 
   return (
     <GlassCard className={`gap-5 px-5 py-7 ${className}`}>
@@ -89,7 +103,7 @@ const CommitTableCard = ({
         </TabButton>
       </div>
 
-      <div className="w-full min-w-0 overflow-x-auto rounded-lg">
+      <div className="scrollbar-thin w-full min-w-0 overflow-x-auto rounded-lg">
         <table className="w-full min-w-130 table-fixed border-collapse">
           <colgroup>
             <col className="w-[22%] min-w-30" />
@@ -110,7 +124,7 @@ const CommitTableCard = ({
                 Message
               </th>
               <th className="px-2 py-3 text-center typo-caption1 text-(--color-text-secondary) uppercase">
-                추천 사유
+                {tab === "recommended" ? "추천 사유" : "커밋 일시"}
               </th>
               <th className="px-2 py-3 text-right typo-caption1 text-(--color-text-secondary) uppercase">
                 연결
@@ -118,7 +132,7 @@ const CommitTableCard = ({
             </tr>
           </thead>
           <tbody>
-            {rows.length === 0 ? (
+            {rowCount === 0 ? (
               <tr>
                 <td
                   colSpan={5}
@@ -127,12 +141,12 @@ const CommitTableCard = ({
                   표시할 커밋이 없습니다
                 </td>
               </tr>
-            ) : (
-              rows.map((c, idx) => {
-                const isLast = idx === rows.length - 1;
+            ) : tab === "recommended" ? (
+              recommendedCommits.map((c, idx) => {
+                const isLast = idx === recommendedCommits.length - 1;
                 return (
                   <tr
-                    key={`${c.repository_name}-${c.commit_hash}-${c.message}-${c.reason_summary}`}
+                    key={`rec-${c.commit_id}-${c.commit_hash}`}
                     className={
                       isLast ? "border-b border-(--color-border-default)" : ""
                     }
@@ -153,7 +167,7 @@ const CommitTableCard = ({
                     <td className="h-11 px-2 py-2.5 text-center">
                       <button
                         type="button"
-                        title={c.reason_summary}
+                        title={c.reason}
                         className="cursor-pointer typo-button-sm text-(--color-text-brand) hover:underline"
                       >
                         사유 보기
@@ -164,7 +178,46 @@ const CommitTableCard = ({
                         type="button"
                         className="cursor-pointer rounded bg-(--color-bg-brand-subtle) px-3 py-0.5 typo-button-sm text-(--color-text-brand) hover:opacity-80"
                       >
-                        {c.is_linked ? "해제" : "연결"}
+                        연결
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })
+            ) : (
+              linkedCommits.map((c, idx) => {
+                const isLast = idx === linkedCommits.length - 1;
+                return (
+                  <tr
+                    key={`linked-${c.commit_hash}-${idx}`}
+                    className={
+                      isLast ? "border-b border-(--color-border-default)" : ""
+                    }
+                  >
+                    <td className="h-11 px-2 py-2.5">
+                      <p className="truncate typo-body5 text-(--color-text-primary)">
+                        {c.repository_name}
+                      </p>
+                    </td>
+                    <td className="h-11 px-2 py-2.5">
+                      <CommitHashBadge hash={c.commit_hash} />
+                    </td>
+                    <td className="h-11 px-2 py-2.5">
+                      <p className="truncate typo-subtitle5 text-(--color-text-primary)">
+                        {c.message}
+                      </p>
+                    </td>
+                    <td className="h-11 px-2 py-2.5 text-center">
+                      <span className="typo-caption1 text-(--color-text-secondary)">
+                        {formatCommittedDate(c.committed_date)}
+                      </span>
+                    </td>
+                    <td className="h-11 px-2 py-2.5 text-right">
+                      <button
+                        type="button"
+                        className="cursor-pointer rounded bg-(--color-bg-brand-subtle) px-3 py-0.5 typo-button-sm text-(--color-text-brand) hover:opacity-80"
+                      >
+                        해제
                       </button>
                     </td>
                   </tr>
