@@ -1,6 +1,6 @@
-import { Icon } from "@/components/common/Icon";
 import IconClock from "@/assets/icons/media/ic_clock.svg?react";
 import IconCircleUser from "@/assets/icons/user/ic_circle_user.svg?react";
+import { Icon } from "@/components/common/Icon";
 import type { GitCommitDetailItem } from "@/types/git";
 
 interface Props {

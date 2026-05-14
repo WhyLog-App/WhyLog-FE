@@ -1,10 +1,10 @@
-import { Icon } from "@/components/common/Icon";
-import IconNoteSearch from "@/assets/icons/file/ic_note_search.svg?react";
-import DiffViewer from "react-diff-viewer-continued";
 import { useState } from "react";
+import DiffViewer from "react-diff-viewer-continued";
+import IconNoteSearch from "@/assets/icons/file/ic_note_search.svg?react";
+import { Icon } from "@/components/common/Icon";
 import type { GitCommitDetailFile, GitCommitDetailFileLine } from "@/types/git";
-import DIFF_STYLES from "./styles/diffViewerStyles";
 import { parseUnifiedDiff } from "../utils/parseUnifiedDiff";
+import DIFF_STYLES from "./styles/diffViewerStyles";
 
 interface CommitChangedFileProps {
   file: GitCommitDetailFile;
