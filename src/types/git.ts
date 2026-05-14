@@ -21,6 +21,7 @@ export interface GitCommitItem {
   decisionText: string;
   decisionType: DecisionType;
   authorName: string;
+  authorProfileImage?: string;
   dateText: string;
   changesAdded: number;
   changesRemoved: number;
@@ -65,6 +66,7 @@ export interface RepositoryCommitItem {
   hash: string;
   message: string;
   author_name: string;
+  author_profile_image: string;
   date_time: string;
   added_lines: number;
   deleted_lines: number;
@@ -74,6 +76,9 @@ export interface RepositoryCommitItem {
 export interface RepositoryCommitListResult {
   commit_dtolist: RepositoryCommitItem[];
   commit_list_size: number;
+  total_commit_count: number;
+  connected_commit_count: number;
+  unconnected_commit_count: number;
   is_first: boolean;
   has_next: boolean;
   next_cursor_id: number | null;
