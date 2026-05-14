@@ -29,6 +29,7 @@ const mapCommitItem = (commit: RepositoryCommitItem): GitCommitItem => {
     decisionText: commit.connected_application?.name ?? "",
     decisionType: hasConnectedApplication ? "success" : "neutral",
     authorName: commit.author_name,
+    authorProfileImage: commit.author_profile_image,
     dateText: formatCommitDate(commit.date_time),
     changesAdded: commit.added_lines,
     changesRemoved: commit.deleted_lines,
@@ -70,17 +71,14 @@ function GitPage() {
     [commitPages],
   );
 
-  const stats: GitRepositoryStats = useMemo(
-    () => ({
-      commits: commits.length,
-      connected: commits.filter((commit) => commit.decisionType !== "neutral")
-        .length,
-      disconnected: commits.filter(
-        (commit) => commit.decisionType === "neutral",
-      ).length,
-    }),
-    [commits],
-  );
+  const stats: GitRepositoryStats = useMemo(() => {
+    const firstPage = commitPages?.pages[0];
+    return {
+      commits: firstPage?.total_commit_count ?? 0,
+      connected: firstPage?.connected_commit_count ?? 0,
+      disconnected: firstPage?.unconnected_commit_count ?? 0,
+    };
+  }, [commitPages]);
 
   const [isTokenModalOpen, setIsTokenModalOpen] = useState(false);
   const [isRepoModalOpen, setIsRepoModalOpen] = useState(false);
