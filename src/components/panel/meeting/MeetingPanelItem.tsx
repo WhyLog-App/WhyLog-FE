@@ -1,5 +1,6 @@
 import IconClock from "@/assets/icons/media/ic_clock.svg?react";
 import { Icon } from "@/components/common/Icon";
+import { useLiveElapsedTime } from "@/pages/meeting/hooks/useLiveElapsedTime";
 
 interface MeetingPanelItemProps {
   title: string;
@@ -10,6 +11,43 @@ interface MeetingPanelItemProps {
   badgeCount?: number;
   onClick?: () => void;
 }
+
+interface LiveMeetingPanelItemProps {
+  title: string;
+  isActive: boolean;
+  elapsedTime?: string;
+  onClick?: () => void;
+}
+
+const LiveMeetingPanelItem = ({
+  title,
+  isActive,
+  elapsedTime,
+  onClick,
+}: LiveMeetingPanelItemProps) => {
+  const liveElapsed = useLiveElapsedTime(elapsedTime);
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex w-full cursor-pointer items-center justify-between rounded-lg px-4 py-3 ${
+        isActive
+          ? "bg-(--color-action-active)"
+          : "bg-(--color-bg-surface) hover:bg-(--color-action-hover)"
+      }`}
+    >
+      <span className="typo-subtitle5 text-(--color-text-primary) whitespace-nowrap">
+        {title}
+      </span>
+      <span className="flex items-center gap-0.5">
+        <Icon icon={IconClock} size={16} className="text-green-700" />
+        <span className="typo-body6 text-green-700 whitespace-nowrap">
+          {liveElapsed}
+        </span>
+      </span>
+    </button>
+  );
+};
 
 const MeetingPanelItem = ({
   title,
@@ -22,25 +60,12 @@ const MeetingPanelItem = ({
 }: MeetingPanelItemProps) => {
   if (isLive) {
     return (
-      <button
-        type="button"
+      <LiveMeetingPanelItem
+        title={title}
+        isActive={isActive}
+        elapsedTime={elapsedTime}
         onClick={onClick}
-        className={`flex w-full cursor-pointer items-center justify-between rounded-lg px-4 py-3 ${
-          isActive
-            ? "bg-(--color-action-active)"
-            : "bg-(--color-bg-surface) hover:bg-(--color-action-hover)"
-        }`}
-      >
-        <span className="typo-subtitle5 text-(--color-text-primary) whitespace-nowrap">
-          {title}
-        </span>
-        <span className="flex items-center gap-0.5">
-          <Icon icon={IconClock} size={16} className="text-green-700" />
-          <span className="typo-body6 text-green-700 whitespace-nowrap">
-            {elapsedTime}
-          </span>
-        </span>
-      </button>
+      />
     );
   }
 
