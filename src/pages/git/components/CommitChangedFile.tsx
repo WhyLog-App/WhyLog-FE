@@ -47,6 +47,7 @@ const CommitChangedFile = ({ file }: CommitChangedFileProps) => {
         {(file.lines || []).map(
           (line: GitCommitDetailFileLine, index: number) => (
             <div
+              // biome-ignore lint/suspicious/noArrayIndexKey: diff 라인은 정적 스냅샷으로 순서/식별자가 고정됨
               key={`${file.fileName}-${index}`}
               className={`flex items-stretch border-b border-[#d4edda] last:border-b-0 min-h-[37px] ${
                 line.type === "added"

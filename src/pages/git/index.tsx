@@ -1,13 +1,9 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import EmptyStateCard from "@/components/common/EmptyStateCard";
 import GitTokenModal from "@/components/panel/git/GitTokenModal";
 import RepositoryAddModal from "@/components/panel/git/RepositoryAddModal";
 import { useCurrentTeam } from "@/hooks/useCurrentTeam";
-import useAddRepository from "@/pages/git/hooks/useAddRepository";
-import { useCheckGitHubToken } from "@/pages/git/hooks/useCheckGitHubToken";
-import { useRegisterGitHubToken } from "@/pages/git/hooks/useRegisterGitHubToken";
 import type {
   GitCommitItem,
   GitRepositoryStats,
