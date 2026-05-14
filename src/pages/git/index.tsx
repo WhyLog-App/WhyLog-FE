@@ -1,6 +1,9 @@
-import { useMemo } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import EmptyStateCard from "@/components/common/EmptyStateCard";
+import GitTokenModal from "@/components/panel/git/GitTokenModal";
+import RepositoryAddModal from "@/components/panel/git/RepositoryAddModal";
 import { useCurrentTeam } from "@/hooks/useCurrentTeam";
 import type {
   GitCommitItem,
@@ -10,8 +13,11 @@ import type {
 import { formatCommitDate } from "@/utils/date";
 import { parseRouteId } from "@/utils/parseRouteId";
 import GitList from "./components/GitList";
+import { useAddRepository } from "./hooks/useAddRepository";
+import { useCheckGitHubToken } from "./hooks/useCheckGitHubToken";
 import { useGetRepositories } from "./hooks/useGetRepositories";
 import { useGetRepositoryCommits } from "./hooks/useGetRepositoryCommits";
+import { useRegisterGitHubToken } from "./hooks/useRegisterGitHubToken";
 
 const mapCommitItem = (commit: RepositoryCommitItem): GitCommitItem => {
   const hasConnectedApplication = commit.connected_application !== null;
@@ -30,6 +36,7 @@ const mapCommitItem = (commit: RepositoryCommitItem): GitCommitItem => {
 };
 
 function GitPage() {
+  const queryClient = useQueryClient();
   const { teamId } = useCurrentTeam();
   const params = useParams<{ repositoryId?: string }>();
   const navigate = useNavigate();
@@ -75,16 +82,77 @@ function GitPage() {
     [commits],
   );
 
+  const [isTokenModalOpen, setIsTokenModalOpen] = useState(false);
+  const [isRepoModalOpen, setIsRepoModalOpen] = useState(false);
+
+  const { data: tokenStatus, isLoading: isCheckingToken } =
+    useCheckGitHubToken();
+
+  const {
+    registerGitHubToken,
+    isPending: isRegistering,
+    errorMessage: registerError,
+  } = useRegisterGitHubToken();
+
+  const {
+    addRepository,
+    isPending: isAdding,
+    errorMessage: addError,
+  } = useAddRepository({
+    onSuccess: () => {
+      setIsRepoModalOpen(false);
+      queryClient.invalidateQueries({
+        queryKey: ["repositories", teamId],
+      });
+    },
+    onTokenExpired: () => {
+      setIsRepoModalOpen(false);
+      setIsTokenModalOpen(true);
+    },
+  });
+
+  const handleAction = () => {
+    if (isCheckingToken) return;
+    if (tokenStatus?.is_registered) {
+      setIsRepoModalOpen(true);
+    } else {
+      setIsTokenModalOpen(true);
+    }
+  };
+
   if (!repositoryId) {
     return (
       <div className="flex min-h-full w-full items-center justify-center p-8">
-        <EmptyStateCard page="Git" />
+        <EmptyStateCard page="Git" onAction={handleAction} />
+        {isTokenModalOpen && (
+          <GitTokenModal
+            onClose={() => setIsTokenModalOpen(false)}
+            onRegister={registerGitHubToken}
+            onNext={() => {
+              setIsTokenModalOpen(false);
+              setIsRepoModalOpen(true);
+            }}
+            isPending={isRegistering}
+            errorMessage={registerError}
+          />
+        )}
+        {isRepoModalOpen && (
+          <RepositoryAddModal
+            onClose={() => setIsRepoModalOpen(false)}
+            onAdd={(payload) => {
+              if (!teamId) return;
+              addRepository(teamId, payload);
+            }}
+            isPending={isAdding}
+            errorMessage={addError}
+          />
+        )}
       </div>
     );
   }
 
   return (
-    <div className="flex w-full flex-col py-[60px]">
+    <div className="flex w-full flex-col py-15">
       <GitList
         repositoryName={selectedRepository?.name ?? "Repository"}
         stats={stats}
