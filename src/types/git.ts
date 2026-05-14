@@ -26,6 +26,59 @@ export interface GitCommitItem {
   changesRemoved: number;
 }
 
+export interface GitCommitDetailFileLine {
+  type: "context" | "added" | "removed";
+  content: string;
+  lineNumber?: number;
+}
+
+export interface GitCommitDetailFile {
+  fileName: string;
+  addedLines: number;
+  removedLines: number;
+  lines: GitCommitDetailFileLine[];
+}
+
+export interface GitCommitDetailItem {
+  repositoryName: string;
+  hash: string;
+  message: string;
+  description: string;
+  authorName: string;
+  authorEmail: string;
+  authorProfileImage?: string;
+  dateText: string;
+  decisionText: string;
+  decisionType: DecisionType;
+  changesAdded: number;
+  changesRemoved: number;
+  files: GitCommitDetailFile[];
+}
+
+export interface RepositoryCommitConnectedApplication {
+  application_id: number;
+  name: string;
+}
+
+export interface RepositoryCommitItem {
+  commit_id: number;
+  hash: string;
+  message: string;
+  author_name: string;
+  date_time: string;
+  added_lines: number;
+  deleted_lines: number;
+  connected_application: RepositoryCommitConnectedApplication | null;
+}
+
+export interface RepositoryCommitListResult {
+  commit_dtolist: RepositoryCommitItem[];
+  commit_list_size: number;
+  is_first: boolean;
+  has_next: boolean;
+  next_cursor_id: number | null;
+}
+
 export interface GitPageData {
   repositoryName: string;
   stats: GitRepositoryStats;
@@ -45,6 +98,26 @@ export interface AddRepositoryResult {
 
 export interface RepositorySyncResult {
   repository_id: number;
+}
+
+export interface CommitDetailFileResult {
+  file_name: string;
+  added_lines: number;
+  deleted_lines: number;
+  changed_code: string;
+}
+
+export interface CommitDetailResult {
+  commit_id: number;
+  hash: string;
+  message: string;
+  description: string | null;
+  author_name: string;
+  author_email: string;
+  author_profile_image?: string;
+  date_time: string;
+  changed_file_count: number;
+  changed_file_list: CommitDetailFileResult[];
 }
 
 export interface RepositoryItem {

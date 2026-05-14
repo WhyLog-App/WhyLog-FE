@@ -31,8 +31,10 @@ export const useAddRepository = (options?: UseAddRepositoryOptions) => {
     },
     onError: (error: unknown) => {
       if (isAxiosError<ErrorResponse>(error)) {
-        // GitHub 토큰 만료 감지
-        if (error.response?.data?.code === "GIT_401_1") {
+        if (
+          error.response?.data?.code === "GIT_401_1" ||
+          error.response?.data?.code === "GIT_400_2"
+        ) {
           queryClient.setQueryData(["github-token-status"], {
             is_registered: false,
           });

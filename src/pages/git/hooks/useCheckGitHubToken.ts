@@ -5,6 +5,7 @@ export const useCheckGitHubToken = () => {
   return useQuery({
     queryKey: ["github-token-status"],
     queryFn: checkGitHubTokenStatus,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 0,
+    gcTime: 0,
   });
 };
