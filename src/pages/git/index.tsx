@@ -1,17 +1,17 @@
 import { useMemo } from "react";
-import GitList from "./components/GitList";
+import { useNavigate, useParams } from "react-router-dom";
 import EmptyStateCard from "@/components/common/EmptyStateCard";
 import { useCurrentTeam } from "@/hooks/useCurrentTeam";
-import { useGetRepositories } from "./hooks/useGetRepositories";
-import { useGetRepositoryCommits } from "./hooks/useGetRepositoryCommits";
-import { useParams, useNavigate } from "react-router-dom";
-import { parseRouteId } from "@/utils/parseRouteId";
-import { formatCommitDate } from "@/utils/date";
 import type {
   GitCommitItem,
   GitRepositoryStats,
   RepositoryCommitItem,
 } from "@/types/git";
+import { formatCommitDate } from "@/utils/date";
+import { parseRouteId } from "@/utils/parseRouteId";
+import GitList from "./components/GitList";
+import { useGetRepositories } from "./hooks/useGetRepositories";
+import { useGetRepositoryCommits } from "./hooks/useGetRepositoryCommits";
 
 const mapCommitItem = (commit: RepositoryCommitItem): GitCommitItem => {
   const hasConnectedApplication = commit.connected_application !== null;

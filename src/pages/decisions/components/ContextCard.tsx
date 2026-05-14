@@ -21,10 +21,24 @@ const ContextCard = ({ messages, className = "" }: ContextCardProps) => {
             key={`${m.member_id}-${m.time}-${m.dialogue_content}`}
             className="flex w-full items-start gap-2"
           >
+            {m.profile_image ? (
+              <img
+                src={m.profile_image}
+                alt={m.member_name}
+                className="size-7 shrink-0 rounded-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                  const fallback = e.currentTarget
+                    .nextElementSibling as HTMLElement | null;
+                  if (fallback) fallback.style.display = "inline-flex";
+                }}
+              />
+            ) : null}
             <Icon
               icon={IconCircleUser}
               size={28}
               className="shrink-0 text-(--color-dark-100)"
+              style={m.profile_image ? { display: "none" } : undefined}
             />
             <div className="flex min-w-0 flex-1 flex-col gap-1">
               <div className="flex items-center gap-1">

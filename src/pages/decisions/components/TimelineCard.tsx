@@ -24,7 +24,7 @@ const TimelineCard = ({ items }: TimelineCardProps) => {
         {items.length > 1 && (
           <div
             aria-hidden="true"
-            className="absolute top-4 bottom-4 left-4.75 w-px bg-(--color-border-default)"
+            className="absolute top-4 bottom-4 left-4 w-px bg-(--color-border-default)"
           />
         )}
         {items.map((item) => (

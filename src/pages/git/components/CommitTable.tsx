@@ -1,5 +1,5 @@
-import CommitTableRow from "./CommitTableRow";
 import type { GitCommitItem } from "../../../types/git";
+import CommitTableRow from "./CommitTableRow";
 
 interface CommitTableProps {
   commits: GitCommitItem[];
