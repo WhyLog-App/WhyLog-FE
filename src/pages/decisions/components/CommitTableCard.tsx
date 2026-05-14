@@ -181,8 +181,8 @@ const CommitTableCard = ({
     }
   };
   const {
-    linkCommit,
-    pendingCommitId,
+    linkCommits,
+    pendingCommitIds,
     errorMessage: linkErrorMessage,
   } = useLinkCommit(applicationId);
   const rowCount =
@@ -271,8 +271,12 @@ const CommitTableCard = ({
             ) : tab === "recommended" ? (
               recommendedCommits.map((c, idx) => {
                 const isLast = idx === recommendedCommits.length - 1;
-                const isRowPending = pendingCommitId === c.commit_id;
-                const isCommitIdInvalid = !c.commit_id;
+                const commitIdNum = Number(c.commit_id);
+                const isCommitIdInvalid =
+                  !c.commit_id || !Number.isFinite(commitIdNum);
+                const isRowPending =
+                  !isCommitIdInvalid &&
+                  pendingCommitIds?.includes(commitIdNum) === true;
                 return (
                   <tr
                     key={`rec-${c.commit_id}-${c.commit_hash}`}
@@ -312,7 +316,7 @@ const CommitTableCard = ({
                     <td className="h-11 px-2 py-2.5 text-right">
                       <button
                         type="button"
-                        onClick={() => linkCommit(c.commit_id)}
+                        onClick={() => linkCommits([commitIdNum])}
                         disabled={isRowPending || isCommitIdInvalid}
                         className="cursor-pointer rounded bg-(--color-bg-brand-subtle) px-3 py-0.5 typo-button-sm text-(--color-text-brand) hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50"
                       >

@@ -51,10 +51,10 @@ export interface ApplicationConnectedCommitsResult {
 
 // POST /api/applications/{applicationId}/commits
 export interface LinkCommitRequest {
-  commit_id: string;
+  commit_ids: number[];
 }
 
 export interface LinkCommitResult {
   application_id: number;
-  commit_id: string;
+  commit_ids: number[];
 }

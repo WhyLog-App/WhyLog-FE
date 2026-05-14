@@ -1,5 +1,9 @@
+import type {
+  CommitDetailResult,
+  GitCommitDetailFile,
+  GitCommitDetailItem,
+} from "@/types/git";
 import { formatCommitDate } from "@/utils/date";
-import type { GitCommitDetailItem, GitCommitDetailFile, CommitDetailResult } from "@/types/git";
 
 export const mapCommitDetail = (
   repositoryName: string,
@@ -23,17 +27,19 @@ export const mapCommitDetail = (
     };
   }
 
-  const files: GitCommitDetailFile[] = (apiResult.changed_file_list ?? []).map((file) => ({
-    fileName: file.file_name,
-    addedLines: file.added_lines,
-    removedLines: file.deleted_lines,
-    lines: [
-      {
-        type: "context" as const,
-        content: file.changed_code,
-      },
-    ],
-  }));
+  const files: GitCommitDetailFile[] = (apiResult.changed_file_list ?? []).map(
+    (file) => ({
+      fileName: file.file_name,
+      addedLines: file.added_lines,
+      removedLines: file.deleted_lines,
+      lines: [
+        {
+          type: "context" as const,
+          content: file.changed_code,
+        },
+      ],
+    }),
+  );
 
   return {
     repositoryName,

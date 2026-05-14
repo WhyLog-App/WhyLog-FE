@@ -18,8 +18,8 @@ export const useLinkCommit = (
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const mutation = useMutation({
-    mutationFn: (commitId: string) =>
-      linkCommit(applicationId, { commit_id: commitId }),
+    mutationFn: (commitIds: number[]) =>
+      linkCommit(applicationId, { commit_ids: commitIds }),
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({
@@ -47,11 +47,11 @@ export const useLinkCommit = (
   });
 
   return {
-    linkCommit: (commitId: string) => {
+    linkCommits: (commitIds: number[]) => {
       setErrorMessage(null);
-      mutation.mutate(commitId);
+      mutation.mutate(commitIds);
     },
-    pendingCommitId: mutation.isPending ? mutation.variables : null,
+    pendingCommitIds: mutation.isPending ? mutation.variables : null,
     isPending: mutation.isPending,
     errorMessage,
     resetError: () => setErrorMessage(null),
