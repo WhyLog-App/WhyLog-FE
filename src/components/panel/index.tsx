@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 import DecisionPanel from "./decision/DecisionPanel";
-import MeetingPanel from "./meeting/MeetingPanel";
 import GitPanel from "./git/GitPanel";
+import MeetingPanel from "./meeting/MeetingPanel";
 
 const Panel = () => {
   const { pathname } = useLocation();

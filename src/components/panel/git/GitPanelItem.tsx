@@ -1,6 +1,6 @@
+import IconArrowsReload from "@/assets/icons/arrow/ic_arrows_reload.svg?react";
 import IconClock from "@/assets/icons/media/ic_clock.svg?react";
 import IconGit from "@/assets/icons/media/ic_git.svg?react";
-import IconArrowsReload from "@/assets/icons/arrow/ic_arrows_reload.svg?react";
 import { Icon } from "@/components/common/Icon";
 
 interface GitPanelItemProps {

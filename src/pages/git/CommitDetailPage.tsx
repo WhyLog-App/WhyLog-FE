@@ -1,13 +1,13 @@
 import { useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCurrentTeam } from "@/hooks/useCurrentTeam";
-import { useGetRepositories } from "./hooks/useGetRepositories";
-import { parseRouteId } from "@/utils/parseRouteId";
 import GlassCard from "@/pages/decisions/components/GlassCard";
-import CommitHeader from "./components/CommitHeader";
+import { parseRouteId } from "@/utils/parseRouteId";
 import CommitFileList from "./components/CommitFileList";
+import CommitHeader from "./components/CommitHeader";
 import CommitMeta from "./components/CommitMeta";
 import { useGetCommitDetail } from "./hooks/useGetCommitDetail";
+import { useGetRepositories } from "./hooks/useGetRepositories";
 import { mapCommitDetail } from "./mapCommitDetail";
 
 const CommitDetailPage = () => {
@@ -18,7 +18,10 @@ const CommitDetailPage = () => {
   const repositoryId = parseRouteId(params.repositoryId);
   const { data: repositories = [] } = useGetRepositories(teamId);
   const selectedRepository = useMemo(
-    () => repositories.find((repository) => repository.repository_id === repositoryId),
+    () =>
+      repositories.find(
+        (repository) => repository.repository_id === repositoryId,
+      ),
     [repositoryId, repositories],
   );
 

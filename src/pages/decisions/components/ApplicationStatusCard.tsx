@@ -1,15 +1,18 @@
 import IconCheckboxCheck from "@/assets/icons/warning/ic_checkbox_check.svg?react";
 import { Icon } from "@/components/common/Icon";
-import type { DecisionApplicationDetail } from "@/types/decision";
+import type { ApplicationConnectedCommit } from "@/types/application";
 import GlassCard from "./GlassCard";
 
 interface ApplicationStatusCardProps {
-  commits: DecisionApplicationDetail[];
+  commits: ApplicationConnectedCommit[];
 }
 
 const CommitHashBadge = ({ hash }: { hash: string }) => (
-  <span className="inline-flex items-center justify-center rounded bg-[#f5e5ff] px-3 py-0.5 font-mono text-[10px] leading-3.75 text-purple-700">
-    {hash}
+  <span
+    title={hash}
+    className="inline-flex items-center justify-center rounded bg-[#f5e5ff] px-3 py-0.5 font-mono text-[10px] leading-3.75 text-purple-700"
+  >
+    {hash.slice(0, 6)}
   </span>
 );
 
@@ -29,17 +32,23 @@ const ApplicationStatusCard = ({ commits }: ApplicationStatusCardProps) => {
       </div>
 
       <ul className="flex flex-1 flex-col gap-4 overflow-y-auto">
-        {commits.map((c) => (
-          <li
-            key={`${c.application_id}-${c.commit_id}`}
-            className="flex items-center gap-2"
-          >
-            <CommitHashBadge hash={c.commit_hash} />
-            <p className="typo-body5 flex-1 truncate text-(--color-text-primary)">
-              {c.message}
-            </p>
+        {commits.length === 0 ? (
+          <li className="typo-caption1 text-(--color-text-tertiary)">
+            연결된 커밋이 없습니다
           </li>
-        ))}
+        ) : (
+          commits.map((c) => (
+            <li
+              key={`${c.repository_name}-${c.commit_hash}`}
+              className="flex items-center gap-2"
+            >
+              <CommitHashBadge hash={c.commit_hash} />
+              <p className="typo-body5 flex-1 truncate text-(--color-text-primary)">
+                {c.message}
+              </p>
+            </li>
+          ))
+        )}
       </ul>
     </GlassCard>
   );

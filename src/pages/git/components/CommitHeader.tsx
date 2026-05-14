@@ -1,6 +1,6 @@
-import { Icon } from "@/components/common/Icon";
-import IconGit from "@/assets/icons/media/ic_git.svg?react";
 import IconChevronLeft from "@/assets/icons/arrow/ic_chevron_left.svg?react";
+import IconGit from "@/assets/icons/media/ic_git.svg?react";
+import { Icon } from "@/components/common/Icon";
 import type { GitCommitDetailItem } from "@/types/git";
 
 interface Props {

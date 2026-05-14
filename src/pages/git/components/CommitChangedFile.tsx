@@ -1,10 +1,10 @@
-import { Icon } from "@/components/common/Icon";
-import IconNoteSearch from "@/assets/icons/file/ic_note_search.svg?react";
-import DiffViewer from "react-diff-viewer-continued";
 import { useState } from "react";
+import DiffViewer from "react-diff-viewer-continued";
+import IconNoteSearch from "@/assets/icons/file/ic_note_search.svg?react";
+import { Icon } from "@/components/common/Icon";
 import type { GitCommitDetailFile, GitCommitDetailFileLine } from "@/types/git";
-import DIFF_STYLES from "./styles/diffViewerStyles";
 import { parseUnifiedDiff } from "../utils/parseUnifiedDiff";
+import DIFF_STYLES from "./styles/diffViewerStyles";
 
 interface CommitChangedFileProps {
   file: GitCommitDetailFile;
@@ -47,6 +47,7 @@ const CommitChangedFile = ({ file }: CommitChangedFileProps) => {
         {(file.lines || []).map(
           (line: GitCommitDetailFileLine, index: number) => (
             <div
+              // biome-ignore lint/suspicious/noArrayIndexKey: diff 라인은 정적 스냅샷으로 순서/식별자가 고정됨
               key={`${file.fileName}-${index}`}
               className={`flex items-stretch border-b border-[#d4edda] last:border-b-0 min-h-[37px] ${
                 line.type === "added"

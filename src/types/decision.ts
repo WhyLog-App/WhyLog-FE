@@ -58,14 +58,6 @@ export interface DecisionConfidence {
   score: number; // 0–100
 }
 
-export interface RecommendedCommit {
-  repository_name: string;
-  commit_hash: string;
-  message: string;
-  reason_summary: string;
-  is_linked: boolean;
-}
-
 export interface DecisionFooterStats {
   evidence_utterance_count: number;
   participant_consensus_label: string;
@@ -75,13 +67,18 @@ export interface DecisionFooterStats {
 export type CommitTab = "recommended" | "linked";
 
 // 페이지가 소비하는 통합 view-model
+import type {
+  ApplicationConnectedCommit,
+  ApplicationRecommendedCommit,
+} from "./application";
+
 export interface DecisionDetailViewModel {
   detail: DecisionDetail;
   application: DecisionApplicationDetail;
   meta: DecisionMeetingMeta;
   confidence: DecisionConfidence;
   applied_commits: DecisionApplicationDetail[];
-  recommended_commits: RecommendedCommit[];
-  linked_commits: RecommendedCommit[];
+  recommended_commits: ApplicationRecommendedCommit[];
+  linked_commits: ApplicationConnectedCommit[];
   footer_stats: DecisionFooterStats;
 }
