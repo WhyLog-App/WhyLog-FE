@@ -63,11 +63,19 @@ const CommitTableRow = ({ commit, onRowClick }: CommitTableRowProps) => {
       </td>
       <td className="px-2 py-0 align-middle">
         <div className="flex min-w-0 items-center gap-2">
-          <Icon
-            icon={IconCircleUser}
-            size={14}
-            className="text-(--color-dark-100)"
-          />
+          {commit.authorProfileImage ? (
+            <img
+              src={commit.authorProfileImage}
+              alt={commit.authorName}
+              className="h-[14px] w-[14px] shrink-0 rounded-full object-cover"
+            />
+          ) : (
+            <Icon
+              icon={IconCircleUser}
+              size={14}
+              className="text-(--color-dark-100)"
+            />
+          )}
           <span className="block min-w-0 truncate typo-body5 text-(--color-text-secondary)">
             {commit.authorName}
           </span>
