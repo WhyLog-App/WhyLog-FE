@@ -1,13 +1,13 @@
-import { isAxiosError, type AxiosResponse } from "axios";
+import { type AxiosResponse, isAxiosError } from "axios";
 import ENDPOINT from "@/constants/endpoint";
 import type { ApiResponse } from "@/types/auth";
 import type {
   AddRepositoryRequest,
   AddRepositoryResult,
   CheckGitHubTokenStatusResult,
+  CommitDetailResult,
   GitHubTokenRequest,
   GitHubTokenResult,
-  CommitDetailResult,
   RepositoryCommitListResult,
   RepositoryItem,
   RepositorySyncResult,
