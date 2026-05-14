@@ -3,6 +3,8 @@ import type {
   ApplicationConnectedCommitsResult,
   ApplicationDetail,
   ApplicationRecommendedCommit,
+  LinkCommitRequest,
+  LinkCommitResult,
 } from "@/types/application";
 import type { ApiResponse } from "@/types/auth";
 import { http } from "@/utils/http";
@@ -27,6 +29,20 @@ export const getRecommendedCommits = async (
     unknown,
     { data: ApiResponse<ApplicationRecommendedCommit[]> }
   >(ENDPOINT.APPLICATIONS.RECOMMENDED_COMMITS(applicationId));
+  if (!data.isSuccess) {
+    throw new Error(data.message);
+  }
+  return data.result;
+};
+
+export const linkCommit = async (
+  applicationId: number,
+  payload: LinkCommitRequest,
+): Promise<LinkCommitResult> => {
+  const { data } = await http.post<
+    LinkCommitRequest,
+    { data: ApiResponse<LinkCommitResult> }
+  >(ENDPOINT.APPLICATIONS.LINK_COMMIT(applicationId), payload);
   if (!data.isSuccess) {
     throw new Error(data.message);
   }

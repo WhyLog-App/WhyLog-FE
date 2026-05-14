@@ -40,6 +40,10 @@ const ENDPOINT = {
     HISTORY: (meetingId: number) =>
       `${API_BASE_URL}/api/meetings/${meetingId}/history`,
   },
+  DECISIONS: {
+    RELIABILITY: (decisionId: number) =>
+      `${API_BASE_URL}/api/decisions/${decisionId}/reliability`,
+  },
   APPLICATIONS: {
     DETAIL: (applicationId: number) =>
       `${API_BASE_URL}/api/applications/${applicationId}`,
@@ -47,6 +51,8 @@ const ENDPOINT = {
       `${API_BASE_URL}/api/applications/${applicationId}/recommended-commits`,
     CONNECTED_COMMITS: (applicationId: number) =>
       `${API_BASE_URL}/api/applications/${applicationId}/connected-commits`,
+    LINK_COMMIT: (applicationId: number) =>
+      `${API_BASE_URL}/api/applications/${applicationId}/commits`,
   },
   GIT: {
     GITHUB_TOKEN: `${API_BASE_URL}/api/github/token`,

@@ -26,7 +26,7 @@ const DecisionDetailPage = ({ vm }: DecisionDetailPageProps) => {
             reasons={vm.detail.decision_reasons}
             count={vm.detail.decision_reason_count}
           />
-          <ApplicationStatusCard commits={vm.applied_commits} />
+          <ApplicationStatusCard commits={vm.linked_commits} />
         </div>
 
         <div className="flex min-h-0 flex-1 flex-col items-stretch gap-5 lg:flex-row">
@@ -35,6 +35,7 @@ const DecisionDetailPage = ({ vm }: DecisionDetailPageProps) => {
             className="w-full lg:w-2/5 lg:min-w-90 lg:max-w-120"
           />
           <CommitTableCard
+            applicationId={vm.detail.application_id}
             recommendedCommits={vm.recommended_commits}
             linkedCommits={vm.linked_commits}
             footerStats={vm.footer_stats}

@@ -48,3 +48,13 @@ export interface ApplicationConnectedCommitsResult {
   commit_count: number;
   commits: ApplicationConnectedCommit[];
 }
+
+// POST /api/applications/{applicationId}/commits
+export interface LinkCommitRequest {
+  commit_id: number;
+}
+
+export interface LinkCommitResult {
+  application_id: number;
+  commit_id: string;
+}

@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import IconArrowsReload from "@/assets/icons/arrow/ic_arrows_reload.svg?react";
 import IconAddPlus from "@/assets/icons/edit/ic_add_plus.svg?react";
 import { Icon } from "@/components/common/Icon";
@@ -7,14 +9,103 @@ import type {
   ApplicationRecommendedCommit,
 } from "@/types/application";
 import type { CommitTab, DecisionFooterStats } from "@/types/decision";
+import { APPLICATION_CONNECTED_COMMITS_QUERY_KEY } from "../hooks/useConnectedCommits";
+import { useLinkCommit } from "../hooks/useLinkCommit";
+import { APPLICATION_RECOMMENDED_COMMITS_QUERY_KEY } from "../hooks/useRecommendedCommits";
 import GlassCard from "./GlassCard";
 
 interface CommitTableCardProps {
+  applicationId: number;
   recommendedCommits: ApplicationRecommendedCommit[];
   linkedCommits: ApplicationConnectedCommit[];
   footerStats: DecisionFooterStats;
   className?: string;
 }
+
+interface ReasonButtonProps {
+  reason: string;
+  isActive: boolean;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+  onClick: () => void;
+}
+
+const ReasonButton = ({
+  reason,
+  isActive,
+  onMouseEnter,
+  onMouseLeave,
+  onClick,
+}: ReasonButtonProps) => {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [coords, setCoords] = useState<{ top: number; left: number } | null>(
+    null,
+  );
+
+  useLayoutEffect(() => {
+    if (!isActive || !buttonRef.current) {
+      setCoords(null);
+      return;
+    }
+    const updatePosition = () => {
+      const rect = buttonRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      setCoords({
+        top: rect.top, // 버튼 위쪽 좌표 (tooltip은 translateY(-100%))
+        left: rect.left + rect.width / 2,
+      });
+    };
+    updatePosition();
+    window.addEventListener("scroll", updatePosition, true);
+    window.addEventListener("resize", updatePosition);
+    return () => {
+      window.removeEventListener("scroll", updatePosition, true);
+      window.removeEventListener("resize", updatePosition);
+    };
+  }, [isActive]);
+
+  return (
+    <>
+      <button
+        ref={buttonRef}
+        type="button"
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        onClick={onClick}
+        className="cursor-pointer typo-button-sm text-(--color-text-brand) hover:underline"
+      >
+        사유 보기
+      </button>
+      {isActive && coords
+        ? createPortal(
+            <div
+              role="tooltip"
+              style={{
+                position: "fixed",
+                top: coords.top,
+                left: coords.left,
+                transform: "translate(-50%, calc(-100% - 8px))",
+                zIndex: 1000,
+              }}
+              className="pointer-events-none w-max max-w-44 whitespace-normal rounded-lg border border-(--color-border-default) bg-white px-3 py-2 shadow-lg"
+            >
+              <p
+                className="typo-caption1 text-left leading-relaxed break-words"
+                style={{ color: "#1c1c28" }}
+              >
+                {reason}
+              </p>
+              <span
+                aria-hidden="true"
+                className="absolute -bottom-1 left-1/2 size-2 -translate-x-1/2 rotate-45 border-r border-b border-(--color-border-default) bg-white"
+              />
+            </div>,
+            document.body,
+          )
+        : null}
+    </>
+  );
+};
 
 const formatCommittedDate = (iso: string) => {
   if (!iso) return "-";
@@ -58,12 +149,39 @@ const TabButton = ({
 );
 
 const CommitTableCard = ({
+  applicationId,
   recommendedCommits,
   linkedCommits,
   footerStats,
   className = "",
 }: CommitTableCardProps) => {
   const [tab, setTab] = useState<CommitTab>("recommended");
+  const [hoveredReasonId, setHoveredReasonId] = useState<string | null>(null);
+  const [pinnedReasonId, setPinnedReasonId] = useState<string | null>(null);
+  const [isRefetching, setIsRefetching] = useState(false);
+  const queryClient = useQueryClient();
+
+  const handleRefresh = async () => {
+    if (isRefetching) return;
+    setIsRefetching(true);
+    try {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: APPLICATION_RECOMMENDED_COMMITS_QUERY_KEY,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: APPLICATION_CONNECTED_COMMITS_QUERY_KEY,
+        }),
+      ]);
+    } finally {
+      setIsRefetching(false);
+    }
+  };
+  const {
+    linkCommit,
+    pendingCommitId,
+    errorMessage: linkErrorMessage,
+  } = useLinkCommit(applicationId);
   const rowCount =
     tab === "recommended" ? recommendedCommits.length : linkedCommits.length;
 
@@ -77,9 +195,15 @@ const CommitTableCard = ({
           <button
             type="button"
             aria-label="새로고침"
-            className="flex size-5 cursor-pointer items-center justify-center rounded bg-(--color-bg-surface) text-(--color-text-secondary) hover:bg-(--color-action-hover)"
+            onClick={handleRefresh}
+            disabled={isRefetching}
+            className="flex size-5 cursor-pointer items-center justify-center rounded bg-(--color-bg-surface) text-(--color-text-secondary) hover:bg-(--color-action-hover) disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <Icon icon={IconArrowsReload} size={16} />
+            <Icon
+              icon={IconArrowsReload}
+              size={16}
+              className={isRefetching ? "animate-spin" : undefined}
+            />
           </button>
           <button
             type="button"
@@ -144,6 +268,9 @@ const CommitTableCard = ({
             ) : tab === "recommended" ? (
               recommendedCommits.map((c, idx) => {
                 const isLast = idx === recommendedCommits.length - 1;
+                const commitIdNum = Number(c.commit_id);
+                const isRowPending = pendingCommitId === commitIdNum;
+                const isCommitIdInvalid = !Number.isFinite(commitIdNum);
                 return (
                   <tr
                     key={`rec-${c.commit_id}-${c.commit_hash}`}
@@ -165,20 +292,29 @@ const CommitTableCard = ({
                       </p>
                     </td>
                     <td className="h-11 px-2 py-2.5 text-center">
-                      <button
-                        type="button"
-                        title={c.reason}
-                        className="cursor-pointer typo-button-sm text-(--color-text-brand) hover:underline"
-                      >
-                        사유 보기
-                      </button>
+                      <ReasonButton
+                        reason={c.reason}
+                        isActive={
+                          hoveredReasonId === c.commit_id ||
+                          pinnedReasonId === c.commit_id
+                        }
+                        onMouseEnter={() => setHoveredReasonId(c.commit_id)}
+                        onMouseLeave={() => setHoveredReasonId(null)}
+                        onClick={() =>
+                          setPinnedReasonId((prev) =>
+                            prev === c.commit_id ? null : c.commit_id,
+                          )
+                        }
+                      />
                     </td>
                     <td className="h-11 px-2 py-2.5 text-right">
                       <button
                         type="button"
-                        className="cursor-pointer rounded bg-(--color-bg-brand-subtle) px-3 py-0.5 typo-button-sm text-(--color-text-brand) hover:opacity-80"
+                        onClick={() => linkCommit(commitIdNum)}
+                        disabled={isRowPending || isCommitIdInvalid}
+                        className="cursor-pointer rounded bg-(--color-bg-brand-subtle) px-3 py-0.5 typo-button-sm text-(--color-text-brand) hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50"
                       >
-                        연결
+                        {isRowPending ? "연결 중..." : "연결"}
                       </button>
                     </td>
                   </tr>
@@ -227,6 +363,12 @@ const CommitTableCard = ({
           </tbody>
         </table>
       </div>
+
+      {linkErrorMessage ? (
+        <p className="typo-caption1 text-(--color-text-error)">
+          {linkErrorMessage}
+        </p>
+      ) : null}
 
       <div className="flex w-full items-start gap-5 typo-caption1 text-(--color-text-tertiary)">
         <div className="flex items-center gap-1">

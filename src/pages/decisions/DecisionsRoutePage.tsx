@@ -4,6 +4,7 @@ import { parseRouteId } from "@/utils/parseRouteId";
 import DecisionDetailPage from "./DecisionDetailPage";
 import { useApplicationDetail } from "./hooks/useApplicationDetail";
 import { useConnectedCommits } from "./hooks/useConnectedCommits";
+import { useDecisionReliability } from "./hooks/useDecisionReliability";
 import { useRecommendedCommits } from "./hooks/useRecommendedCommits";
 import DecisionsPage from "./index";
 import { MOCK_DECISION_DETAIL_VIEW_MODEL } from "./mocks";
@@ -17,6 +18,7 @@ const DecisionsRoutePage = () => {
   const detailQuery = useApplicationDetail(applicationId);
   const recommendedQuery = useRecommendedCommits(applicationId);
   const connectedQuery = useConnectedCommits(applicationId);
+  const reliabilityQuery = useDecisionReliability(decisionId);
 
   if (decisionId == null || applicationId == null) {
     return <DecisionsPage />;
@@ -50,7 +52,8 @@ const DecisionsRoutePage = () => {
     detail: detailQuery.data,
     application: MOCK_DECISION_DETAIL_VIEW_MODEL.application,
     meta: MOCK_DECISION_DETAIL_VIEW_MODEL.meta,
-    confidence: MOCK_DECISION_DETAIL_VIEW_MODEL.confidence,
+    confidence:
+      reliabilityQuery.data ?? MOCK_DECISION_DETAIL_VIEW_MODEL.confidence,
     applied_commits: MOCK_DECISION_DETAIL_VIEW_MODEL.applied_commits,
     recommended_commits: recommendedQuery.data ?? [],
     linked_commits: connectedQuery.data?.commits ?? [],
