@@ -1,4 +1,5 @@
-import { useMemo } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import EmptyStateCard from "@/components/common/EmptyStateCard";
 import GitTokenModal from "@/components/panel/git/GitTokenModal";
@@ -12,8 +13,11 @@ import type {
 import { formatCommitDate } from "@/utils/date";
 import { parseRouteId } from "@/utils/parseRouteId";
 import GitList from "./components/GitList";
+import { useAddRepository } from "./hooks/useAddRepository";
+import { useCheckGitHubToken } from "./hooks/useCheckGitHubToken";
 import { useGetRepositories } from "./hooks/useGetRepositories";
 import { useGetRepositoryCommits } from "./hooks/useGetRepositoryCommits";
+import { useRegisterGitHubToken } from "./hooks/useRegisterGitHubToken";
 
 const mapCommitItem = (commit: RepositoryCommitItem): GitCommitItem => {
   const hasConnectedApplication = commit.connected_application !== null;
@@ -148,7 +152,7 @@ function GitPage() {
   }
 
   return (
-    <div className="flex w-full flex-col py-[60px]">
+    <div className="flex w-full flex-col py-15">
       <GitList
         repositoryName={selectedRepository?.name ?? "Repository"}
         stats={stats}
