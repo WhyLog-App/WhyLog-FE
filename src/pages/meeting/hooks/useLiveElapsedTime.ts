@@ -15,9 +15,10 @@ const parseElapse = (elapse: string | null | undefined): number => {
   const parts = elapse.split(":");
   if (parts.length !== 3) return 0;
   const [h, m, s] = parts.map((p) => Number(p));
-  if (!Number.isFinite(h) || !Number.isFinite(m) || !Number.isFinite(s)) {
+  if (!Number.isInteger(h) || !Number.isInteger(m) || !Number.isInteger(s)) {
     return 0;
   }
+  if (h < 0 || m < 0 || s < 0) return 0;
   return h * 3600 + m * 60 + s;
 };
 
