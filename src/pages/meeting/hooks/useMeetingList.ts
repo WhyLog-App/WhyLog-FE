@@ -12,6 +12,8 @@ export const useMeetingList = (teamId: number | null) => {
       return listMeetings(teamId, "ONGOING");
     },
     enabled: teamId != null,
+    refetchInterval: 60_000,
+    refetchIntervalInBackground: false,
   });
 
   const completedQuery = useQuery<MeetingListItem[]>({
