@@ -1,17 +1,17 @@
-import { useState, useEffect, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
 import IconAddPlusSquare from "@/assets/icons/edit/ic_add_plus_square.svg?react";
 import { Icon } from "@/components/common/Icon";
-import { formatSyncDate } from "@/utils/date";
-import GitTokenModal from "./GitTokenModal";
-import GitPanelItem from "./GitPanelItem";
-import { useRegisterGitHubToken } from "@/pages/git/hooks/useRegisterGitHubToken";
+import { useCurrentTeam } from "@/hooks/useCurrentTeam";
+import useAddRepository from "@/pages/git/hooks/useAddRepository";
 import { useCheckGitHubToken } from "@/pages/git/hooks/useCheckGitHubToken";
 import { useGetRepositories } from "@/pages/git/hooks/useGetRepositories";
-import RepositoryAddModal from "./RepositoryAddModal";
-import useAddRepository from "@/pages/git/hooks/useAddRepository";
+import { useRegisterGitHubToken } from "@/pages/git/hooks/useRegisterGitHubToken";
 import useSyncRepository from "@/pages/git/hooks/useSyncRepository";
-import { useCurrentTeam } from "@/hooks/useCurrentTeam";
+import { formatSyncDate } from "@/utils/date";
+import GitPanelItem from "./GitPanelItem";
+import GitTokenModal from "./GitTokenModal";
+import RepositoryAddModal from "./RepositoryAddModal";
 
 interface GitItem {
   repositoryId: number;

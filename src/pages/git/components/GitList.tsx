@@ -1,8 +1,8 @@
-import GitHeader from "./GitHeader";
-import CommitTable from "./CommitTable";
 import IconChevronDownDuo from "@/assets/icons/arrow/ic_chevron_down_duo.svg?react";
 import { Icon } from "@/components/common/Icon";
 import type { GitCommitItem, GitRepositoryStats } from "../../../types/git";
+import CommitTable from "./CommitTable";
+import GitHeader from "./GitHeader";
 
 interface GitListProps {
   repositoryName: string;

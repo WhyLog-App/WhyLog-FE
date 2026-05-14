@@ -2,11 +2,11 @@ import type { AxiosResponse } from "axios";
 import ENDPOINT from "@/constants/endpoint";
 import type { ApiResponse } from "@/types/auth";
 import type {
-  GitHubTokenRequest,
-  GitHubTokenResult,
   AddRepositoryRequest,
   AddRepositoryResult,
   CheckGitHubTokenStatusResult,
+  GitHubTokenRequest,
+  GitHubTokenResult,
   RepositoryItem,
   RepositorySyncResult,
 } from "@/types/git";

@@ -37,9 +37,9 @@ const ApplicationStatusCard = ({ commits }: ApplicationStatusCardProps) => {
             연결된 커밋이 없습니다
           </li>
         ) : (
-          commits.map((c, idx) => (
+          commits.map((c) => (
             <li
-              key={`${c.commit_hash}-${idx}`}
+              key={`${c.repository_name}-${c.commit_hash}`}
               className="flex items-center gap-2"
             >
               <CommitHashBadge hash={c.commit_hash} />

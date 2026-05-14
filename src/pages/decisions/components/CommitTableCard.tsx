@@ -325,7 +325,7 @@ const CommitTableCard = ({
                 const isLast = idx === linkedCommits.length - 1;
                 return (
                   <tr
-                    key={`linked-${c.commit_hash}-${idx}`}
+                    key={`linked-${c.repository_name}-${c.commit_hash}`}
                     className={
                       isLast ? "border-b border-(--color-border-default)" : ""
                     }
