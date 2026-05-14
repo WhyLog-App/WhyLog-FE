@@ -1,5 +1,5 @@
-import CommitTableRow from "./CommitTableRow";
 import type { GitCommitItem } from "../../../types/git";
+import CommitTableRow from "./CommitTableRow";
 
 interface CommitTableProps {
   commits: GitCommitItem[];
@@ -10,12 +10,12 @@ const CommitTable = ({ commits, onRowClick }: CommitTableProps) => {
   return (
     <table className="w-full table-fixed border-collapse">
       <colgroup>
-        <col className="w-[120px]" />
-        <col className="w-[280px]" />
-        <col className="w-[240px]" />
-        <col className="w-[160px]" />
-        <col className="w-[200px]" />
-        <col className="w-[120px]" />
+        <col className="w-30" />
+        <col className="w-70" />
+        <col className="w-60" />
+        <col className="w-40" />
+        <col className="w-50" />
+        <col className="w-30" />
       </colgroup>
       <thead>
         <tr className="h-11 border-b border-(--color-light-700)">
