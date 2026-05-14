@@ -45,14 +45,16 @@ const GitPanel = () => {
   );
 
   const {
-    addRepository,
-    isPending: isAdding,
-    errorMessage: addError,
-  } = useAddRepository({
-    onSuccess: () => {
-      setIsRepoModalOpen(false);
+    syncRepository,
+    isPending: isSyncing,
+    errorMessage: syncError,
+  } = useSyncRepository({
+    onSuccess: (result) => {
       queryClient.invalidateQueries({
         queryKey: ["repositories", teamId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["repository-commits", result.repository_id],
       });
     },
     onTokenExpired: () => {
@@ -62,13 +64,18 @@ const GitPanel = () => {
   });
 
   const {
-    syncRepository,
-    isPending: isSyncing,
-    errorMessage: syncError,
-  } = useSyncRepository({
-    onSuccess: () => {
+    addRepository,
+    isPending: isAdding,
+    errorMessage: addError,
+  } = useAddRepository({
+    onSuccess: (result) => {
+      setIsRepoModalOpen(false);
       queryClient.invalidateQueries({
         queryKey: ["repositories", teamId],
+      });
+      setSyncingRepositoryId(result.repository_id);
+      void syncRepository(result.repository_id).finally(() => {
+        setSyncingRepositoryId(null);
       });
     },
     onTokenExpired: () => {
