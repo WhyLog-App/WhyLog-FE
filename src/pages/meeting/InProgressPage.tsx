@@ -78,7 +78,7 @@ const InProgressPage = () => {
   });
 
   const MAX_CONNECTION_RETRIES = 3;
-  const isConnecting = !isWsConnected || !isRoomConnected;
+  const isConnecting = !isMeetingEnded && (!isWsConnected || !isRoomConnected);
 
   const { handleInterim, handleFinal, mergeTranscripts, mergeInterim } =
     useLocalSpeechFallback({
