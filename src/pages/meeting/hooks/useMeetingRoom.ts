@@ -39,10 +39,10 @@ export const useMeetingRoom = ({
 
   // 타인이 회의를 종료한 시그널이 오면 LiveKit Room/마이크 즉시 해제
   useEffect(() => {
-    if (signaling.isMeetingEnded) {
-      void livekit.disconnect();
-    }
-  }, [signaling.isMeetingEnded, livekit.disconnect]);
+    if (!signaling.isMeetingEnded) return;
+    void livekit.isConnected;
+    void livekit.disconnect();
+  }, [signaling.isMeetingEnded, livekit.isConnected, livekit.disconnect]);
 
   return {
     participants,
