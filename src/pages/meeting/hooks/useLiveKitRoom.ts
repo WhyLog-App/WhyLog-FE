@@ -71,6 +71,27 @@ export const useLiveKitRoom = ({ meetingId }: UseLiveKitRoomOptions) => {
     });
   }, []);
 
+  const disconnect = useCallback(async () => {
+    const room = roomRef.current;
+    isMicEnabledRef.current = false;
+    setIsMicEnabled(false);
+    if (!room) {
+      setIsConnected(false);
+      return;
+    }
+    try {
+      await room.localParticipant.setMicrophoneEnabled(false);
+    } catch {
+      /* noop */
+    }
+    try {
+      await room.disconnect();
+    } catch {
+      /* noop */
+    }
+    setIsConnected(false);
+  }, []);
+
   const manualRetry = useCallback(() => {
     setErrorMessage(null);
     setRetryAttempt(0);
@@ -211,5 +232,6 @@ export const useLiveKitRoom = ({ meetingId }: UseLiveKitRoomOptions) => {
     setMicrophoneEnabled,
     setAudioOutputEnabled,
     manualRetry,
+    disconnect,
   };
 };
