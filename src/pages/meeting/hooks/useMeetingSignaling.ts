@@ -54,6 +54,7 @@ export const useMeetingSignaling = ({
   const [isConnected, setIsConnected] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [retryAttempt, setRetryAttempt] = useState(0);
+  const [isMeetingEnded, setIsMeetingEnded] = useState(false);
   const [transcripts, setTranscripts] = useState<TranscriptEntry[]>([]);
   const [interimByMember, setInterimByMember] = useState<
     Record<string, InterimEntry>
@@ -73,6 +74,7 @@ export const useMeetingSignaling = ({
     setErrorMessage(null);
     setRetryAttempt(0);
     setIsConnected(false);
+    setIsMeetingEnded(false);
     setRetrySignal((n) => n + 1);
   }, []);
 
@@ -198,7 +200,7 @@ export const useMeetingSignaling = ({
               break;
             }
             case "meeting_ended": {
-              setErrorMessage("회의가 종료되었습니다.");
+              setIsMeetingEnded(true);
               break;
             }
             default:
@@ -267,6 +269,7 @@ export const useMeetingSignaling = ({
       setIsConnected(false);
       setTranscripts([]);
       setInterimByMember({});
+      setIsMeetingEnded(false);
     };
   }, [meetingId, displayName]);
 
@@ -279,5 +282,6 @@ export const useMeetingSignaling = ({
     interimByMember,
     sendMessage,
     manualRetry,
+    isMeetingEnded,
   };
 };

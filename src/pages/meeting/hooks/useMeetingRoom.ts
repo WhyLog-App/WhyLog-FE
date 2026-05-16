@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import type { RoomParticipant } from "../types";
 import { useLiveKitRoom } from "./useLiveKitRoom";
 import { useMeetingSignaling } from "./useMeetingSignaling";
@@ -37,6 +37,13 @@ export const useMeetingRoom = ({
 
   const retryAttempt = Math.max(signaling.retryAttempt, livekit.retryAttempt);
 
+  // 타인이 회의를 종료한 시그널이 오면 LiveKit Room/마이크 즉시 해제
+  useEffect(() => {
+    if (!signaling.isMeetingEnded) return;
+    void livekit.isConnected;
+    void livekit.disconnect();
+  }, [signaling.isMeetingEnded, livekit.isConnected, livekit.disconnect]);
+
   return {
     participants,
     isWsConnected: signaling.isConnected,
@@ -53,5 +60,6 @@ export const useMeetingRoom = ({
     setMicrophoneEnabled: livekit.setMicrophoneEnabled,
     setAudioOutputEnabled: livekit.setAudioOutputEnabled,
     manualRetry,
+    isMeetingEnded: signaling.isMeetingEnded,
   };
 };

@@ -71,13 +71,14 @@ const InProgressPage = () => {
     setMicrophoneEnabled,
     setAudioOutputEnabled,
     manualRetry,
+    isMeetingEnded,
   } = useMeetingRoom({
     meetingId,
     displayName: myName,
   });
 
   const MAX_CONNECTION_RETRIES = 3;
-  const isConnecting = !isWsConnected || !isRoomConnected;
+  const isConnecting = !isMeetingEnded && (!isWsConnected || !isRoomConnected);
 
   const { handleInterim, handleFinal, mergeTranscripts, mergeInterim } =
     useLocalSpeechFallback({
@@ -176,7 +177,20 @@ const InProgressPage = () => {
         />
       </div>
 
-      {isEndConfirmOpen && (
+      {isMeetingEnded && (
+        <Modal
+          title="회의가 종료되었어요"
+          onClose={() => navigate("/")}
+          primaryLabel="홈으로"
+          onPrimaryClick={() => navigate("/")}
+        >
+          <p className="typo-body-md text-(--color-text-secondary)">
+            다른 참가자가 회의를 종료했어요. 분석이 곧 시작됩니다.
+          </p>
+        </Modal>
+      )}
+
+      {isEndConfirmOpen && !isMeetingEnded && (
         <Modal
           title="회의를 종료하시겠어요?"
           onClose={() => setIsEndConfirmOpen(false)}
