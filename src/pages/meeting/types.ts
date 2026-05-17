@@ -2,6 +2,7 @@ export interface RoomParticipant {
   id: string;
   name: string;
   isSelf?: boolean;
+  profileImage?: string | null;
 }
 
 export interface TranscriptEntry {
