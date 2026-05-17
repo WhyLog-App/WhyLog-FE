@@ -5,6 +5,8 @@ import type {
   ApplicationRecommendedCommit,
   LinkCommitRequest,
   LinkCommitResult,
+  UnlinkCommitRequest,
+  UnlinkCommitResult,
 } from "@/types/application";
 import type { ApiResponse } from "@/types/auth";
 import { http } from "@/utils/http";
@@ -43,6 +45,20 @@ export const linkCommit = async (
     LinkCommitRequest,
     { data: ApiResponse<LinkCommitResult> }
   >(ENDPOINT.APPLICATIONS.LINK_COMMIT(applicationId), payload);
+  if (!data.isSuccess) {
+    throw new Error(data.message);
+  }
+  return data.result;
+};
+
+export const unlinkCommit = async (
+  applicationId: number,
+  payload: UnlinkCommitRequest,
+): Promise<UnlinkCommitResult> => {
+  const { data } = await http.delete<
+    unknown,
+    { data: ApiResponse<UnlinkCommitResult> }
+  >(ENDPOINT.APPLICATIONS.LINK_COMMIT(applicationId), { data: payload });
   if (!data.isSuccess) {
     throw new Error(data.message);
   }
