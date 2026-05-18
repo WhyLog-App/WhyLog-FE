@@ -39,6 +39,7 @@ export interface ApplicationRecommendedCommit {
 // GET /api/applications/{applicationId}/connected-commits
 export interface ApplicationConnectedCommit {
   repository_name: string;
+  commit_id: number;
   commit_hash: string;
   message: string;
   committed_date: string;
@@ -55,6 +56,16 @@ export interface LinkCommitRequest {
 }
 
 export interface LinkCommitResult {
+  application_id: number;
+  commit_ids: number[];
+}
+
+// DELETE /api/applications/{applicationId}/commits
+export interface UnlinkCommitRequest {
+  commit_id: number;
+}
+
+export interface UnlinkCommitResult {
   application_id: number;
   commit_ids: number[];
 }

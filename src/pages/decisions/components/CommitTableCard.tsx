@@ -12,6 +12,7 @@ import type { CommitTab, DecisionFooterStats } from "@/types/decision";
 import { APPLICATION_CONNECTED_COMMITS_QUERY_KEY } from "../hooks/useConnectedCommits";
 import { useLinkCommit } from "../hooks/useLinkCommit";
 import { APPLICATION_RECOMMENDED_COMMITS_QUERY_KEY } from "../hooks/useRecommendedCommits";
+import { useUnlinkCommit } from "../hooks/useUnlinkCommit";
 import GlassCard from "./GlassCard";
 
 interface CommitTableCardProps {
@@ -185,6 +186,11 @@ const CommitTableCard = ({
     pendingCommitIds,
     errorMessage: linkErrorMessage,
   } = useLinkCommit(applicationId);
+  const {
+    unlinkCommit,
+    pendingCommitId: pendingUnlinkCommitId,
+    errorMessage: unlinkErrorMessage,
+  } = useUnlinkCommit(applicationId);
   const rowCount =
     tab === "recommended" ? recommendedCommits.length : linkedCommits.length;
 
@@ -329,9 +335,10 @@ const CommitTableCard = ({
             ) : (
               linkedCommits.map((c, idx) => {
                 const isLast = idx === linkedCommits.length - 1;
+                const isRowPending = pendingUnlinkCommitId === c.commit_id;
                 return (
                   <tr
-                    key={`linked-${c.repository_name}-${c.commit_hash}`}
+                    key={`linked-${c.commit_id}`}
                     className={
                       isLast ? "border-b border-(--color-border-default)" : ""
                     }
@@ -357,9 +364,11 @@ const CommitTableCard = ({
                     <td className="h-11 px-2 py-2.5 text-right">
                       <button
                         type="button"
-                        className="cursor-pointer rounded bg-(--color-bg-brand-subtle) px-3 py-0.5 typo-button-sm text-(--color-text-brand) hover:opacity-80"
+                        onClick={() => unlinkCommit(c.commit_id)}
+                        disabled={isRowPending}
+                        className="cursor-pointer rounded bg-(--color-bg-brand-subtle) px-3 py-0.5 typo-button-sm text-(--color-text-brand) hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50"
                       >
-                        해제
+                        {isRowPending ? "해제 중..." : "해제"}
                       </button>
                     </td>
                   </tr>
@@ -370,9 +379,9 @@ const CommitTableCard = ({
         </table>
       </div>
 
-      {linkErrorMessage ? (
+      {linkErrorMessage || unlinkErrorMessage ? (
         <p className="typo-caption1 text-(--color-text-error)">
-          {linkErrorMessage}
+          {linkErrorMessage ?? unlinkErrorMessage}
         </p>
       ) : null}
 
