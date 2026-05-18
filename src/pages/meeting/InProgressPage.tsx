@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Modal from "@/components/common/Modal";
 import { decodeAccessToken } from "@/utils/jwt";
@@ -100,16 +100,40 @@ const InProgressPage = () => {
   } = useEndMeeting();
   const [isEndConfirmOpen, setIsEndConfirmOpen] = useState(false);
 
+  const profileImageByMemberId = useMemo(() => {
+    const map = new Map<string, string | null>();
+    meetingDetail?.members.forEach((m) => {
+      map.set(String(m.member_id), m.profile_image);
+    });
+    return map;
+  }, [meetingDetail?.members]);
+
+  const profileImageByName = useMemo(() => {
+    const map = new Map<string, string | null>();
+    meetingDetail?.members.forEach((m) => {
+      if (m.name) map.set(m.name, m.profile_image);
+    });
+    return map;
+  }, [meetingDetail?.members]);
+
   if (meetingId == null) {
     return null;
   }
 
-  const displayParticipants =
+  const baseParticipants =
     participants.length > 0
       ? participants
       : myName && myMemberId != null
         ? [{ id: String(myMemberId), name: myName, isSelf: true }]
         : [];
+
+  const displayParticipants = baseParticipants.map((p) => ({
+    ...p,
+    profileImage:
+      profileImageByMemberId.get(p.id) ??
+      profileImageByName.get(p.name) ??
+      null,
+  }));
 
   const handleEndClick = () => {
     if (meetingId == null) {

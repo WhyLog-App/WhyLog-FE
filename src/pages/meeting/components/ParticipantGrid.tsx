@@ -13,7 +13,12 @@ const ParticipantGrid = ({ participants }: ParticipantGridProps) => {
   return (
     <div className={`grid w-full gap-5 ${gridCols}`}>
       {participants.map((p) => (
-        <ParticipantTile key={p.id} name={p.name} isSelf={p.isSelf} />
+        <ParticipantTile
+          key={p.id}
+          name={p.name}
+          isSelf={p.isSelf}
+          profileImage={p.profileImage}
+        />
       ))}
     </div>
   );
