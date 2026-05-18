@@ -1,5 +1,6 @@
 import { Navigate, Outlet, useParams } from "react-router-dom";
 import { useTeams } from "@/components/sidebar/hooks/useTeams";
+import { ROUTES } from "@/constants/routes";
 import { parseRouteId } from "@/utils/parseRouteId";
 import AppLayout from "../AppLayout";
 
@@ -29,7 +30,7 @@ const TeamLayout = () => {
 
   // 팀이 없으면 온보딩 페이지로
   if (!teams || teams.length === 0) {
-    return <Navigate to="/onboarding/create-team" replace />;
+    return <Navigate to={ROUTES.ONBOARDING_CREATE_TEAM} replace />;
   }
 
   // 잘못된 teamId면 첫 번째 팀으로 리다이렉트

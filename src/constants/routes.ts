@@ -4,6 +4,9 @@ export const ROUTES = {
   SIGNUP: "/signup",
   LOGIN: "/login",
 
+  // 온보딩
+  ONBOARDING_CREATE_TEAM: "/onboarding/create-team",
+
   // 팀 기반 라우트
   TEAM_ROOT: "/team/:teamId",
   TEAM_HOME: "/team/:teamId",

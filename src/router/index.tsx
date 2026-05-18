@@ -15,6 +15,7 @@ import {
   MeetingPage,
   MeetingRoutePage,
   NotFound,
+  OnboardingCreateTeamPage,
   SettingsPage,
   SignupPage,
 } from "../pages";
@@ -76,6 +77,16 @@ const allRoutes: RouteObject[] = [
         element: <SettingsPage />,
       },
     ],
+  },
+
+  // 2-1. 온보딩
+  {
+    path: ROUTES.ONBOARDING_CREATE_TEAM,
+    element: (
+      <ProtectedRoute>
+        <OnboardingCreateTeamPage />
+      </ProtectedRoute>
+    ),
   },
 
   // 3. 랜딩
