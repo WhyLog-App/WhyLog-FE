@@ -1,5 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useTeams } from "@/components/sidebar/hooks/useTeams";
+import { ROUTES } from "@/constants/routes";
 
 const RootRedirect = () => {
   const { data: teams, isLoading, isError } = useTeams();
@@ -23,7 +24,7 @@ const RootRedirect = () => {
   }
 
   if (!teams || teams.length === 0) {
-    return <Navigate to="/onboarding/create-team" replace />;
+    return <Navigate to={ROUTES.ONBOARDING_CREATE_TEAM} replace />;
   }
 
   return <Navigate to={`/team/${teams[0].team_id}`} replace />;
