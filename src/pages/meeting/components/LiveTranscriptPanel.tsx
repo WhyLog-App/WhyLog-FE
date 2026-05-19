@@ -23,16 +23,24 @@ const LiveTranscriptPanel = ({
   isSupported = true,
 }: LiveTranscriptPanelProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const isStickToBottomRef = useRef(true);
 
   const interimEntries = useMemo(
     () => Object.entries(interimByMember),
     [interimByMember],
   );
 
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+    isStickToBottomRef.current = distanceFromBottom <= 24;
+  };
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: Need to scroll when transcripts or interimEntries change
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
+    if (!isStickToBottomRef.current) return;
     el.scrollTop = el.scrollHeight;
   }, [transcripts, interimEntries]);
 
@@ -61,6 +69,7 @@ const LiveTranscriptPanel = ({
 
       <div
         ref={scrollRef}
+        onScroll={handleScroll}
         className="flex flex-1 flex-col gap-4 overflow-y-auto"
       >
         {isEmpty && (
