@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import IconArrowsReload from "@/assets/icons/arrow/ic_arrows_reload.svg?react";
 import IconAddPlusSquare from "@/assets/icons/edit/ic_add_plus_square.svg?react";
@@ -13,6 +13,7 @@ import StartMeetingModal from "./StartMeetingModal";
 
 const MeetingPanel = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [keyword, setKeyword] = useState("");
   const navigate = useNavigate();
   const { teamId } = useCurrentTeam();
   const { meetingId: activeMeetingIdParam } = useParams<{
@@ -30,6 +31,16 @@ const MeetingPanel = () => {
     isFetching,
     refetch,
   } = useMeetingList(teamId);
+  const normalizedKeyword = keyword.trim();
+
+  const filteredCompleted = useMemo(() => {
+    if (!normalizedKeyword) return completedMeetings;
+    const lower = normalizedKeyword.toLowerCase();
+    return completedMeetings.filter((m) =>
+      m.name.toLowerCase().includes(lower),
+    );
+  }, [completedMeetings, normalizedKeyword]);
+
   const hasAnyMeetings =
     ongoingMeetings.length > 0 || completedMeetings.length > 0;
 
@@ -92,7 +103,15 @@ const MeetingPanel = () => {
         </div>
       )}
 
-      {!isLoading && !isError && !hasAnyMeetings ? (
+      {isLoading ? (
+        <div className="flex w-full flex-1 items-center justify-center px-4 typo-subtitle5 text-(--color-text-tertiary)">
+          불러오는 중...
+        </div>
+      ) : isError ? (
+        <div className="flex w-full flex-1 items-center justify-center px-4 typo-subtitle5 text-(--color-text-tertiary)">
+          회의 목록을 불러오지 못했습니다.
+        </div>
+      ) : !hasAnyMeetings && !normalizedKeyword ? (
         <div className="flex w-full flex-1 flex-col items-center justify-center px-4 text-center">
           <div className="typo-subtitle4 text-(--color-text-secondary)">
             진행된 회의가
@@ -106,47 +125,39 @@ const MeetingPanel = () => {
           </div>
         </div>
       ) : (
-        /* Search + meeting list */
         <div className="flex w-full flex-1 flex-col gap-2 overflow-y-auto px-4">
-          {/* Search bar */}
           <div className="flex w-full items-center gap-2 rounded-lg bg-(--color-bg-subtle) p-3">
             <Icon
               icon={IconSearch}
               size={24}
               className="shrink-0 text-(--color-text-brand)"
             />
-            <span className="typo-subtitle5 text-(--color-text-disabled)">
-              회의 이름으로 검색하세요...
-            </span>
+            <input
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              aria-label="회의 이름 검색"
+              placeholder="회의 이름으로 검색하세요..."
+              className="w-full bg-transparent typo-subtitle5 text-(--color-text-primary) placeholder:text-(--color-text-disabled) focus:outline-none"
+            />
           </div>
 
-          {/* Meeting list */}
-          {isLoading && (
-            <span className="typo-body6 text-(--color-text-tertiary) px-2">
-              불러오는 중...
-            </span>
+          {filteredCompleted.length === 0 ? (
+            <div className="flex w-full flex-1 items-center justify-center py-8 typo-subtitle5 text-(--color-text-tertiary)">
+              {normalizedKeyword ? "검색 결과가 없습니다." : "완료된 회의가 없습니다."}
+            </div>
+          ) : (
+            filteredCompleted.map((meeting) => (
+              <MeetingPanelItem
+                key={meeting.meeting_id}
+                title={meeting.name}
+                isActive={meeting.meeting_id === activeMeetingId}
+                onClick={() =>
+                  teamId &&
+                  navigate(`/team/${teamId}/meeting/${meeting.meeting_id}`)
+                }
+              />
+            ))
           )}
-          {isError && (
-            <span className="typo-body6 text-(--color-text-tertiary) px-2">
-              회의 목록을 불러오지 못했습니다.
-            </span>
-          )}
-          {!isLoading && !isError && completedMeetings.length === 0 && (
-            <span className="typo-body6 text-(--color-text-tertiary) px-2">
-              완료된 회의가 없습니다.
-            </span>
-          )}
-          {completedMeetings.map((meeting) => (
-            <MeetingPanelItem
-              key={meeting.meeting_id}
-              title={meeting.name}
-              isActive={meeting.meeting_id === activeMeetingId}
-              onClick={() =>
-                teamId &&
-                navigate(`/team/${teamId}/meeting/${meeting.meeting_id}`)
-              }
-            />
-          ))}
         </div>
       )}
 
