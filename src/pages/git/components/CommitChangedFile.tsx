@@ -116,7 +116,7 @@ const CommitChangedFile = ({ file }: CommitChangedFileProps) => {
 
       {expanded && (
         <div className="p-4">
-          <div className="rounded-[8px] border border-[#d4edda] overflow-hidden bg-[#f8fdf9]">
+          <div className="rounded-[8px] border border-(--color-light-700) overflow-hidden bg-[#f8fdf9]">
             {renderDiffContent()}
           </div>
         </div>
