@@ -143,7 +143,9 @@ const MeetingPanel = () => {
 
           {filteredCompleted.length === 0 ? (
             <div className="flex w-full flex-1 items-center justify-center py-8 typo-subtitle5 text-(--color-text-tertiary)">
-              {normalizedKeyword ? "검색 결과가 없습니다." : "완료된 회의가 없습니다."}
+              {normalizedKeyword
+                ? "검색 결과가 없습니다."
+                : "완료된 회의가 없습니다."}
             </div>
           ) : (
             filteredCompleted.map((meeting) => (

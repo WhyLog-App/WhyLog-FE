@@ -4,15 +4,19 @@ import { createPortal } from "react-dom";
 import IconArrowsReload from "@/assets/icons/arrow/ic_arrows_reload.svg?react";
 import IconAddPlus from "@/assets/icons/edit/ic_add_plus.svg?react";
 import { Icon } from "@/components/common/Icon";
+import { useCurrentTeam } from "@/hooks/useCurrentTeam";
 import type {
   ApplicationConnectedCommit,
   ApplicationRecommendedCommit,
 } from "@/types/application";
 import type { CommitTab, DecisionFooterStats } from "@/types/decision";
+import { formatCommittedDate } from "@/utils/date";
 import { APPLICATION_CONNECTED_COMMITS_QUERY_KEY } from "../hooks/useConnectedCommits";
 import { useLinkCommit } from "../hooks/useLinkCommit";
 import { APPLICATION_RECOMMENDED_COMMITS_QUERY_KEY } from "../hooks/useRecommendedCommits";
 import { useUnlinkCommit } from "../hooks/useUnlinkCommit";
+import CommitHashBadge from "./CommitHashBadge";
+import { CommitMatchModal } from "./CommitMatchModal";
 import GlassCard from "./GlassCard";
 
 interface CommitTableCardProps {
@@ -108,25 +112,6 @@ const ReasonButton = ({
   );
 };
 
-const formatCommittedDate = (iso: string) => {
-  if (!iso) return "-";
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return iso;
-  const yyyy = date.getFullYear();
-  const mm = String(date.getMonth() + 1).padStart(2, "0");
-  const dd = String(date.getDate()).padStart(2, "0");
-  return `${yyyy}.${mm}.${dd}`;
-};
-
-const CommitHashBadge = ({ hash }: { hash: string }) => (
-  <span
-    title={hash}
-    className="inline-flex items-center justify-center rounded bg-[#f5e5ff] px-3 py-0.5 font-mono text-[10px] leading-3.75 text-purple-700"
-  >
-    {hash.slice(0, 6)}
-  </span>
-);
-
 const TabButton = ({
   active,
   children,
@@ -160,6 +145,8 @@ const CommitTableCard = ({
   const [hoveredReasonId, setHoveredReasonId] = useState<string | null>(null);
   const [pinnedReasonId, setPinnedReasonId] = useState<string | null>(null);
   const [isRefetching, setIsRefetching] = useState(false);
+  const [isMatchModalOpen, setIsMatchModalOpen] = useState(false);
+  const { teamId } = useCurrentTeam();
   const queryClient = useQueryClient();
 
   const handleRefresh = async () => {
@@ -216,8 +203,10 @@ const CommitTableCard = ({
           </button>
           <button
             type="button"
-            aria-label="추가"
-            className="flex size-5 cursor-pointer items-center justify-center rounded bg-(--color-bg-surface) text-(--color-text-secondary) hover:bg-(--color-action-hover)"
+            aria-label="커밋 직접 매칭"
+            onClick={() => setIsMatchModalOpen(true)}
+            disabled={teamId == null}
+            className="flex size-5 cursor-pointer items-center justify-center rounded bg-(--color-bg-surface) text-(--color-text-secondary) hover:bg-(--color-action-hover) disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Icon icon={IconAddPlus} size={16} />
           </button>
@@ -405,6 +394,14 @@ const CommitTableCard = ({
           </span>
         </div>
       </div>
+
+      {isMatchModalOpen && teamId != null ? (
+        <CommitMatchModal
+          applicationId={applicationId}
+          teamId={teamId}
+          onClose={() => setIsMatchModalOpen(false)}
+        />
+      ) : null}
     </GlassCard>
   );
 };
