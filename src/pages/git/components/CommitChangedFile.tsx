@@ -1,6 +1,6 @@
 import { useState } from "react";
 import DiffViewer from "react-diff-viewer-continued";
-import IconNoteSearch from "@/assets/icons/file/ic_note_search.svg?react";
+import IconFileDocument from "@/assets/icons/file/ic_file_document.svg?react";
 import { Icon } from "@/components/common/Icon";
 import type { GitCommitDetailFile, GitCommitDetailFileLine } from "@/types/git";
 import { parseUnifiedDiff } from "../utils/parseUnifiedDiff";
@@ -92,7 +92,7 @@ const CommitChangedFile = ({ file }: CommitChangedFileProps) => {
       >
         <div className="flex min-w-0 items-center gap-[6px]">
           <Icon
-            icon={IconNoteSearch}
+            icon={IconFileDocument}
             size={16}
             className="shrink-0 text-(--color-text-secondary)"
           />
