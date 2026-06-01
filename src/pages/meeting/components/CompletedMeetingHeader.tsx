@@ -64,11 +64,19 @@ const CompletedMeetingHeader = ({
               key={idx}
               className="flex items-center gap-1 rounded-full bg-(--color-bg-subtle) px-2 py-1"
             >
-              <Icon
-                icon={IconCircleUser}
-                size={20}
-                className="text-(--color-dark-100)"
-              />
+              {m.profile_image ? (
+                <img
+                  src={m.profile_image}
+                  alt={m.name}
+                  className="size-5 shrink-0 rounded-full object-cover"
+                />
+              ) : (
+                <Icon
+                  icon={IconCircleUser}
+                  size={20}
+                  className="text-(--color-dark-100)"
+                />
+              )}
               <span className="typo-caption text-(--color-text-secondary)">
                 {m.name}
               </span>
