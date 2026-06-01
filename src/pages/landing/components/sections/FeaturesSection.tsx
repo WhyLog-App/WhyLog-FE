@@ -17,9 +17,12 @@ const Bullet = ({ text }: { text: string }) => (
 );
 
 const FeaturesSection = () => (
-  <section id="features" className="relative overflow-hidden grain py-32">
+  <section
+    id="features"
+    className="relative overflow-hidden grain py-20 md:py-32"
+  >
     <div className="relative max-w-7xl mx-auto px-6">
-      <div className="text-center mb-24 reveal">
+      <div className="text-center mb-16 md:mb-24 reveal">
         <p className="text-[12px] tracking-[0.22em] font-bold text-primary-500 uppercase mb-4">
           FEATURES
         </p>
@@ -33,8 +36,8 @@ const FeaturesSection = () => (
       </div>
 
       {/* Feature 1 — 회의 자동 분석 */}
-      <div className="grid grid-cols-12 gap-12 items-center mb-32 reveal">
-        <div className="col-span-12 lg:col-span-5">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center mb-20 md:mb-32 reveal">
+        <div className="col-span-1 lg:col-span-5">
           <span className="num text-[13px] font-semibold text-primary-500 tracking-wide">
             FEATURE 01 · 회의 자동 분석
           </span>
@@ -55,7 +58,7 @@ const FeaturesSection = () => (
           </ul>
         </div>
 
-        <div className="col-span-12 lg:col-span-7 relative">
+        <div className="col-span-1 lg:col-span-7 relative">
           <div
             className="absolute -inset-6 rounded-[40px] opacity-80"
             style={{
@@ -64,7 +67,7 @@ const FeaturesSection = () => (
             }}
           />
           <TiltCard>
-            <div className="relative glass-strong rounded-[28px] p-7">
+            <div className="relative glass-strong rounded-[28px] p-5 sm:p-7">
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-2.5">
                   <div className="w-9 h-9 rounded-xl bg-primary-500 text-white flex items-center justify-center shadow-[0_6px_18px_rgba(30,91,232,0.35)]">
@@ -169,8 +172,8 @@ const FeaturesSection = () => (
       </div>
 
       {/* Feature 2 — 의사결정 기록 */}
-      <div className="grid grid-cols-12 gap-12 items-center mb-32 reveal">
-        <div className="col-span-12 lg:col-span-7 order-2 lg:order-1 relative">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center mb-20 md:mb-32 reveal">
+        <div className="col-span-1 lg:col-span-7 order-2 lg:order-1 relative">
           <div
             className="absolute -inset-6 rounded-[40px] opacity-80"
             style={{
@@ -179,7 +182,7 @@ const FeaturesSection = () => (
             }}
           />
           <TiltCard>
-            <div className="relative glass-strong rounded-[28px] p-7">
+            <div className="relative glass-strong rounded-[28px] p-5 sm:p-7">
               <div className="flex items-center justify-between mb-5">
                 <div>
                   <p className="text-[20px] font-extrabold text-ink-900 tracking-tightish">
@@ -266,7 +269,7 @@ const FeaturesSection = () => (
           <div className="absolute -bottom-8 -left-6 iri-sphere w-17 h-17 float-c" />
         </div>
 
-        <div className="col-span-12 lg:col-span-5 order-1 lg:order-2">
+        <div className="col-span-1 lg:col-span-5 order-1 lg:order-2">
           <span className="num text-[13px] font-semibold text-primary-500 tracking-wide">
             FEATURE 02 · 의사결정 기록
           </span>
@@ -288,8 +291,8 @@ const FeaturesSection = () => (
       </div>
 
       {/* Feature 3 — Git 커밋 매칭 */}
-      <div className="grid grid-cols-12 gap-12 items-center reveal">
-        <div className="col-span-12 lg:col-span-5">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center reveal">
+        <div className="col-span-1 lg:col-span-5">
           <span className="num text-[13px] font-semibold text-primary-500 tracking-wide">
             FEATURE 03 · Git 커밋 매칭
           </span>
@@ -310,7 +313,7 @@ const FeaturesSection = () => (
           </ul>
         </div>
 
-        <div className="col-span-12 lg:col-span-7 relative">
+        <div className="col-span-1 lg:col-span-7 relative">
           <div
             className="absolute -inset-6 rounded-[40px] opacity-80"
             style={{
@@ -319,7 +322,7 @@ const FeaturesSection = () => (
             }}
           />
           <TiltCard>
-            <div className="relative glass-strong rounded-[28px] p-7">
+            <div className="relative glass-strong rounded-[28px] p-5 sm:p-7">
               <div className="flex items-center justify-between mb-5">
                 <p className="text-[15px] font-bold text-ink-900">
                   커밋 추천 결과
@@ -334,44 +337,46 @@ const FeaturesSection = () => (
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-line-soft overflow-hidden bg-white/60">
-                <div className="grid grid-cols-[1fr_84px_1.6fr_72px_60px] px-4 py-2.5 text-[10.5px] tracking-wider font-semibold text-ink-300 uppercase border-b border-line-soft bg-white/50">
-                  <span>Repository</span>
-                  <span>Commit</span>
-                  <span>Message</span>
-                  <span>사유</span>
-                  <span className="text-right">연결</span>
-                </div>
-                {FEATURE_3_COMMITS.map((row, idx, arr) => (
-                  <div
-                    key={row.sha}
-                    className={`grid grid-cols-[1fr_84px_1.6fr_72px_60px] px-4 py-3 text-[13px] items-center hover:bg-primary-50/30 transition ${
-                      idx < arr.length - 1 ? "border-b border-line-faint" : ""
-                    }`}
-                  >
-                    <span className="font-semibold text-ink-900">
-                      {row.repo}
-                    </span>
-                    <span className="num text-[11px] font-bold text-primary-700 bg-primary-50 px-2 py-0.5 rounded inline-block w-fit">
-                      {row.sha}
-                    </span>
-                    <span className="text-ink-700 truncate">{row.msg}</span>
-                    <span
-                      aria-hidden="true"
-                      className="text-primary-500 font-semibold text-[12px] text-left"
+              <div className="rounded-2xl border border-line-soft overflow-x-auto bg-white/60">
+                <div className="min-w-105">
+                  <div className="grid grid-cols-[1fr_84px_1.6fr_72px_60px] px-4 py-2.5 text-[10.5px] tracking-wider font-semibold text-ink-300 uppercase border-b border-line-soft bg-white/50">
+                    <span>Repository</span>
+                    <span>Commit</span>
+                    <span>Message</span>
+                    <span>사유</span>
+                    <span className="text-right">연결</span>
+                  </div>
+                  {FEATURE_3_COMMITS.map((row, idx, arr) => (
+                    <div
+                      key={row.sha}
+                      className={`grid grid-cols-[1fr_84px_1.6fr_72px_60px] px-4 py-3 text-[13px] items-center hover:bg-primary-50/30 transition ${
+                        idx < arr.length - 1 ? "border-b border-line-faint" : ""
+                      }`}
                     >
-                      사유 보기
-                    </span>
-                    <span className="text-right">
+                      <span className="font-semibold text-ink-900">
+                        {row.repo}
+                      </span>
+                      <span className="num text-[11px] font-bold text-primary-700 bg-primary-50 px-2 py-0.5 rounded inline-block w-fit">
+                        {row.sha}
+                      </span>
+                      <span className="text-ink-700 truncate">{row.msg}</span>
                       <span
                         aria-hidden="true"
-                        className="inline-block text-[11px] font-semibold text-white bg-primary-500 px-2.5 py-1 rounded-md"
+                        className="text-primary-500 font-semibold text-[12px] text-left"
                       >
-                        연결
+                        사유 보기
                       </span>
-                    </span>
-                  </div>
-                ))}
+                      <span className="text-right">
+                        <span
+                          aria-hidden="true"
+                          className="inline-block text-[11px] font-semibold text-white bg-primary-500 px-2.5 py-1 rounded-md"
+                        >
+                          연결
+                        </span>
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="mt-4 grid grid-cols-3 gap-2.5">

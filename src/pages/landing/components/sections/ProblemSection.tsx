@@ -34,7 +34,7 @@ const PROBLEM_ICONS: Record<string, ReactNode> = {
 };
 
 const ProblemSection = () => (
-  <section className="relative overflow-hidden grain py-32 mesh-bg-soft">
+  <section className="relative overflow-hidden grain py-20 md:py-32 mesh-bg-soft">
     <div className="shard w-24 h-24 left-[6%] top-[18%] float-c" />
     <div className="shard w-16 h-16 right-[10%] top-[22%] float-b" />
     <div className="shard w-14 h-14 left-[18%] bottom-[12%] float-a" />
@@ -45,7 +45,7 @@ const ProblemSection = () => (
       <p className="text-[12px] tracking-[0.22em] font-bold text-primary-500 uppercase mb-4 reveal">
         PROBLEM
       </p>
-      <h2 className="reveal text-[40px] md:text-[52px] font-extrabold tracking-tighter2 text-ink-900 leading-[1.1]">
+      <h2 className="reveal text-[32px] sm:text-[40px] md:text-[52px] font-extrabold tracking-tighter2 text-ink-900 leading-[1.1]">
         이런 일, 한 번쯤 겪어보셨죠?
       </h2>
       <p className="reveal mt-5 text-[18px] text-ink-500 max-w-2xl mx-auto">
@@ -56,7 +56,7 @@ const ProblemSection = () => (
         {PROBLEM_CARDS.map((c) => (
           <article
             key={c.id}
-            className="glass card-lift rounded-3xl p-8 text-left"
+            className="glass card-lift rounded-3xl p-6 sm:p-8 text-left"
           >
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-2xl bg-linear-to-br from-primary-50 to-white border border-white/80 flex items-center justify-center">

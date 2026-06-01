@@ -55,14 +55,14 @@ const STEP_ICONS: Record<number, ReactNode> = {
 const HowItWorksSection = () => (
   <section
     id="how"
-    className="relative overflow-hidden grain py-32 mesh-bg-soft"
+    className="relative overflow-hidden grain py-20 md:py-32 mesh-bg-soft"
   >
     <div className="relative max-w-7xl mx-auto px-6">
-      <div className="text-center mb-20 reveal">
+      <div className="text-center mb-14 md:mb-20 reveal">
         <p className="text-[12px] tracking-[0.22em] font-bold text-primary-500 uppercase mb-4">
           HOW IT WORKS
         </p>
-        <h2 className="text-[40px] md:text-[52px] font-extrabold tracking-tighter2 text-ink-900 leading-[1.1]">
+        <h2 className="text-[32px] sm:text-[40px] md:text-[52px] font-extrabold tracking-tighter2 text-ink-900 leading-[1.1]">
           4단계로 의사결정의
           <br />
           맥락이 살아납니다
@@ -73,7 +73,7 @@ const HowItWorksSection = () => (
         <svg
           viewBox="0 0 1200 200"
           preserveAspectRatio="none"
-          className="absolute inset-x-0 top-1/2 -translate-y-1/2 w-full h-[200px] hidden md:block pointer-events-none"
+          className="absolute inset-x-0 top-1/2 -translate-y-1/2 w-full h-50 hidden md:block pointer-events-none"
           aria-hidden="true"
         >
           <defs>
@@ -124,7 +124,7 @@ const HowItWorksSection = () => (
               }`}
             >
               <div className="flex items-center justify-between mb-6">
-                <div className="w-11 h-11 rounded-full bg-gradient-to-br from-primary-500 to-primary-300 text-white flex items-center justify-center shadow-[0_8px_22px_rgba(30,91,232,0.35)] num font-bold text-[15px]">
+                <div className="w-11 h-11 rounded-full bg-linear-to-br from-primary-500 to-primary-300 text-white flex items-center justify-center shadow-[0_8px_22px_rgba(30,91,232,0.35)] num font-bold text-[15px]">
                   {step.n}
                 </div>
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none">

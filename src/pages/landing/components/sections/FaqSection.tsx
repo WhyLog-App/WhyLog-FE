@@ -1,13 +1,13 @@
 import { FAQ_ITEMS } from "../../constants";
 
 const FaqSection = () => (
-  <section id="faq" className="relative overflow-hidden grain py-32">
+  <section id="faq" className="relative overflow-hidden grain py-20 md:py-32">
     <div className="relative max-w-3xl mx-auto px-6">
       <div className="text-center mb-12 reveal">
         <p className="text-[12px] tracking-[0.22em] font-bold text-primary-500 uppercase mb-4">
           FAQ
         </p>
-        <h2 className="text-[40px] md:text-[48px] font-extrabold tracking-tighter2 text-ink-900 leading-[1.1]">
+        <h2 className="text-[32px] sm:text-[40px] md:text-[48px] font-extrabold tracking-tighter2 text-ink-900 leading-[1.1]">
           자주 묻는 질문
         </h2>
       </div>
@@ -16,7 +16,7 @@ const FaqSection = () => (
         {FAQ_ITEMS.map((f) => (
           <details
             key={f.id}
-            className="glass rounded-2xl px-6 py-5 group"
+            className="glass rounded-2xl px-5 sm:px-6 py-5 group"
             {...(f.open ? { open: true } : {})}
           >
             <summary className="flex items-center justify-between gap-4">

@@ -10,7 +10,7 @@ const Navbar = () => {
 
   return (
     <header className="fixed top-0 inset-x-0 z-50 nav-glass">
-      <div className="max-w-7xl mx-auto h-17 flex items-center justify-between px-6">
+      <div className="max-w-7xl mx-auto h-17 flex items-center justify-between px-4 sm:px-6">
         {/* biome-ignore lint/a11y/useValidAnchor: 홈 링크 자리 — 라우팅 확정 전까지 placeholder */}
         <a href="#" className="flex items-center gap-2.5">
           <LogoSymbol className="h-7" aria-hidden="true" />

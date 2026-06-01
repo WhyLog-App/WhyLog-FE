@@ -6,9 +6,9 @@ const FinalCtaSection = () => {
   const goSignup = () => navigate(ROUTES.SIGNUP);
 
   return (
-    <section className="relative overflow-hidden grain py-36 mesh-bg-strong alive">
+    <section className="relative overflow-hidden grain py-24 md:py-36 mesh-bg-strong alive">
       <div className="relative max-w-4xl mx-auto px-6 text-center reveal">
-        <div className="relative mx-auto mb-10 w-[180px] h-[180px]">
+        <div className="relative mx-auto mb-10 w-32.5 h-32.5 sm:w-45 sm:h-45">
           <div
             className="absolute -inset-12 rounded-full opacity-70"
             style={{
@@ -20,7 +20,7 @@ const FinalCtaSection = () => {
           <div className="iri-sphere relative w-full h-full float-a" />
         </div>
 
-        <h2 className="text-[44px] md:text-[64px] font-extrabold tracking-tighter2 text-ink-900 leading-[1.05]">
+        <h2 className="text-[34px] sm:text-[44px] md:text-[64px] font-extrabold tracking-tighter2 text-ink-900 leading-[1.05]">
           지금, 첫 결정을 <span className="why-grad">기록해보세요</span>
         </h2>
         <p className="mt-6 text-[18px] text-ink-500 max-w-xl mx-auto leading-[1.65]">
