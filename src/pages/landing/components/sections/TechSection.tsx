@@ -6,19 +6,19 @@ import {
 import CountUp from "../primitives/CountUp";
 
 const TechSection = () => (
-  <section id="tech" className="relative overflow-hidden grain py-32">
+  <section id="tech" className="relative overflow-hidden grain py-20 md:py-32">
     <div className="absolute right-[5%] top-[12%] iri-sphere w-32 h-32 float-a opacity-90" />
     <div className="absolute left-[8%] bottom-[14%] iri-sphere w-24 h-24 float-b" />
     <div className="absolute right-[18%] bottom-[8%] iri-sphere w-16 h-16 float-c" />
     <div className="absolute left-[42%] top-[8%] iri-sphere w-12 h-12 float-a opacity-80" />
     <div className="absolute right-[40%] bottom-[20%] iri-sphere w-10 h-10 float-c opacity-90" />
 
-    <div className="relative max-w-7xl mx-auto px-6 grid grid-cols-12 gap-12 items-center">
-      <div className="col-span-12 lg:col-span-6 reveal">
+    <div className="relative max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+      <div className="col-span-1 lg:col-span-6 reveal">
         <p className="text-[12px] tracking-[0.22em] font-bold text-primary-500 uppercase mb-4">
           TECHNOLOGY
         </p>
-        <h2 className="text-[38px] md:text-[48px] font-extrabold tracking-tighter2 text-ink-900 leading-[1.1]">
+        <h2 className="text-[32px] sm:text-[38px] md:text-[48px] font-extrabold tracking-tighter2 text-ink-900 leading-[1.1]">
           Hybrid Retrieval로
           <br />
           정확도를 끌어올렸습니다
@@ -60,11 +60,11 @@ const TechSection = () => (
         </div>
       </div>
 
-      <div className="col-span-12 lg:col-span-6 reveal">
+      <div className="col-span-1 lg:col-span-6 reveal">
         <div className="space-y-4">
-          <div className="glass card-lift rounded-3xl p-7 flex items-center gap-7">
-            <div className="flex-shrink-0">
-              <p className="num text-[64px] font-extrabold text-primary-500 leading-none tracking-tighter2">
+          <div className="glass card-lift rounded-3xl p-5 sm:p-7 flex items-center gap-4 sm:gap-7">
+            <div className="shrink-0">
+              <p className="num text-[48px] sm:text-[64px] font-extrabold text-primary-500 leading-none tracking-tighter2">
                 <CountUp to={80} duration={1700} />
                 <span className="text-[36px] text-primary-300">%</span>
               </p>
@@ -88,9 +88,9 @@ const TechSection = () => (
             </div>
           </div>
 
-          <div className="glass card-lift rounded-3xl p-7 flex items-center gap-7">
-            <div className="flex-shrink-0">
-              <p className="num text-[64px] font-extrabold leading-none tracking-tighter2 iri-text">
+          <div className="glass card-lift rounded-3xl p-5 sm:p-7 flex items-center gap-4 sm:gap-7">
+            <div className="shrink-0">
+              <p className="num text-[48px] sm:text-[64px] font-extrabold leading-none tracking-tighter2 iri-text">
                 <CountUp to={99} duration={1900} />
                 <span className="text-[36px]">%</span>
               </p>
@@ -121,9 +121,9 @@ const TechSection = () => (
             </div>
           </div>
 
-          <div className="glass card-lift rounded-3xl p-7 flex items-center gap-7">
-            <div className="flex-shrink-0">
-              <p className="num text-[52px] font-extrabold text-primary-500 leading-none tracking-tighter2">
+          <div className="glass card-lift rounded-3xl p-5 sm:p-7 flex items-center gap-4 sm:gap-7">
+            <div className="shrink-0">
+              <p className="num text-[40px] sm:text-[52px] font-extrabold text-primary-500 leading-none tracking-tighter2">
                 0.5<span className="text-ink-300">–</span>1.8
                 <span className="text-[28px] text-primary-300 ml-1">s</span>
               </p>
