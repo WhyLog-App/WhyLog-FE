@@ -39,7 +39,7 @@ const TimelineCard = ({ items }: TimelineCardProps) => {
             <p className="typo-caption2 shrink-0 text-(--color-text-secondary)">
               {item.time}
             </p>
-            <p className="typo-body5 flex-1 truncate text-(--color-text-primary)">
+            <p className="typo-body5 flex-1 wrap-break-word whitespace-pre-wrap text-(--color-text-primary)">
               {item.content}
             </p>
           </div>
