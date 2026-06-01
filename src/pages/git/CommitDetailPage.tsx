@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { useCurrentTeam } from "@/hooks/useCurrentTeam";
 import GlassCard from "@/pages/decisions/components/GlassCard";
 import { parseRouteId } from "@/utils/parseRouteId";
@@ -31,10 +32,11 @@ const CommitDetailPage = () => {
     }
   }, [repositories, selectedRepository, navigate, teamId]);
 
-  const { data: commitDetailData } = useGetCommitDetail(
-    selectedRepository?.repository_id ?? null,
-    params.commitHash,
-  );
+  const { data: commitDetailData, isLoading: isCommitDetailLoading } =
+    useGetCommitDetail(
+      selectedRepository?.repository_id ?? null,
+      params.commitHash,
+    );
 
   const detail = useMemo(
     () =>
@@ -53,6 +55,10 @@ const CommitDetailPage = () => {
     }
     void navigate(`/team/${teamId}/git`);
   };
+
+  if (isCommitDetailLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="flex w-full flex-col py-[60px]">
