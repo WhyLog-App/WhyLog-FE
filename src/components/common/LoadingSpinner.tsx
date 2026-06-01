@@ -11,7 +11,7 @@ const LoadingSpinner = ({
 }: LoadingSpinnerProps) => {
   return (
     <div
-      className={`flex min-h-[calc(100vh-120px)] w-full items-center justify-center ${className}`}
+      className={`flex h-full min-h-screen w-full items-center justify-center ${className}`}
       role="status"
       aria-live="polite"
     >
