@@ -14,7 +14,7 @@ function LoginPage() {
   } = useLogin();
 
   return (
-    <div className="relative flex h-screen w-screen items-center justify-center overflow-hidden">
+    <div className="relative flex min-h-dvh w-full items-center justify-center overflow-x-hidden px-4 py-8">
       <AuthBackground />
       <LoginForm
         email={email}
