@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import MemberAvatar from "@/components/common/MemberAvatar";
 import Modal from "@/components/common/Modal";
 import { useCurrentTeam } from "@/hooks/useCurrentTeam";
+import GlassCard from "@/pages/decisions/components/GlassCard";
 import { useDeleteTeam } from "./hooks/useDeleteTeam";
 import {
   PROFILE_IMAGE_STORAGE_KEY,
@@ -66,7 +67,7 @@ const SettingsPage = () => {
         </p>
       </header>
 
-      <section className="flex flex-col gap-3 rounded-2xl border border-(--color-border-default) bg-(--color-bg-surface) px-6 py-5">
+      <GlassCard className="gap-3 px-6 py-5">
         <h2 className="typo-subtitle3 text-(--color-text-primary)">
           내 프로필
         </h2>
@@ -99,9 +100,9 @@ const SettingsPage = () => {
             )}
           </div>
         </div>
-      </section>
+      </GlassCard>
 
-      <section className="flex flex-col gap-3 rounded-2xl border border-(--color-border-default) bg-(--color-bg-surface) px-6 py-5">
+      <GlassCard className="gap-3 px-6 py-5">
         <h2 className="typo-subtitle3 text-(--color-text-primary)">팀 정보</h2>
         <dl className="flex flex-col gap-2">
           <div className="flex items-center gap-3">
@@ -113,7 +114,7 @@ const SettingsPage = () => {
             </dd>
           </div>
         </dl>
-      </section>
+      </GlassCard>
 
       <div>
         <button
