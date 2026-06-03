@@ -9,8 +9,8 @@ interface Props {
 
 const CommitMeta = ({ detail }: Props) => {
   return (
-    <div className="flex w-full items-center justify-between rounded-[14px] border border-white bg-(--color-white-50) px-6 py-3">
-      <div className="flex items-center gap-1">
+    <div className="flex w-full flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-[14px] border border-white bg-(--color-white-50) px-6 py-3">
+      <div className="flex min-w-0 items-center gap-1">
         <div className="w-[30px] h-[30px] rounded-full overflow-hidden bg-(--color-purple-50) flex items-center justify-center flex-shrink-0">
           {detail.authorProfileImage ? (
             <img
@@ -22,12 +22,12 @@ const CommitMeta = ({ detail }: Props) => {
             <Icon icon={IconCircleUser} size={14} className="text-current" />
           )}
         </div>
-        <div className="flex flex-col items-start">
-          <div className="flex items-center gap-1">
-            <p className="typo-subtitle5 text-(--color-text-primary)">
+        <div className="flex min-w-0 flex-col items-start">
+          <div className="flex min-w-0 items-center gap-1">
+            <p className="typo-subtitle5 shrink-0 text-(--color-text-primary)">
               {detail.authorName}
             </p>
-            <p className="typo-caption1 text-(--color-text-secondary)">
+            <p className="typo-caption1 truncate text-(--color-text-secondary)">
               {detail.authorEmail}
             </p>
           </div>

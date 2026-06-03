@@ -61,7 +61,7 @@ const CommitDetailPage = () => {
   }
 
   return (
-    <div className="flex w-full flex-col py-[60px]">
+    <div className="flex w-full flex-col py-8 lg:py-[60px]">
       <div className="mx-auto flex w-full max-w-[1160px] flex-col gap-5">
         <div className="flex flex-col gap-5">
           <CommitHeader detail={detail} onBack={goBack} />

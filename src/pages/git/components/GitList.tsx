@@ -49,7 +49,9 @@ const GitList = ({
       <GitHeader repositoryName={repositoryName} stats={stats} />
 
       <div className="overflow-hidden rounded-[16px] border border-white bg-[rgba(255,255,255,0.5)] px-5 pt-7 pb-7">
-        <CommitTable commits={commits} onRowClick={onCommitClick} />
+        <div className="overflow-x-auto">
+          <CommitTable commits={commits} onRowClick={onCommitClick} />
+        </div>
       </div>
 
       {hasNextPage && onLoadMore && (
