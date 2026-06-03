@@ -22,7 +22,7 @@ const EditPenIcon = () => (
 
 const InfoPanelCard = ({ title, items }: InfoPanelCardProps) => {
   return (
-    <section className="flex flex-col gap-3 rounded-2xl border border-(--color-border-default) bg-(--color-bg-surface) px-5 py-4">
+    <section className="flex flex-col gap-3 rounded-2xl border border-white bg-white/50 px-5 py-4 backdrop-blur-md">
       <div className="flex items-center justify-between">
         <h3 className="typo-subtitle4 text-(--color-text-primary)">{title}</h3>
         <button
