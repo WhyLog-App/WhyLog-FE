@@ -23,7 +23,7 @@ const MeetingHeader = ({
   participants,
 }: MeetingHeaderProps) => {
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
       <div className="flex flex-col gap-1">
         <h1 className="typo-h5 text-(--color-text-primary)">{meetingName}</h1>
         {meetingStart && (

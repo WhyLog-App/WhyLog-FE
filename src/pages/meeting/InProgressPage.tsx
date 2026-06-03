@@ -149,7 +149,7 @@ const InProgressPage = () => {
   };
 
   return (
-    <div className="flex h-full flex-col py-10">
+    <div className="flex h-full flex-col py-6 lg:py-10">
       {isConnecting && (
         <MeetingConnectionOverlay
           isWsConnected={isWsConnected}
@@ -178,8 +178,8 @@ const InProgressPage = () => {
         </div>
       )}
 
-      <div className="mt-10 flex flex-1 gap-6 overflow-hidden">
-        <div className="flex flex-1 flex-col items-center justify-center">
+      <div className="mt-6 flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto lg:mt-10 lg:flex-row lg:overflow-hidden">
+        <div className="flex shrink-0 flex-col items-center justify-center lg:flex-1">
           <ParticipantGrid participants={displayParticipants} />
         </div>
         <LiveTranscriptPanel
