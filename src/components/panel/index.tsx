@@ -1,7 +1,5 @@
 import type { ReactNode } from "react";
 import { useLocation } from "react-router-dom";
-import IconCloseLg from "@/assets/icons/menu/ic_close_lg.svg?react";
-import { Icon } from "@/components/common/Icon";
 import { useLayout } from "@/layout/AppLayout/LayoutContext";
 import DecisionPanel from "./decision/DecisionPanel";
 import GitPanel from "./git/GitPanel";
@@ -10,7 +8,7 @@ import MeetingPanel from "./meeting/MeetingPanel";
 
 const Panel = () => {
   const { pathname } = useLocation();
-  const { isPanelOpen, closePanel } = useLayout();
+  const { isPanelOpen } = useLayout();
 
   if (!hasPanelForPath(pathname)) return null;
 
@@ -30,14 +28,6 @@ const Panel = () => {
         ${isPanelOpen ? "translate-x-0" : "-translate-x-full"}
       `}
     >
-      <button
-        type="button"
-        onClick={closePanel}
-        aria-label="닫기"
-        className="absolute right-3 top-3 flex size-9 cursor-pointer items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-action-hover lg:hidden"
-      >
-        <Icon icon={IconCloseLg} size={20} />
-      </button>
       {content}
     </aside>
   );
