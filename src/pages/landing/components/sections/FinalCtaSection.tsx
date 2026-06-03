@@ -53,9 +53,6 @@ const FinalCtaSection = () => {
             팀 데모 요청하기 (준비중)
           </button>
         </div>
-        <p className="mt-7 text-[12.5px] text-ink-300">
-          신용카드 없이 시작 · 5명까지 무료 · 1분 안에 회의 분석 시작
-        </p>
       </div>
     </section>
   );

@@ -6,7 +6,6 @@ import {
   HERO_TYPEWRITER_SPEED,
   HERO_TYPEWRITER_START_DELAY,
 } from "../../constants";
-import HeroCursor from "../primitives/HeroCursor";
 import Starfield from "../primitives/Starfield";
 import Typewriter from "../primitives/Typewriter";
 
@@ -16,7 +15,6 @@ const HeroSection = () => {
 
   return (
     <section className="relative overflow-hidden grain mesh-bg alive hero-spotlight pt-28 pb-24 md:pt-30 md:pb-32">
-      <HeroCursor />
       <Starfield count={HERO_STAR_COUNT} />
 
       <div
@@ -73,9 +71,9 @@ const HeroSection = () => {
           </h1>
 
           <p className="mt-7 max-w-140 text-[17px] md:text-[19px] leading-[1.65] text-ink-500">
-            회의에서 결정된 맥락이 코드 커밋까지 자연스럽게 이어지는
+            회의에서 커밋까지,
             <br className="hidden md:block" />
-            AI 기반 의사결정 관리 플랫폼.
+            의사결정 맥락을 추적하는 AI 협업 플랫폼
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-3">

@@ -81,9 +81,13 @@ export const FEATURE_2_TIMELINE: TimelineRow[] = [
 export type CommitRow = { repo: string; sha: string; msg: string };
 
 export const FEATURE_3_COMMITS: CommitRow[] = [
-  { repo: "Nect-Backend", sha: "a13f9c2", msg: "feat: 마이페이지 API 구현" },
-  { repo: "SpeakOn/Fe", sha: "e7c2b1a", msg: "feat: 유저 프로필 컴포넌트" },
-  { repo: "Nect-Backend", sha: "9b3da42", msg: "refactor: 세션 저장소 분리" },
+  { repo: "WhyLog-Backend", sha: "a13f9c2", msg: "feat: 마이페이지 API 구현" },
+  {
+    repo: "WhyLog-Frontend",
+    sha: "e7c2b1a",
+    msg: "feat: 유저 프로필 컴포넌트",
+  },
+  { repo: "WhyLog-Backend", sha: "9b3da42", msg: "refactor: 세션 저장소 분리" },
 ];
 
 // ---------- How It Works section ----------
@@ -138,10 +142,6 @@ export const TECH_ACCURACY_BARS: AccuracyBar[] = [
   { id: "b4", cls: "bg-primary-400", h: 80 },
   { id: "b5", cls: "bg-primary-500", h: 100 },
 ];
-
-// Scoring formula weights — also appear in `TechSection` rendered text.
-export const SCORING_VECTOR_WEIGHT = 0.3;
-export const SCORING_BM25_WEIGHT = 0.7;
 
 // ---------- Use Cases section ----------
 

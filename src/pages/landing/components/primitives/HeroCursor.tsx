@@ -1,17 +1,21 @@
 import { memo, useEffect, useRef } from "react";
 
 /**
- * Hero 영역 안에서 마우스를 따라 lerp 로 움직이는 iridescent blob.
+ * 랜딩페이지 전체에서 마우스를 따라 lerp 로 움직이는 iridescent blob.
+ * position: fixed 기반이라 viewport 좌표(clientX/Y)를 그대로 사용한다.
  * 모든 좌표 갱신은 RAF + style.transform 으로 처리 — React state 미사용.
  */
 const HeroCursor = () => {
   const dotRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const hero = document.querySelector(
-      ".whylog-landing .hero-spotlight",
+    // 마우스가 없는 터치/coarse 포인터 기기에서는 커서 블롭을 띄우지 않는다.
+    if (!window.matchMedia("(pointer: fine)").matches) return;
+
+    const root = document.querySelector(
+      ".whylog-landing",
     ) as HTMLElement | null;
     const dot = dotRef.current;
-    if (!hero || !dot) return;
+    if (!root || !dot) return;
 
     let half = 9;
     const state = { x: 0, y: 0, tx: 0, ty: 0, started: false };
@@ -35,18 +39,15 @@ const HeroCursor = () => {
     };
 
     const onMove = (e: MouseEvent) => {
-      const r = hero.getBoundingClientRect();
-      state.tx = e.clientX - r.left;
-      state.ty = e.clientY - r.top;
+      state.tx = e.clientX;
+      state.ty = e.clientY;
       if (!state.started) {
         state.x = state.tx;
         state.y = state.ty;
         state.started = true;
+        dot.style.opacity = "1";
+        startLoop();
       }
-    };
-    const onEnter = () => {
-      dot.style.opacity = "1";
-      startLoop();
     };
     const onLeave = () => {
       dot.style.opacity = "0";
@@ -59,17 +60,15 @@ const HeroCursor = () => {
       else dot.classList.remove("is-hover");
     };
 
-    hero.addEventListener("mousemove", onMove, { passive: true });
-    hero.addEventListener("mouseenter", onEnter);
-    hero.addEventListener("mouseleave", onLeave);
-    hero.addEventListener("mouseover", onOver);
+    root.addEventListener("mousemove", onMove, { passive: true });
+    root.addEventListener("mouseleave", onLeave);
+    root.addEventListener("mouseover", onOver);
 
     return () => {
       stopLoop();
-      hero.removeEventListener("mousemove", onMove);
-      hero.removeEventListener("mouseenter", onEnter);
-      hero.removeEventListener("mouseleave", onLeave);
-      hero.removeEventListener("mouseover", onOver);
+      root.removeEventListener("mousemove", onMove);
+      root.removeEventListener("mouseleave", onLeave);
+      root.removeEventListener("mouseover", onOver);
     };
   }, []);
 

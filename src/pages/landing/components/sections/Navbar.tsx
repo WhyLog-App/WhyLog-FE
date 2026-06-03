@@ -24,11 +24,11 @@ const Navbar = () => {
           <a href="#how" className="hover:text-ink-900 transition">
             작동 방식
           </a>
-          <a href="#usecases" className="hover:text-ink-900 transition">
-            사용 사례
-          </a>
           <a href="#tech" className="hover:text-ink-900 transition">
             기술
+          </a>
+          <a href="#usecases" className="hover:text-ink-900 transition">
+            사용 사례
           </a>
           <a href="#faq" className="hover:text-ink-900 transition">
             FAQ
@@ -39,14 +39,14 @@ const Navbar = () => {
           <button
             type="button"
             onClick={goLogin}
-            className="hidden sm:inline-flex h-10 px-4 items-center text-[14px] font-semibold text-ink-700 hover:text-ink-900 transition"
+            className="inline-flex h-10 px-4 items-center text-[14px] font-semibold text-ink-700 hover:text-ink-900 transition"
           >
             로그인
           </button>
           <button
             type="button"
             onClick={goSignup}
-            className="btn-primary h-10 px-5 rounded-full text-[14px] font-semibold inline-flex items-center gap-1.5"
+            className="btn-primary hidden sm:inline-flex h-10 px-5 rounded-full text-[14px] font-semibold items-center gap-1.5"
           >
             무료로 시작하기
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none">

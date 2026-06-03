@@ -640,19 +640,19 @@
   animation: whylog-halo 2.6s ease-in-out infinite;
 }
 
-/* --- 4. Hero custom cursor (이리데센트 미니 블롭이 커서를 따라옴) --- */
+/* --- 4. Custom cursor (이리데센트 미니 블롭이 커서를 따라옴, 랜딩 전역) --- */
 .whylog-landing .hero-spotlight {
   position: relative;
   isolation: isolate;
 }
 .whylog-landing .hero-cursor {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 18px;
   height: 18px;
   pointer-events: none;
-  z-index: 3;
+  z-index: 60;
   opacity: 0;
   transition:
     opacity 0.25s ease,
@@ -664,6 +664,12 @@
 .whylog-landing .hero-cursor.is-hover {
   width: 28px;
   height: 28px;
+}
+/* 터치/coarse 포인터 기기에서는 커서 블롭 자체를 렌더링하지 않는다. */
+@media (pointer: coarse) {
+  .whylog-landing .hero-cursor {
+    display: none;
+  }
 }
 
 /* --- 10. Live mesh (기존 mesh-bg 가 살아 움직이도록) --- */

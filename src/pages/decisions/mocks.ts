@@ -77,7 +77,7 @@ export const MOCK_DECISION_DETAIL_VIEW_MODEL: DecisionDetailViewModel = {
   applied_commits: [
     {
       application_id: 1,
-      repository_name: "Nect-Backend",
+      repository_name: "WhyLog-Backend",
       commit_id: "1",
       commit_hash: "a13f9c2",
       message: "feat: 세션 저장소 인터페이스 분리",
@@ -85,7 +85,7 @@ export const MOCK_DECISION_DETAIL_VIEW_MODEL: DecisionDetailViewModel = {
     },
     {
       application_id: 2,
-      repository_name: "Nect-Backend",
+      repository_name: "WhyLog-Backend",
       commit_id: "2",
       commit_hash: "a13f9c2",
       message: "feat: 세션 저장소 인터페이스 분리",
@@ -93,7 +93,7 @@ export const MOCK_DECISION_DETAIL_VIEW_MODEL: DecisionDetailViewModel = {
     },
     {
       application_id: 3,
-      repository_name: "Nect-Backend",
+      repository_name: "WhyLog-Backend",
       commit_id: "3",
       commit_hash: "a13f9c2",
       message: "refactor: 마이페이지 조회 성능 개선",
