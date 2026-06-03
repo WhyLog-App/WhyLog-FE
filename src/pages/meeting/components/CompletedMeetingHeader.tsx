@@ -57,7 +57,7 @@ const CompletedMeetingHeader = ({
         <span className="typo-subtitle5 text-(--color-text-secondary)">
           대화 기록
         </span>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {members.map((m, idx) => (
             <span
               // biome-ignore lint/suspicious/noArrayIndexKey: mock list of members

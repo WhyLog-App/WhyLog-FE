@@ -134,9 +134,9 @@ const CompletedPage = () => {
   const isAnalyzing = !!analysis && !analysis.is_analyzed;
 
   return (
-    <div className="flex h-full flex-col gap-6 py-10">
-      <div className="flex flex-1 gap-6 overflow-hidden">
-        <section className="flex flex-1 flex-col gap-5 overflow-hidden rounded-2xl border border-white bg-white/50 px-6 py-6 backdrop-blur-md">
+    <div className="flex h-full flex-col gap-6 py-6 lg:py-10">
+      <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto lg:flex-row lg:overflow-hidden">
+        <section className="flex h-[60vh] shrink-0 flex-col gap-5 overflow-hidden rounded-2xl border border-white bg-white/50 px-6 py-6 backdrop-blur-md lg:h-auto lg:flex-1">
           <CompletedMeetingHeader
             name={name}
             startText={startText}
