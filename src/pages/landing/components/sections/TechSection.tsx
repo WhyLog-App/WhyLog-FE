@@ -1,8 +1,4 @@
-import {
-  SCORING_BM25_WEIGHT,
-  SCORING_VECTOR_WEIGHT,
-  TECH_ACCURACY_BARS,
-} from "../../constants";
+import { TECH_ACCURACY_BARS } from "../../constants";
 import CountUp from "../primitives/CountUp";
 
 const TechSection = () => (
@@ -19,13 +15,13 @@ const TechSection = () => (
           TECHNOLOGY
         </p>
         <h2 className="text-[32px] sm:text-[38px] md:text-[48px] font-extrabold tracking-tighter2 text-ink-900 leading-[1.1]">
-          Hybrid Retrieval로
+          임베딩 검색 기반으로
           <br />
-          정확도를 끌어올렸습니다
+          관련 커밋을 추천합니다
         </h2>
         <p className="mt-6 text-[17px] leading-[1.75] text-ink-500 max-w-lg">
-          의미 기반 벡터 검색(Sentence Embedding)과 키워드 기반 정밀
-          검색(BM25)을 가중치 결합하여, 표현이 달라도 같은 맥락을 찾아냅니다.
+          회의 적용사항과 커밋 요약을 벡터화해 후보를 찾고, 키워드·파일
+          맥락·커밋 타입 점수로 재정렬해 신뢰도 높은 커밋만 추천합니다.
         </p>
 
         <div className="mt-9 glass rounded-2xl p-5 max-w-lg">
@@ -33,28 +29,38 @@ const TechSection = () => (
             Scoring Formula
           </p>
           <div className="mono text-[15.5px] text-ink-900 leading-[1.7] flex flex-wrap items-center gap-x-1.5">
-            <span className="text-ink-700">final_score</span>
+            <span className="text-ink-700">score</span>
             <span className="text-ink-300">=</span>
-            <span className="text-primary-500 font-bold">
-              {SCORING_VECTOR_WEIGHT}
-            </span>
-            <span className="text-ink-300">×</span>
-            <span>vector_score</span>
+            <span className="text-primary-500 font-bold">semantic</span>
             <span className="text-ink-300">+</span>
-            <span className="text-primary-500 font-bold">
-              {SCORING_BM25_WEIGHT}
-            </span>
-            <span className="text-ink-300">×</span>
-            <span>bm25_score</span>
+            <span className="text-primary-500 font-bold">keyword</span>
+            <span className="text-ink-300">+</span>
+            <span className="text-primary-500 font-bold">context</span>
+            <span className="text-ink-300">+</span>
+            <span className="text-primary-500 font-bold">type</span>
+            <span className="text-ink-300">−</span>
+            <span className="text-accent-lavender font-bold">penalty</span>
           </div>
-          <div className="mt-4 flex items-center gap-3 text-[12px] text-ink-500">
+          <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-[12px] text-ink-500">
             <span className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-primary-500" />
-              Vector (의미 검색)
+              semantic (임베딩 의미 검색)
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-primary-500" />
+              keyword (키워드 일치)
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-primary-500" />
+              context (파일 맥락)
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-primary-500" />
+              type (커밋 타입)
             </span>
             <span className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-accent-lavender" />
-              BM25 (키워드 정밀도)
+              penalty (모호·반대 의미)
             </span>
           </div>
         </div>
