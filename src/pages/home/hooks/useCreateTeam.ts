@@ -4,7 +4,7 @@ import { useState } from "react";
 import { createTeam } from "@/apis/teams";
 import { TEAMS_QUERY_KEY } from "@/components/sidebar/hooks/useTeams";
 import type { ApiResponse } from "@/types/auth";
-import type { CreateTeamRequest, CreateTeamResult } from "@/types/team";
+import type { CreateTeamRequest, CreateTeamResult, Team } from "@/types/team";
 
 interface UseCreateTeamOptions {
   onSuccess?: (result: CreateTeamResult) => void;
@@ -17,8 +17,19 @@ export const useCreateTeam = (options?: UseCreateTeamOptions) => {
   const mutation = useMutation({
     mutationFn: (payload: CreateTeamRequest) => createTeam(payload),
     onSuccess: async (result: CreateTeamResult) => {
-      await queryClient.invalidateQueries({ queryKey: TEAMS_QUERY_KEY });
+      const newTeam: Team = {
+        team_id: result.team_id,
+        name: result.name,
+        team_image: result.team_image ?? result.image_url ?? null,
+      };
+      queryClient.setQueryData<Team[]>(TEAMS_QUERY_KEY, (prev) => {
+        const list = prev ?? [];
+        if (list.some((t) => t.team_id === newTeam.team_id)) return list;
+        return [...list, newTeam];
+      });
+
       options?.onSuccess?.(result);
+      queryClient.invalidateQueries({ queryKey: TEAMS_QUERY_KEY });
     },
     onError: (error: unknown) => {
       if (isAxiosError<ApiResponse<unknown>>(error)) {
