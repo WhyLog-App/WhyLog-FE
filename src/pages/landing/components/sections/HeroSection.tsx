@@ -71,9 +71,9 @@ const HeroSection = () => {
           </h1>
 
           <p className="mt-7 max-w-140 text-[17px] md:text-[19px] leading-[1.65] text-ink-500">
-            회의에서 결정된 맥락이 코드 커밋까지 자연스럽게 이어지는
+            회의에서 커밋까지,
             <br className="hidden md:block" />
-            AI 기반 의사결정 관리 플랫폼.
+            의사결정 맥락을 추적하는 AI 협업 플랫폼
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-3">
