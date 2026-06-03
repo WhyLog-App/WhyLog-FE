@@ -665,6 +665,12 @@
   width: 28px;
   height: 28px;
 }
+/* 터치/coarse 포인터 기기에서는 커서 블롭 자체를 렌더링하지 않는다. */
+@media (pointer: coarse) {
+  .whylog-landing .hero-cursor {
+    display: none;
+  }
+}
 
 /* --- 10. Live mesh (기존 mesh-bg 가 살아 움직이도록) --- */
 @keyframes whylog-mesh-drift {

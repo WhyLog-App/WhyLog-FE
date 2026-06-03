@@ -8,6 +8,9 @@ import { memo, useEffect, useRef } from "react";
 const HeroCursor = () => {
   const dotRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    // 마우스가 없는 터치/coarse 포인터 기기에서는 커서 블롭을 띄우지 않는다.
+    if (!window.matchMedia("(pointer: fine)").matches) return;
+
     const root = document.querySelector(
       ".whylog-landing",
     ) as HTMLElement | null;
