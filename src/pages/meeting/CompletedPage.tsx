@@ -136,7 +136,7 @@ const CompletedPage = () => {
   return (
     <div className="flex h-full flex-col gap-6 py-10">
       <div className="flex flex-1 gap-6 overflow-hidden">
-        <section className="flex flex-1 flex-col gap-5 overflow-hidden rounded-2xl border border-(--color-border-default) bg-(--color-bg-surface) px-6 py-6">
+        <section className="flex flex-1 flex-col gap-5 overflow-hidden rounded-2xl border border-white bg-white/50 px-6 py-6 backdrop-blur-md">
           <CompletedMeetingHeader
             name={name}
             startText={startText}
