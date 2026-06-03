@@ -193,7 +193,7 @@ const FeaturesSection = () => (
                   </p>
                 </div>
                 <span className="num text-[11px] font-bold text-primary-700 bg-primary-50 px-2.5 py-1 rounded-md">
-                  신뢰도 90
+                  신뢰도 90점
                 </span>
               </div>
 
