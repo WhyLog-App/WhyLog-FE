@@ -8,7 +8,7 @@ interface CommitTableProps {
 
 const CommitTable = ({ commits, onRowClick }: CommitTableProps) => {
   return (
-    <table className="w-full table-fixed border-collapse">
+    <table className="w-full min-w-[720px] table-fixed border-collapse">
       <colgroup>
         <col className="w-[9%]" />
         <col className="w-[28%]" />

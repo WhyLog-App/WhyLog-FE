@@ -150,7 +150,7 @@ function GitPage() {
   }
 
   return (
-    <div className="flex w-full flex-col py-15">
+    <div className="flex w-full flex-col py-8 lg:py-15">
       <GitList
         repositoryName={selectedRepository?.name ?? "Repository"}
         stats={stats}

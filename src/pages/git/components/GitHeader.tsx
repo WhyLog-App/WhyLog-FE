@@ -9,7 +9,7 @@ const GitHeader = ({ repositoryName, stats }: GitHeaderProps) => {
   return (
     <div className="flex flex-col gap-3">
       <p className="typo-h4 text-(--color-text-primary)">{repositoryName}</p>
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
         <div className="flex items-center gap-1">
           <span className="text-base font-semibold text-(--color-text-primary)">
             {stats.commits}
