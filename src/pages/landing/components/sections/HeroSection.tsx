@@ -6,7 +6,6 @@ import {
   HERO_TYPEWRITER_SPEED,
   HERO_TYPEWRITER_START_DELAY,
 } from "../../constants";
-import HeroCursor from "../primitives/HeroCursor";
 import Starfield from "../primitives/Starfield";
 import Typewriter from "../primitives/Typewriter";
 
@@ -16,7 +15,6 @@ const HeroSection = () => {
 
   return (
     <section className="relative overflow-hidden grain mesh-bg alive hero-spotlight pt-28 pb-24 md:pt-30 md:pb-32">
-      <HeroCursor />
       <Starfield count={HERO_STAR_COUNT} />
 
       <div

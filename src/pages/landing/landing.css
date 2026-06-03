@@ -640,19 +640,19 @@
   animation: whylog-halo 2.6s ease-in-out infinite;
 }
 
-/* --- 4. Hero custom cursor (이리데센트 미니 블롭이 커서를 따라옴) --- */
+/* --- 4. Custom cursor (이리데센트 미니 블롭이 커서를 따라옴, 랜딩 전역) --- */
 .whylog-landing .hero-spotlight {
   position: relative;
   isolation: isolate;
 }
 .whylog-landing .hero-cursor {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 18px;
   height: 18px;
   pointer-events: none;
-  z-index: 3;
+  z-index: 60;
   opacity: 0;
   transition:
     opacity 0.25s ease,

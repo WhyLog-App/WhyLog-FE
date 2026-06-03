@@ -4,6 +4,7 @@ import FeaturesSection from "./components/sections/FeaturesSection";
 import FinalCtaSection from "./components/sections/FinalCtaSection";
 import Footer from "./components/sections/Footer";
 import HeroSection from "./components/sections/HeroSection";
+import HeroCursor from "./components/primitives/HeroCursor";
 import HowItWorksSection from "./components/sections/HowItWorksSection";
 import Navbar from "./components/sections/Navbar";
 import ProblemSection from "./components/sections/ProblemSection";
@@ -19,6 +20,7 @@ const Landing = () => {
 
   return (
     <div className="whylog-landing min-h-screen w-full">
+      <HeroCursor />
       <Navbar />
       <HeroSection />
       <ProblemSection />

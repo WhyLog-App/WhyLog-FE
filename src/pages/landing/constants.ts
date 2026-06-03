@@ -139,10 +139,6 @@ export const TECH_ACCURACY_BARS: AccuracyBar[] = [
   { id: "b5", cls: "bg-primary-500", h: 100 },
 ];
 
-// Scoring formula weights — also appear in `TechSection` rendered text.
-export const SCORING_VECTOR_WEIGHT = 0.3;
-export const SCORING_BM25_WEIGHT = 0.7;
-
 // ---------- Use Cases section ----------
 
 export type UseCase = {
