@@ -24,11 +24,11 @@ const Navbar = () => {
           <a href="#how" className="hover:text-ink-900 transition">
             작동 방식
           </a>
-          <a href="#usecases" className="hover:text-ink-900 transition">
-            사용 사례
-          </a>
           <a href="#tech" className="hover:text-ink-900 transition">
             기술
+          </a>
+          <a href="#usecases" className="hover:text-ink-900 transition">
+            사용 사례
           </a>
           <a href="#faq" className="hover:text-ink-900 transition">
             FAQ
