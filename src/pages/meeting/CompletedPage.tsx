@@ -47,6 +47,15 @@ const formatDurationText = (seconds: number | null | undefined) => {
   return `${m}분`;
 };
 
+const formatDurationFromMinutes = (minutes: number | null | undefined) => {
+  if (minutes == null || minutes <= 0) return "0분";
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  if (h > 0 && m > 0) return `${h}시간 ${m}분`;
+  if (h > 0) return `${h}시간`;
+  return `${m}분`;
+};
+
 const buildPanels = (
   analysis: MeetingAnalysis | undefined,
 ): CompletedMeetingPanels => {
@@ -112,7 +121,7 @@ const CompletedPage = () => {
 
   const name = detail?.name ?? "";
   const startText = formatStartText(detail?.start_date_time);
-  const durationText = formatDurationText(detail?.duration);
+  const durationText = formatDurationFromMinutes(detail?.duration);
   const memberCount = detail?.member_count ?? 0;
   const members =
     detail?.members?.map((m) => ({
