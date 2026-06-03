@@ -44,6 +44,17 @@ export const LayoutProvider = ({ children }: { children: ReactNode }) => {
 
   const isAnyOpen = isSidebarOpen || isPanelOpen;
 
+  // 데스크톱 폭으로 전환되면 모바일 드로어 상태 정리
+  useEffect(() => {
+    const mql = window.matchMedia("(min-width: 1024px)");
+    const handleChange = () => {
+      if (mql.matches) closeAll();
+    };
+    handleChange();
+    mql.addEventListener("change", handleChange);
+    return () => mql.removeEventListener("change", handleChange);
+  }, [closeAll]);
+
   // 드로어 열림 시 body 스크롤 락
   useEffect(() => {
     if (!isAnyOpen) return;
