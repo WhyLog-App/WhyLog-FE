@@ -8,7 +8,7 @@ const EmptyStateCard = ({ page, onAction }: EmptyStateCardProps) => {
   const content = CONTENT[page];
 
   return (
-    <div className="flex w-150 flex-col items-center justify-center gap-9 overflow-hidden rounded-3xl border border-solid border-white bg-white/30 px-12 pt-14 pb-12">
+    <div className="flex w-full max-w-150 flex-col items-center justify-center gap-9 overflow-hidden rounded-3xl border border-solid border-white bg-white/30 px-6 pt-12 pb-10 sm:px-12 sm:pt-14 sm:pb-12">
       {/* Illustration */}
       <img
         src={EmptyStateIllustrationUrl}

@@ -23,7 +23,7 @@ const DecisionHeader = ({ name, confidence, meta }: DecisionHeaderProps) => {
         <ConfidenceBadge score={confidence.score} />
       </div>
 
-      <div className="flex w-full items-center gap-2 typo-body6 text-(--color-text-secondary)">
+      <div className="flex w-full flex-wrap items-center gap-x-2 gap-y-1 typo-body6 text-(--color-text-secondary)">
         <span>{meta.meeting_name}</span>
         <Dot />
         <span>{meta.meeting_date}</span>

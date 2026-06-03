@@ -12,7 +12,7 @@ interface DecisionDetailPageProps {
 
 const DecisionDetailPage = ({ vm }: DecisionDetailPageProps) => {
   return (
-    <div className="-mx-20 flex h-full flex-col gap-7 overflow-y-auto p-6 lg:p-10 2xl:p-15 3xl:-mx-50">
+    <div className="-mx-4 flex h-full flex-col gap-7 overflow-y-auto p-6 lg:-mx-20 lg:p-10 2xl:p-15 3xl:-mx-50">
       <DecisionHeader
         name={vm.detail.name}
         confidence={vm.confidence}
