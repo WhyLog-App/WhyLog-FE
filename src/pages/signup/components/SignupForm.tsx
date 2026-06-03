@@ -46,7 +46,7 @@ export const SignupForm = ({
   return (
     <form
       onSubmit={onSubmit}
-      className="relative flex w-full max-w-110 flex-col items-center gap-10 overflow-hidden rounded-[30px] border border-white px-7 pb-10 pt-20"
+      className="relative flex w-full max-w-110 flex-col items-center gap-6 overflow-hidden rounded-[30px] border border-white px-5 pb-8 pt-10 sm:gap-10 sm:px-7 sm:pb-10 sm:pt-20"
       style={{ background: "rgba(255, 255, 255, 0.3)" }}
     >
       {/* Logo */}
@@ -91,7 +91,7 @@ export const SignupForm = ({
               onChange={handleFileChange}
               aria-label="프로필 이미지 파일 선택"
             />
-            <p className="typo-caption1 whitespace-nowrap text-text-tertiary">
+            <p className="typo-caption1 text-text-tertiary">
               클릭하여 프로필 사진을 업로드하세요
             </p>
           </div>
