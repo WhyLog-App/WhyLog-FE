@@ -47,7 +47,7 @@ const LiveTranscriptPanel = ({
   const isEmpty = transcripts.length === 0 && interimEntries.length === 0;
 
   return (
-    <aside className="flex h-full w-90 shrink-0 flex-col gap-4 overflow-hidden rounded-2xl border border-(--color-border-default) bg-(--color-bg-surface) px-5 py-5">
+    <aside className="flex h-[40vh] w-full shrink-0 flex-col gap-4 overflow-hidden rounded-2xl border border-(--color-border-default) bg-(--color-bg-surface) px-5 py-5 lg:h-full lg:w-90">
       <div className="flex items-center gap-2">
         <Icon
           icon={IconChatConversation}
