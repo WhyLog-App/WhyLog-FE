@@ -96,7 +96,7 @@ export const SidebarHeader = ({ isOpen }: SidebarHeaderProps) => {
   return (
     <>
       <div className="relative flex items-center gap-1" ref={dropdownRef}>
-        <div className="flex size-12 shrink-0 items-center justify-center">
+        <div className="hidden size-12 shrink-0 items-center justify-center lg:flex">
           <Icon icon={IconMenuBurger} size={20} className="h-3.5" />
         </div>
         {isOpen && (
