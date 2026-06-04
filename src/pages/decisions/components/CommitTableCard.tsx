@@ -1,6 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { matchDecisionCommit } from "@/apis/decisions";
 import IconArrowsReload from "@/assets/icons/arrow/ic_arrows_reload.svg?react";
 import IconAddPlus from "@/assets/icons/edit/ic_add_plus.svg?react";
 import { Icon } from "@/components/common/Icon";
@@ -20,6 +21,7 @@ import { CommitMatchModal } from "./CommitMatchModal";
 import GlassCard from "./GlassCard";
 
 interface CommitTableCardProps {
+  decisionId: number;
   applicationId: number;
   recommendedCommits: ApplicationRecommendedCommit[];
   linkedCommits: ApplicationConnectedCommit[];
@@ -135,6 +137,7 @@ const TabButton = ({
 );
 
 const CommitTableCard = ({
+  decisionId,
   applicationId,
   recommendedCommits,
   linkedCommits,
@@ -153,6 +156,8 @@ const CommitTableCard = ({
     if (isRefetching) return;
     setIsRefetching(true);
     try {
+      // 커밋 추천 매칭을 재실행한 뒤 최신 결과를 다시 불러온다.
+      await matchDecisionCommit(decisionId);
       await Promise.all([
         queryClient.invalidateQueries({
           queryKey: [
