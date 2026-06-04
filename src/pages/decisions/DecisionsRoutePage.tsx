@@ -1,5 +1,11 @@
 import { useParams } from "react-router-dom";
-import type { DecisionDetailViewModel } from "@/types/decision";
+import { useMeetingDetail } from "@/pages/meeting/hooks/useMeetingDetail";
+import type {
+  DecisionDetailViewModel,
+  DecisionMeetingMeta,
+} from "@/types/decision";
+import type { MeetingDetail } from "@/types/meeting";
+import { formatCommittedDate } from "@/utils/date";
 import { parseRouteId } from "@/utils/parseRouteId";
 import DecisionDetailPage from "./DecisionDetailPage";
 import { useApplicationDetail } from "./hooks/useApplicationDetail";
@@ -8,6 +14,18 @@ import { useDecisionReliability } from "./hooks/useDecisionReliability";
 import { useRecommendedCommits } from "./hooks/useRecommendedCommits";
 import DecisionsPage from "./index";
 import { MOCK_DECISION_DETAIL_VIEW_MODEL } from "./mocks";
+
+const toMeetingMeta = (m: MeetingDetail): DecisionMeetingMeta => ({
+  meeting_name: m.name,
+  meeting_date: formatCommittedDate(m.start_date_time),
+  duration_label: m.duration != null ? `회의 시간 ${m.duration}분` : "회의 시간 -",
+  participant_count: m.member_count,
+  participants: m.members.map((p) => ({
+    member_id: p.member_id,
+    name: p.name,
+    profile_image: p.profile_image ?? "",
+  })),
+});
 
 const DecisionsRoutePage = () => {
   const { decisionId: decisionIdParam, applicationId: applicationIdParam } =
@@ -19,6 +37,7 @@ const DecisionsRoutePage = () => {
   const recommendedQuery = useRecommendedCommits(applicationId);
   const connectedQuery = useConnectedCommits(applicationId);
   const reliabilityQuery = useDecisionReliability(decisionId);
+  const meetingQuery = useMeetingDetail(detailQuery.data?.meeting_id ?? null);
 
   if (decisionId == null || applicationId == null) {
     return <DecisionsPage />;
@@ -27,9 +46,13 @@ const DecisionsRoutePage = () => {
   const isLoading =
     detailQuery.isLoading ||
     recommendedQuery.isLoading ||
-    connectedQuery.isLoading;
+    connectedQuery.isLoading ||
+    meetingQuery.isLoading;
   const error =
-    detailQuery.error ?? recommendedQuery.error ?? connectedQuery.error;
+    detailQuery.error ??
+    recommendedQuery.error ??
+    connectedQuery.error ??
+    meetingQuery.error;
 
   if (isLoading) {
     return (
@@ -51,7 +74,9 @@ const DecisionsRoutePage = () => {
   const vm: DecisionDetailViewModel = {
     detail: detailQuery.data,
     application: MOCK_DECISION_DETAIL_VIEW_MODEL.application,
-    meta: MOCK_DECISION_DETAIL_VIEW_MODEL.meta,
+    meta: meetingQuery.data
+      ? toMeetingMeta(meetingQuery.data)
+      : MOCK_DECISION_DETAIL_VIEW_MODEL.meta,
     confidence:
       reliabilityQuery.data ?? MOCK_DECISION_DETAIL_VIEW_MODEL.confidence,
     applied_commits: MOCK_DECISION_DETAIL_VIEW_MODEL.applied_commits,

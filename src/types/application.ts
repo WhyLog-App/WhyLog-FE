@@ -20,6 +20,7 @@ export interface ApplicationReasonItem {
 
 export interface ApplicationDetail {
   application_id: number;
+  meeting_id: number;
   name: string;
   decision_timelines: ApplicationTimelineItem[];
   decision_contexts: ApplicationContextMessage[];
