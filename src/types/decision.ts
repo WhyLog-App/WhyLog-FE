@@ -55,7 +55,7 @@ export interface DecisionMeetingMeta {
 }
 
 export interface DecisionConfidence {
-  score: number; // 0–100
+  score: number | null;
 }
 
 export interface DecisionFooterStats {
