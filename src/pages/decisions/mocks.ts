@@ -102,11 +102,6 @@ export const MOCK_DECISION_DETAIL_VIEW_MODEL: DecisionDetailViewModel = {
   ],
   recommended_commits: [],
   linked_commits: [],
-  footer_stats: {
-    evidence_utterance_count: 42,
-    participant_consensus_label: "높음",
-    decision_implementation_match_rate: 92,
-  },
 };
 
 /**

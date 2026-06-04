@@ -79,7 +79,6 @@ const DecisionsRoutePage = () => {
     applied_commits: MOCK_DECISION_DETAIL_VIEW_MODEL.applied_commits,
     recommended_commits: recommendedQuery.data ?? [],
     linked_commits: connectedQuery.data?.commits ?? [],
-    footer_stats: MOCK_DECISION_DETAIL_VIEW_MODEL.footer_stats,
   };
 
   return <DecisionDetailPage vm={vm} decisionId={decisionId} />;
