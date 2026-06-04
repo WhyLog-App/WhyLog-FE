@@ -1,4 +1,5 @@
 import { type ReactNode, useEffect, useId } from "react";
+import { createPortal } from "react-dom";
 import IconCloseMd from "@/assets/icons/menu/ic_close_md.svg?react";
 import { Icon } from "@/components/common/Icon";
 
@@ -29,7 +30,7 @@ const Modal = ({
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center"
       role="dialog"
@@ -91,7 +92,8 @@ const Modal = ({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
 
