@@ -8,9 +8,10 @@ import TimelineCard from "./components/TimelineCard";
 
 interface DecisionDetailPageProps {
   vm: DecisionDetailViewModel;
+  decisionId: number;
 }
 
-const DecisionDetailPage = ({ vm }: DecisionDetailPageProps) => {
+const DecisionDetailPage = ({ vm, decisionId }: DecisionDetailPageProps) => {
   return (
     <div className="-mx-4 flex h-full flex-col gap-7 overflow-y-auto p-6 lg:-mx-20 lg:p-10 2xl:p-15 3xl:-mx-50">
       <DecisionHeader
@@ -35,6 +36,7 @@ const DecisionDetailPage = ({ vm }: DecisionDetailPageProps) => {
             className="w-full lg:w-2/5 lg:min-w-90 lg:max-w-120"
           />
           <CommitTableCard
+            decisionId={decisionId}
             applicationId={vm.detail.application_id}
             recommendedCommits={vm.recommended_commits}
             linkedCommits={vm.linked_commits}

@@ -82,7 +82,7 @@ const DecisionsRoutePage = () => {
     footer_stats: MOCK_DECISION_DETAIL_VIEW_MODEL.footer_stats,
   };
 
-  return <DecisionDetailPage vm={vm} />;
+  return <DecisionDetailPage vm={vm} decisionId={decisionId} />;
 };
 
 export default DecisionsRoutePage;

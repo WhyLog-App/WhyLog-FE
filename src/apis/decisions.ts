@@ -15,3 +15,15 @@ export const getDecisionReliability = async (
   }
   return data.result;
 };
+
+// POST /api/decisions/{decisionId}/commit/match
+export const matchDecisionCommit = async (
+  decisionId: number,
+): Promise<void> => {
+  const { data } = await http.post<unknown, { data: ApiResponse<unknown> }>(
+    ENDPOINT.DECISIONS.MATCH_COMMIT(decisionId),
+  );
+  if (!data.isSuccess) {
+    throw new Error(data.message);
+  }
+};

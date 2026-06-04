@@ -43,6 +43,8 @@ const ENDPOINT = {
   DECISIONS: {
     RELIABILITY: (decisionId: number) =>
       `${API_BASE_URL}/api/decisions/${decisionId}/reliability`,
+    MATCH_COMMIT: (decisionId: number) =>
+      `${API_BASE_URL}/api/decisions/${decisionId}/commit/match`,
   },
   APPLICATIONS: {
     DETAIL: (applicationId: number) =>
