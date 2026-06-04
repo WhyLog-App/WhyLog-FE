@@ -18,7 +18,8 @@ import { MOCK_DECISION_DETAIL_VIEW_MODEL } from "./mocks";
 const toMeetingMeta = (m: MeetingDetail): DecisionMeetingMeta => ({
   meeting_name: m.name,
   meeting_date: formatCommittedDate(m.start_date_time),
-  duration_label: m.duration != null ? `회의 시간 ${m.duration}분` : "회의 시간 -",
+  duration_label:
+    m.duration != null ? `회의 시간 ${m.duration}분` : "회의 시간 -",
   participant_count: m.member_count,
   participants: m.members.map((p) => ({
     member_id: p.member_id,
@@ -46,13 +47,9 @@ const DecisionsRoutePage = () => {
   const isLoading =
     detailQuery.isLoading ||
     recommendedQuery.isLoading ||
-    connectedQuery.isLoading ||
-    meetingQuery.isLoading;
+    connectedQuery.isLoading;
   const error =
-    detailQuery.error ??
-    recommendedQuery.error ??
-    connectedQuery.error ??
-    meetingQuery.error;
+    detailQuery.error ?? recommendedQuery.error ?? connectedQuery.error;
 
   if (isLoading) {
     return (
