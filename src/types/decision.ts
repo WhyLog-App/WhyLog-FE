@@ -80,5 +80,4 @@ export interface DecisionDetailViewModel {
   applied_commits: DecisionApplicationDetail[];
   recommended_commits: ApplicationRecommendedCommit[];
   linked_commits: ApplicationConnectedCommit[];
-  footer_stats: DecisionFooterStats;
 }

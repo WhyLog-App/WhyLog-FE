@@ -9,7 +9,7 @@ import type {
   ApplicationConnectedCommit,
   ApplicationRecommendedCommit,
 } from "@/types/application";
-import type { CommitTab, DecisionFooterStats } from "@/types/decision";
+import type { CommitTab } from "@/types/decision";
 import { formatCommittedDate } from "@/utils/date";
 import { APPLICATION_CONNECTED_COMMITS_QUERY_KEY } from "../hooks/useConnectedCommits";
 import { useLinkCommit } from "../hooks/useLinkCommit";
@@ -23,7 +23,6 @@ interface CommitTableCardProps {
   applicationId: number;
   recommendedCommits: ApplicationRecommendedCommit[];
   linkedCommits: ApplicationConnectedCommit[];
-  footerStats: DecisionFooterStats;
   className?: string;
 }
 
@@ -138,7 +137,6 @@ const CommitTableCard = ({
   applicationId,
   recommendedCommits,
   linkedCommits,
-  footerStats,
   className = "",
 }: CommitTableCardProps) => {
   const [tab, setTab] = useState<CommitTab>("recommended");
@@ -374,26 +372,7 @@ const CommitTableCard = ({
         </p>
       ) : null}
 
-      <div className="flex w-full items-start gap-5 typo-caption1 text-(--color-text-tertiary)">
-        <div className="flex items-center gap-1">
-          <span>근거 발언</span>
-          <span className="font-bold typo-button-sm">
-            {footerStats.evidence_utterance_count}개
-          </span>
-        </div>
-        <div className="flex items-center gap-1">
-          <span>참여자 합의도</span>
-          <span className="font-bold typo-button-sm">
-            {footerStats.participant_consensus_label}
-          </span>
-        </div>
-        <div className="flex items-center gap-1">
-          <span>결정 ↔ 구현 일치율</span>
-          <span className="font-bold typo-button-sm">
-            {footerStats.decision_implementation_match_rate}%
-          </span>
-        </div>
-      </div>
+      <div className="flex w-full items-start gap-5 typo-caption1 text-(--color-text-tertiary)"></div>
 
       {isMatchModalOpen && teamId != null ? (
         <CommitMatchModal

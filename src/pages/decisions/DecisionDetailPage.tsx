@@ -38,7 +38,6 @@ const DecisionDetailPage = ({ vm }: DecisionDetailPageProps) => {
             applicationId={vm.detail.application_id}
             recommendedCommits={vm.recommended_commits}
             linkedCommits={vm.linked_commits}
-            footerStats={vm.footer_stats}
             className="w-full min-w-0 flex-1"
           />
         </div>
