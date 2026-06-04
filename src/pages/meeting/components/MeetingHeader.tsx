@@ -42,18 +42,27 @@ const MeetingHeader = ({
           WS {isWsConnected ? "✓" : "…"} · RTC {isRoomConnected ? "✓" : "…"}
         </span>
         <div className="flex -space-x-2">
-          {participants.slice(0, 3).map((p) => (
-            <span
-              key={p.id}
-              className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-(--color-bg-surface) bg-light-500"
-            >
-              <Icon
-                icon={IconCircleUser}
-                size={20}
-                className="text-(--color-dark-100)"
+          {participants.slice(0, 3).map((p) =>
+            p.profileImage ? (
+              <img
+                key={p.id}
+                src={p.profileImage}
+                alt={p.name}
+                className="h-7 w-7 rounded-full border-2 border-(--color-bg-surface) object-cover"
               />
-            </span>
-          ))}
+            ) : (
+              <span
+                key={p.id}
+                className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-(--color-bg-surface) bg-light-500"
+              >
+                <Icon
+                  icon={IconCircleUser}
+                  size={20}
+                  className="text-(--color-dark-100)"
+                />
+              </span>
+            ),
+          )}
         </div>
       </div>
     </div>
